@@ -1,0 +1,37 @@
+.record-container {
+  margin-bottom: 10px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+}
+
+.recorder-icon {
+  color: white;
+  width: 48px;
+  height: 48px;
+}
+
+.MuiInputBase-input {
+  color: white;
+}
+.MuiInputBase-root {
+  border-radius: 30px;
+}
+
+@media only screen and (max-device-width: 480px) {
+  .record-container {
+    justify-content: center;
+  }
+  .record-textfield {
+    width: 80%;
+  }
+  .recorder-icon {
+    width: 36px;
+    height: 36px;
+  }
+}
