@@ -18,10 +18,6 @@ export const CharlaProvider = ({ children }) => {
 
   const mediaStream = useRef(null);
 
-  useEffect(() => {
-    console.log(audioBlob);
-  }, [audioBlob]);
-
   return (
     <CharlaContext.Provider
       value={{
