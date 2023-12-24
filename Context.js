@@ -14,9 +14,9 @@ export const CharlaProvider = ({ children }) => {
   const tablet = useMediaQuery(theme.breakpoints.between("xs", "md"));
   const mobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const [audioBlob, setAudioBlob] = useState(null);
+  const [audioBlob, setAudioBlob] = useState(" ");
 
-  const mediaStream = useRef(null);
+  const mediaStream = useRef(" ");
 
   return (
     <CharlaContext.Provider
