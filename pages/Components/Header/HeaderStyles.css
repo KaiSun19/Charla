@@ -1,0 +1,33 @@
+.navbar-container {
+  background-color: #26232b;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 1%;
+  width: 100%;
+  color: white;
+  gap: 20px;
+}
+
+.navbar-title {
+  width: calc(5 / 11 * 100%);
+  color: white;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.drawer-container {
+  max-width: 250px;
+  background-color: #1a181d;
+}
+
+.drawer-list {
+  color: white;
+  background-color: inherit;
+}
+
+.drawer-list-item {
+  background-color: inherit;
+  color: white;
+}
