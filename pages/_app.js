@@ -2,6 +2,8 @@ import "@/styles/globals.css";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import "../pages/Components/Header/HeaderStyles.css";
 import "../pages/Components/Record/RecordStyles.css";
+import "../pages/Components/Chat/ChatStyles.css";
+import "../pages/Components/Message/MessageStyles.css";
 import Header from "./Components/Header/Header";
 
 const theme = createTheme({

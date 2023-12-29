@@ -1,8 +1,6 @@
 .record-container {
   margin-bottom: 10px;
-  position: fixed;
-  left: 0;
-  bottom: 0;
+  margin-top: 10px;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -10,14 +8,38 @@
   align-items: center;
 }
 
+.record-input-container {
+  display: flex;
+  width: 70%;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 30px;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  background-color: #26232b;
+  transition-duration: 0.5s;
+}
+
+.record-input-container:hover {
+  border: 1px solid rgba(255, 255, 255, 1);
+}
+
 .recorder-icon {
-  color: white;
-  width: 48px;
-  height: 48px;
+  color: rgba(255, 255, 255, 0.7);
+  width: 40px;
+  height: 40px;
+}
+
+.recorder-icon:hover {
+  color: rgba(255, 255, 255, 1);
 }
 
 .MuiInputBase-input {
   color: white;
+  font-size: 22px;
+}
+.MuiTextField-root {
+  border-radius: 30px;
 }
 .MuiInputBase-root {
   border-radius: 30px;

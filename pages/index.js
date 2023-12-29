@@ -3,10 +3,10 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import Record from "./Components/Record/Record";
+import Chat from "./Components/Chat/Chat";
 import { CharlaProvider } from "@/Context";
 
 const inter = Inter({ subsets: ["latin"] });
-
 
 export default function Home() {
   return (
@@ -19,7 +19,8 @@ export default function Home() {
       </Head>
       <main className={`${inter.className}`}>
         <CharlaProvider>
-          <div>
+          <div className="home-container">
+            <Chat />
             <Record />
           </div>
         </CharlaProvider>

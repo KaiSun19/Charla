@@ -1,16 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, IconButton } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import { useCharlaContext } from "@/Context";
-import { stopMediaStream } from "@/Utils";
-import HeadsetIcon from "@mui/icons-material/Headset";
+import KeyboardVoiceOutlinedIcon from "@mui/icons-material/KeyboardVoiceOutlined";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
-import Header from "../Header/Header";
-import TextField from "@mui/material/TextField";
-import { WhiteTextField } from "@/StyledComponents";
+import SendRoundedIcon from "@mui/icons-material/SendRounded";
+import { NoColorTextField } from "@/StyledComponents";
 
 const Record = () => {
-  const { setAudioBlob, mediaStream } = useCharlaContext();
-
   const rec = useRef(null);
   const recordingStepRef = useRef(null);
 
@@ -50,30 +46,46 @@ const Record = () => {
       }
       let audioChunks = [];
       async function handlerFunction(stream) {
-        if (mediaStream.current) {
-          stopMediaStream();
-        }
-        mediaStream.current = stream.clone();
         rec.current = new MediaRecorder(stream);
         rec.current.start();
         rec.current.ondataavailable = async (e) => {
           audioChunks.push(e.data);
           if (rec.current.state == "inactive") {
-            let blob = new Blob(audioChunks, { type: "audio/mp3" });
-            const audioBuffer = await blob.arrayBuffer();
-            const audioData = new Int16Array(audioBuffer);
-            const linear16Blob = new Blob([audioData], { type: "audio/l16" });
-            console.log(linear16Blob);
-
-            // document.getElementById("audioElement").src =
-            //   URL.createObjectURL(blob);
+            const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+            try {
+              const reader = new FileReader();
+              reader.readAsDataURL(audioBlob);
+              reader.onloadend = async function () {
+                const base64Audio = reader.result.split(",")[1]; // Remove the data URL prefix
+                const response = await fetch("/api/speechToText", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ audio: base64Audio }),
+                });
+                const data = await response.json();
+                if (response.status !== 200) {
+                  throw (
+                    data.error ||
+                    new Error(`Request failed with status ${response.status}`)
+                  );
+                }
+                setResult(data.result);
+              };
+            } catch (error) {
+              console.error(error);
+              alert(error.message);
+            }
           }
         };
       }
       function startusingBrowserMicrophone(boolean) {
-        getUserMedia({ audio: boolean }).then((stream) => {
-          handlerFunction(stream);
-        });
+        getUserMedia({ audio: boolean })
+          .then((stream) => {
+            handlerFunction(stream);
+          })
+          .catch((err) => console.error("Error accessing microphone:", err));
       }
       startusingBrowserMicrophone(true);
     } else {
@@ -84,30 +96,38 @@ const Record = () => {
 
   return (
     <div className="record-container">
-      <WhiteTextField
-        sx={{
-          width: "50%",
-          padding: "1%",
-          color: "white",
-          borderRadius: "30px",
-        }}
-        value={userInput}
-        placeholder="Decir algo..."
-        className="record-textfield"
-        onChange={handleUserInput}
-      />
-      <IconButton
-        onClick={() => {
-          handleRecording();
-        }}
-      >
-        {recording ? (
-          <CancelRoundedIcon className="recorder-icon" />
-        ) : (
-          <HeadsetIcon className="recorder-icon" />
-        )}
+      <Box className="record-input-container">
+        <NoColorTextField
+          autoFocus={true}
+          sx={{
+            width: "95%",
+            padding: "1%",
+            color: "white",
+            borderRadius: "30px",
+          }}
+          value={userInput}
+          placeholder="Decir algo..."
+          className="record-textfield"
+          onChange={handleUserInput}
+        />
+        <IconButton
+          onClick={() => {
+            handleRecording();
+          }}
+        >
+          {recording ? (
+            <CancelRoundedIcon className="recorder-icon" />
+          ) : (
+            <KeyboardVoiceOutlinedIcon className="recorder-icon" />
+          )}
+        </IconButton>
+      </Box>
+      <IconButton>
+        <SendRoundedIcon
+          className="recorder-icon"
+          sx={{ marginLeft: "10px" }}
+        />
       </IconButton>
-      {/* <audio src="" id="audioElement" controls></audio> */}
     </div>
   );
 };
