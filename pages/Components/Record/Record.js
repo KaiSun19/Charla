@@ -12,9 +12,13 @@ const Record = () => {
 
   const [recording, setRecording] = useState(false);
   const [userInput, setUserInput] = useState(" ");
+  const [voiceText, setVoiceText] = useState(" ");
 
   const handleStopRecording = () => {
     if (rec.current) {
+      rec.current.stream.getAudioTracks().forEach((track) => {
+        track.stop();
+      });
       rec.current.stop();
     }
   };
@@ -57,7 +61,7 @@ const Record = () => {
               reader.readAsDataURL(audioBlob);
               reader.onloadend = async function () {
                 const base64Audio = reader.result.split(",")[1]; // Remove the data URL prefix
-                const response = await fetch("/api/speechToText", {
+                const response = await fetch("/api/voiceToText", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
@@ -71,7 +75,7 @@ const Record = () => {
                     new Error(`Request failed with status ${response.status}`)
                   );
                 }
-                setResult(data.result);
+                setVoiceText(data.result);
               };
             } catch (error) {
               console.error(error);
