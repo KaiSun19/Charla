@@ -1,5 +1,5 @@
 import { useMediaQuery, useTheme } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 
 const CharlaContext = React.createContext(); // creates a context
 
@@ -15,6 +15,8 @@ export const CharlaProvider = ({ children }) => {
   const mobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [audioBlob, setAudioBlob] = useState(" ");
+
+  const [language, setLanguage] = useState("es");
 
   const mockMessages = [
     {
@@ -48,6 +50,7 @@ export const CharlaProvider = ({ children }) => {
         audioBlob,
         setAudioBlob,
         mockMessages,
+        language,
       }}
     >
       {children}

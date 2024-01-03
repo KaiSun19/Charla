@@ -42,3 +42,51 @@ const handleBlobToBase64 = ({ blob, continuous }) => {
 const stopMediaStream = () => {
   mediaStream.current?.getAudioTracks()[0].stop();
 };
+
+//Voice to text if using google stt api
+
+// const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS);
+// const auth = new GoogleAuth({ credentials });
+
+// const speechClient = new speech.SpeechClient({ auth });
+
+// async function convertWebmToFlac(inputPath, outputPath) {
+//   return new Promise((resolve, reject) => {
+//     ffmpeg()
+//       .input(inputPath)
+//       .audioCodec("flac")
+//       .on("end", () => {
+//         resolve(outputPath);
+//       })
+//       .on("error", (err) => {
+//         console.error("Error: ", err);
+//       })
+//       .save(outputPath);
+//   });
+// };
+
+// async function convertAudioToText(audioData) {
+//   // const flacAudioData = await convertAudioToFlac(audioData);
+
+//   const outputPath = "/tmp/output.flac";
+//   fs.writeFileSync(outputPath, flacAudioData);
+//   // Transcribe the audio
+
+// const config = {
+//   encoding: "FLAC",
+//   languageCode: "en-US",
+// };
+// const request = {
+//   audio: {
+//     content: flacAudioData,
+//   },
+//   config: config,
+// };
+
+// Detects speech in the audio file
+// const [response] = await speechClient.recognize(request);
+// const transcription = response.results
+//   .map((result) => result.alternatives[0].transcript)
+//   .join("\n");
+// console.log(`Transcription: ${transcription}`);
+// }
