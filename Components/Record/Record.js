@@ -7,12 +7,13 @@ import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import { NoColorTextField } from "@/StyledComponents";
 
 const Record = () => {
+  const { language } = useCharlaContext();
+
   const rec = useRef(null);
-  const recordingStepRef = useRef(null);
 
   const [recording, setRecording] = useState(false);
-  const [userInput, setUserInput] = useState(" ");
-  const [voiceText, setVoiceText] = useState(" ");
+  const [voiceText, setVoiceText] = useState("");
+  const [userInput, setUserInput] = useState("");
 
   const handleStopRecording = () => {
     if (rec.current) {
@@ -66,16 +67,16 @@ const Record = () => {
                   headers: {
                     "Content-Type": "application/json",
                   },
-                  body: JSON.stringify({ audio: base64Audio }),
+                  body: JSON.stringify({ audio: base64Audio, lang: language }),
                 });
                 const data = await response.json();
+                setVoiceText(data.result);
                 if (response.status !== 200) {
                   throw (
                     data.error ||
                     new Error(`Request failed with status ${response.status}`)
                   );
                 }
-                setVoiceText(data.result);
               };
             } catch (error) {
               console.error(error);
@@ -97,6 +98,14 @@ const Record = () => {
       handleStopRecording();
     }
   }
+
+  useEffect(() => {
+    setUserInput((prevUserInput) => {
+      return prevUserInput.length > 0
+        ? prevUserInput + ` ${voiceText}`
+        : voiceText;
+    });
+  }, [voiceText]);
 
   return (
     <div className="record-container">
