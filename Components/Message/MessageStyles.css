@@ -1,8 +1,65 @@
-.message-text-container {
-  border-radius: 10px;
+.message-text {
+  display: flex;
   padding: 10px;
   width: fit-content;
   padding-right: 20px;
+  margin-top: 1%;
+  background-color: white;
+}
+
+.message-text-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.text-container-user {
+  margin-right: 2%;
+  align-items: flex-end;
+}
+
+.text-container-charla {
+  margin-left: 2%;
+  align-items: flex-start;
+}
+
+.message-text-user {
+  border: 1px solid #c8c8c8;
+  border-radius: 10px 10px 0 10px;
+  justify-content: flex-end;
+  margin-right: 3%;
+  margin-left: 3%;
+}
+
+.message-text-charla {
+  border: 1px solid #6573c3;
+  border-radius: 10px 10px 10px 0;
+  margin-left: 3%;
+  margin-right: 3%;
+}
+
+.message-icon {
+  width: 36px;
+  height: 36px;
+}
+
+.message-icon-mobile {
+  width: 24px;
+  height: 24px;
+  font-size: 0.75rem;
+}
+
+.message-icon-user {
+  display: flex;
+  width: 95%;
+  justify-content: flex-end;
+  margin-left: 5%;
+}
+
+.message-icon-charla {
+  display: flex;
+  width: 95%;
+  justify-content: flex-start;
 }
 
 .message-container {
@@ -11,4 +68,12 @@
   justify-content: flex-start;
   align-items: center;
   gap: 15px;
+}
+
+.message-highlight-saved {
+  background-color: rgb(129, 199, 132, 0.3);
+}
+
+.message-highlight-error {
+  background-color: rgb(229, 115, 115, 0.3);
 }

@@ -83,7 +83,15 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
-  background-color: #1a181d;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -96,4 +104,17 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+}
+.chat-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  height: 90%;
+  flex: 1;
+}
+
+.conversation-container {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
 }

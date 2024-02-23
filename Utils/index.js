@@ -90,3 +90,10 @@ const stopMediaStream = () => {
 //   .join("\n");
 // console.log(`Transcription: ${transcription}`);
 // }
+
+export const convertClassname = (mobile, classname) => {
+  if (mobile) {
+    return `${classname}-mobile`;
+  }
+  return classname;
+};

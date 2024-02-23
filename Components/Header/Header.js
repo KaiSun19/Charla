@@ -1,23 +1,31 @@
 import { Box, Typography } from "@mui/material";
 import React, { useState } from "react";
-import Link from "next/link";
 import IconButton from "@mui/material/IconButton";
-import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import Image from "next/image";
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import { useCharlaContext } from "@/Context";
+import Avatar from "@mui/material/Avatar";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 
 export default function Navbar() {
-  const [openMenu, setOpenMenu] = useState(false);
+  const { mockUserInitials, mobile } = useCharlaContext();
+
+  const [menuAnchor, setMenuAnchor] = useState(false);
+
+  const openMenu = Boolean(menuAnchor);
+
+  const handleSettingsClick = (event) => {
+    setMenuAnchor(event.currentTarget);
+  };
+  const handleClose = () => {
+    setMenuAnchor(false);
+  };
 
   return (
     <Box className="navbar-container">
-      <Box className="navbar-menu">
+      <Box className="navbar-home">
         <IconButton
           aria-label="delete"
           sx={{ color: "white" }}
@@ -25,36 +33,60 @@ export default function Navbar() {
             setOpenMenu(true);
           }}
         >
-          <MenuRoundedIcon sx={{ width: "36px", height: "36px" }} />
+          <Image
+            src="/charla-icon-light.svg"
+            alt="Charla icon"
+            height={30}
+            width={30}
+          />
         </IconButton>
-      </Box>
-      <Box className="navbar-title">
-        <Typography variant="h4">Charla</Typography>
-      </Box>
-      <Drawer
-        anchor="left"
-        open={openMenu}
-        onClose={() => {
-          setOpenMenu(false);
-        }}
-        className="drawer-container"
-        sx={{ backgroundColor: "#1a181d" }}
-      >
-        <Box role="presentation">
-          <List className="drawer-list">
-            {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-              <ListItem key={text} disablePadding className="drawer-list-item">
-                <ListItemButton>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
+        <Box className="navbar-title">
+          <Typography variant={mobile ? "h5" : "h4"}>Charla</Typography>
         </Box>
-      </Drawer>
+      </Box>
+      <Box className="navbar-buttons">
+        {mobile ? (
+          <>
+            <IconButton onClick={handleSettingsClick}>
+              <SettingsOutlinedIcon />
+            </IconButton>
+            <Avatar
+              sx={{ backgroundColor: "#6573C3", fontSize: "16px" }}
+              className="mobile-navbar-icon"
+            >
+              {mockUserInitials}
+            </Avatar>
+            <Menu
+              id="settings-menu"
+              anchorEl={menuAnchor}
+              open={openMenu}
+              onClose={handleClose}
+              MenuListProps={{ "aria-labelledby": "basic-button" }}
+            >
+              <MenuItem onClick={handleClose}>Chat</MenuItem>
+              <MenuItem onClick={handleClose}>Library</MenuItem>
+              <MenuItem onClick={handleClose}>Dashboard</MenuItem>
+            </Menu>
+          </>
+        ) : (
+          <>
+            <Button variant="outlined" color="inherit">
+              Chat
+            </Button>
+            <Button variant="outlined" color="inherit">
+              Library
+            </Button>
+            <Button variant="outlined" color="inherit">
+              Dashboard
+            </Button>
+            <Avatar
+              sx={{ backgroundColor: "#6573C3", width: "45px", height: "45px" }}
+            >
+              {mockUserInitials}
+            </Avatar>
+          </>
+        )}
+      </Box>
     </Box>
   );
 }

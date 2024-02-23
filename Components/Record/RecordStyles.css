@@ -1,48 +1,50 @@
 .record-container {
-  margin-bottom: 10px;
-  margin-top: 10px;
-  width: 100%;
+  margin: 10px 0 10px 0;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   flex-direction: row;
   align-items: center;
 }
 
+.outlined-input {
+  width: 100%;
+  transition-duration: 0.5s;
+  padding: 5px;
+}
+
+.record-input {
+  border-radius: 10px;
+  font-size: 18px;
+}
+
 .record-input-container {
   display: flex;
-  width: 70%;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  border-radius: 30px;
   justify-content: flex-start;
   align-items: center;
   gap: 10px;
-  background-color: #26232b;
   transition-duration: 0.5s;
 }
 
-.record-input-container:hover {
-  border: 1px solid rgba(255, 255, 255, 1);
+.icon-button {
+  width: 36px;
+  height: 36px;
 }
 
-.recorder-icon {
-  color: rgba(255, 255, 255, 0.7);
-  width: 40px;
-  height: 40px;
+.icon-button-mobile {
+  width: 24px;
+  height: 24px;
 }
 
-.recorder-icon:hover {
-  color: rgba(255, 255, 255, 1);
+.send-button {
+  transform: rotate(-45deg);
+  margin: 0 0 10px 10px;
 }
 
-.MuiInputBase-input {
-  color: white;
-  font-size: 22px;
-}
-.MuiTextField-root {
-  border-radius: 30px;
-}
-.MuiInputBase-root {
-  border-radius: 30px;
+.record-icon-buttons-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 @media only screen and (max-device-width: 480px) {

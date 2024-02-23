@@ -1,33 +1,37 @@
 .navbar-container {
-  background-color: #26232b;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
   padding: 1%;
-  width: 100%;
-  color: white;
+  min-width: 100%;
+  color: #202020;
   gap: 20px;
+  height: 10%;
 }
 
 .navbar-title {
-  width: calc(5 / 11 * 100%);
-  color: white;
   font-weight: 400;
   text-decoration: none;
 }
 
-.drawer-container {
-  max-width: 250px;
-  background-color: #1a181d;
+.navbar-home {
+  width: 66%;
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+  align-items: center;
 }
 
-.drawer-list {
-  color: white;
-  background-color: inherit;
+.navbar-buttons {
+  width: 34%;
+  color: #797979;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 
-.drawer-list-item {
-  background-color: inherit;
-  color: white;
+.mobile-navbar-icon {
+  width: 32px;
+  height: 32px;
 }

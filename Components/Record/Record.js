@@ -4,16 +4,20 @@ import { useCharlaContext } from "@/Context";
 import KeyboardVoiceOutlinedIcon from "@mui/icons-material/KeyboardVoiceOutlined";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
-import { NoColorTextField } from "@/StyledComponents";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputAdornment from "@mui/material/InputAdornment";
+import UnfoldMoreOutlinedIcon from "@mui/icons-material/UnfoldMoreOutlined";
+import { convertClassname } from "@/Utils";
 
 const Record = () => {
-  const { language } = useCharlaContext();
+  const { language, mobile } = useCharlaContext();
 
   const rec = useRef(null);
 
   const [recording, setRecording] = useState(false);
   const [voiceText, setVoiceText] = useState("");
   const [userInput, setUserInput] = useState("");
+  const [expandInput, setExpandInput] = useState(false);
 
   const handleStopRecording = () => {
     if (rec.current) {
@@ -26,6 +30,10 @@ const Record = () => {
 
   const handleUserInput = (e) => {
     setUserInput(e.target.value);
+  };
+
+  const handleExpandInput = () => {
+    setExpandInput(!expandInput);
   };
 
   function handleRecording() {
@@ -107,41 +115,67 @@ const Record = () => {
     });
   }, [voiceText]);
 
-  return (
-    <div className="record-container">
-      <Box className="record-input-container">
-        <NoColorTextField
-          autoFocus={true}
-          sx={{
-            width: "95%",
-            padding: "1%",
-            color: "white",
-            borderRadius: "30px",
-          }}
-          value={userInput}
-          placeholder="Decir algo..."
-          className="record-textfield"
-          onChange={handleUserInput}
+  const recordButton = (
+    <IconButton
+      onClick={() => {
+        handleRecording();
+      }}
+    >
+      {recording ? (
+        <CancelRoundedIcon
+          className={`${convertClassname(mobile, "icon-button")}`}
+          sx={{ color: "text" }}
         />
-        <IconButton
-          onClick={() => {
-            handleRecording();
-          }}
-        >
-          {recording ? (
-            <CancelRoundedIcon className="recorder-icon" />
-          ) : (
-            <KeyboardVoiceOutlinedIcon className="recorder-icon" />
-          )}
+      ) : (
+        <KeyboardVoiceOutlinedIcon
+          className={`${convertClassname(mobile, "icon-button")}`}
+          sx={{ color: "text" }}
+        />
+      )}
+    </IconButton>
+  );
+
+  return (
+    <Box
+      className="record-container"
+      sx={mobile ? { paddingLeft: "1%" } : { paddingLeft: "5%" }}
+    >
+      <Box
+        className="record-input-container"
+        sx={mobile ? { width: "95%" } : { width: "80%" }}
+      >
+        <OutlinedInput
+          placeholder="Decir algo..."
+          className="outlined-input record-input"
+          color="primary"
+          value={userInput}
+          onChange={handleUserInput}
+          multiline={expandInput ? true : false}
+          minRows={5}
+          endAdornment={
+            <InputAdornment position="end">{recordButton}</InputAdornment>
+          }
+        />
+      </Box>
+      <Box className="record-icon-buttons-container">
+        {mobile && (
+          <IconButton
+            onClick={() => {
+              handleExpandInput();
+            }}
+          >
+            <UnfoldMoreOutlinedIcon
+              className={`${convertClassname(mobile, "icon-button")}`}
+            />
+          </IconButton>
+        )}
+        <IconButton>
+          <SendRoundedIcon
+            className={`${convertClassname(mobile, "icon-button")} send-button`}
+          />
         </IconButton>
       </Box>
-      <IconButton>
-        <SendRoundedIcon
-          className="recorder-icon"
-          sx={{ marginLeft: "10px" }}
-        />
-      </IconButton>
-    </div>
+    </Box>
   );
 };
 

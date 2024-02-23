@@ -1,29 +1,28 @@
 import "@/styles/globals.css";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { Box } from "@mui/material";
 import "../Components/Header/HeaderStyles.css";
 import "../Components/Record/RecordStyles.css";
-import "../Components/Chat/ChatStyles.css";
+import "../Components/ChatLog/ChatLogStyles.css";
 import "../Components/Message/MessageStyles.css";
+import "../Components/ChatNavigation/ChatNavigationStyles.css";
+import { CharlaProvider } from "@/Context";
+
 import Header from "../Components/Header/Header";
 
 const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#242128",
-      light: "#39343f",
-      dark: "#1a181d",
-    },
-    secondary: {
-      main: "#f50057",
-    },
-  },
+  palette: {},
 });
 
 export default function App({ Component, pageProps }) {
   return (
-    <ThemeProvider theme={theme}>
-      <Header />
-      <Component {...pageProps} />
-    </ThemeProvider>
+    <CharlaProvider>
+      <ThemeProvider theme={theme}>
+        <Box className="app-container">
+          <Header />
+          <Component {...pageProps} />
+        </Box>
+      </ThemeProvider>
+    </CharlaProvider>
   );
 }

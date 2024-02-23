@@ -66,7 +66,6 @@ async function convertAudioToText(audioData, language) {
   fs.unlinkSync(outputPath);
   // The API response contains the transcribed text
   const transcribedText = response.text;
-  //TODO: make text appear in ui. user should be able to add to previous voice recording
   return transcribedText;
 }
 
