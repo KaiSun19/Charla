@@ -91,9 +91,29 @@ const stopMediaStream = () => {
 // console.log(`Transcription: ${transcription}`);
 // }
 
-export const convertClassname = (mobile, classname) => {
+export const convertClassname = (mobile, classname, agg) => {
   if (mobile) {
+    if (agg) {
+      return `${classname} ${classname}-mobile`;
+    }
     return `${classname}-mobile`;
   }
   return classname;
+};
+
+export const extractResponse = (text) => {
+  let match = text.match(/Response:\s*(.*)/);
+  let res;
+  if (match && match.length > 1) {
+    res = match[1];
+    if (res[0] === "'") {
+      res = res.slice(1);
+    }
+    if (res[res.length - 1] === "'") {
+      res = res.slice(0, -1);
+    }
+  } else {
+    res = null;
+  }
+  return res;
 };

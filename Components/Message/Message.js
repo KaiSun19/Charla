@@ -2,11 +2,11 @@ import { useCharlaContext } from "@/Context";
 import { Box, Typography, Avatar, IconButton } from "@mui/material";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import { convertClassname } from "@/Utils";
-import DoneRoundedIcon from "@mui/icons-material/DoneRounded";
 
+//TODO: redo Message so that it is a forwardProp
 export default function Message({
   Index,
   Type,
@@ -40,81 +40,83 @@ export default function Message({
   };
 
   const SavedHighlightedMessage = ({ message, savedIndex }) => {
-    const messageWithHighlights = () => {
-      let renderedMessage = [];
-      let lastIndex = 0;
-      savedIndex.map(([start, end]) => {
-        renderedMessage.push(message.substring(lastIndex, start));
-        const substringToHighlight = message.substring(start, end);
-        const highlightText = (
-          <span className="message-highlight-saved">
-            {substringToHighlight}
-          </span>
-        );
-        renderedMessage.push(highlightText);
-        lastIndex = end;
-      });
-      renderedMessage.push(<span>{message.substring(lastIndex)}</span>);
-      return renderedMessage;
-    };
+    // const messageWithHighlights = () => {
+    //   let renderedMessage = [];
+    //   let lastIndex = 0;
+    //   savedIndex.map(([start, end]) => {
+    //     renderedMessage.push(message.substring(lastIndex, start));
+    //     const substringToHighlight = message.substring(start, end);
+    //     const highlightText = (
+    //       <span className="message-highlight-saved">
+    //         {substringToHighlight}
+    //       </span>
+    //     );
+    //     renderedMessage.push(highlightText);
+    //     lastIndex = end;
+    //   });
+    //   renderedMessage.push(<span>{message.substring(lastIndex)}</span>);
+    //   return renderedMessage;
+    // };
     return (
       <Typography variant="body1" sx={!mobile && { fontSize: "22px" }}>
-        {messageWithHighlights()}
+        {/* {messageWithHighlights()} */}
+        {message}
       </Typography>
     );
   };
 
   const ErrorHighlightedMessage = ({ message, errorIndex, errors }) => {
-    const messageWithHighlights = () => {
-      let renderedMessage = [];
-      let lastIndex = 0;
-      errorIndex.map(([start, end], index) => {
-        renderedMessage.push(message.substring(lastIndex, start));
-        const substringToHighlight = message.substring(start, end);
-        const highlightText = (
-          <HtmlTooltip
-            title={
-              <React.Fragment>
-                <Typography
-                  color="inherit"
-                  sx={{ borderRight: "1px solid #C8C8C8", paddingRight: "5px" }}
-                >
-                  error
-                </Typography>
-                <Typography color="inherit">
-                  {errors[index]["Error"]}
-                </Typography>
-                <IconButton
-                  onClick={() => {
-                    handleErrorCorrection(
-                      index,
-                      errors[index]["Phrase"],
-                      errors[index]["Correction"],
-                    );
-                  }}
-                >
-                  <DoneRoundedIcon />
-                </IconButton>
-              </React.Fragment>
-            }
-          >
-            <span
-              className="message-highlight-error"
-              id={`highlight-error-${index}`}
-            >
-              {substringToHighlight}
-            </span>
-          </HtmlTooltip>
-        );
-        renderedMessage.push(highlightText);
-        lastIndex = end;
-      });
-      renderedMessage.push(<span>{message.substring(lastIndex)}</span>);
-      return renderedMessage;
-    };
+    // const messageWithHighlights = () => {
+    //   let renderedMessage = [];
+    //   let lastIndex = 0;
+    //   errorIndex.map(([start, end], index) => {
+    //     renderedMessage.push(message.substring(lastIndex, start));
+    //     const substringToHighlight = message.substring(start, end);
+    //     const highlightText = (
+    //       <HtmlTooltip
+    //         title={
+    //           <React.Fragment>
+    //             <Typography
+    //               color="inherit"
+    //               sx={{ borderRight: "1px solid #C8C8C8", paddingRight: "5px" }}
+    //             >
+    //               error
+    //             </Typography>
+    //             <Typography color="inherit">
+    //               {errors[index]["Error"]}
+    //             </Typography>
+    //             <IconButton
+    //               onClick={() => {
+    //                 handleErrorCorrection(
+    //                   index,
+    //                   errors[index]["Phrase"],
+    //                   errors[index]["Correction"],
+    //                 );
+    //               }}
+    //             >
+    //               <DoneRoundedIcon />
+    //             </IconButton>
+    //           </React.Fragment>
+    //         }
+    //       >
+    //         <span
+    //           className="message-highlight-error"
+    //           id={`highlight-error-${index}`}
+    //         >
+    //           {substringToHighlight}
+    //         </span>
+    //       </HtmlTooltip>
+    //     );
+    //     renderedMessage.push(highlightText);
+    //     lastIndex = end;
+    //   });
+    //   renderedMessage.push(<span>{message.substring(lastIndex)}</span>);
+    //   return renderedMessage;
+    // };
     return (
       <Typography variant="body1" sx={!mobile && { fontSize: "22px" }}>
-        {messageWithHighlights()}
+        {/* {messageWithHighlights()} */}
+        {message}
       </Typography>
     );
   };
@@ -178,13 +180,13 @@ export default function Message({
           {Type === "User" ? (
             <ErrorHighlightedMessage
               message={Message}
-              errorIndex={ErrorIndex}
-              errors={Errors}
+              // errorIndex={ErrorIndex}
+              // errors={Errors}
             />
           ) : (
             <SavedHighlightedMessage
               message={Message}
-              savedIndex={SavedIndex}
+              // savedIndex={SavedIndex}
             />
           )}
         </Box>

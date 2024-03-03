@@ -10,7 +10,8 @@ import UnfoldMoreOutlinedIcon from "@mui/icons-material/UnfoldMoreOutlined";
 import { convertClassname } from "@/Utils";
 
 const Record = () => {
-  const { language, mobile } = useCharlaContext();
+  const { language, mobile, mode, currentConversation, addToChat } =
+    useCharlaContext();
 
   const rec = useRef(null);
 
@@ -34,6 +35,12 @@ const Record = () => {
 
   const handleExpandInput = () => {
     setExpandInput(!expandInput);
+  };
+
+  const handleUserSend = () => {
+    console.log(document.getElementById("message-text-12"));
+    addToChat(userInput, currentConversation);
+    setUserInput("");
   };
 
   function handleRecording() {
@@ -69,21 +76,28 @@ const Record = () => {
               const reader = new FileReader();
               reader.readAsDataURL(audioBlob);
               reader.onloadend = async function () {
-                const base64Audio = reader.result.split(",")[1]; // Remove the data URL prefix
-                const response = await fetch("/api/voiceToText", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({ audio: base64Audio, lang: language }),
-                });
-                const data = await response.json();
-                setVoiceText(data.result);
-                if (response.status !== 200) {
-                  throw (
-                    data.error ||
-                    new Error(`Request failed with status ${response.status}`)
-                  );
+                if (mode === "testing") {
+                  setVoiceText("example voice text");
+                } else {
+                  const base64Audio = reader.result.split(",")[1]; // Remove the data URL prefix
+                  const response = await fetch("/api/voiceToText", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      audio: base64Audio,
+                      lang: language,
+                    }),
+                  });
+                  const data = await response.json();
+                  setVoiceText(data.result);
+                  if (response.status !== 200) {
+                    throw (
+                      data.error ||
+                      new Error(`Request failed with status ${response.status}`)
+                    );
+                  }
                 }
               };
             } catch (error) {
@@ -169,7 +183,11 @@ const Record = () => {
             />
           </IconButton>
         )}
-        <IconButton>
+        <IconButton
+          onClick={() => {
+            handleUserSend();
+          }}
+        >
           <SendRoundedIcon
             className={`${convertClassname(mobile, "icon-button")} send-button`}
           />

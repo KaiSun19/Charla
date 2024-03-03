@@ -1,4 +1,40 @@
 .chat-nav-container {
-  min-width: 30%;
+  min-width: 25%;
   border: 1px solid black;
+  padding: 2%;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: center;
+  gap: 5%;
+}
+
+.chat-nav-container-mobile > :not(:first-child) {
+}
+
+.chat-nav-container-mobile {
+  max-width: 100%;
+  width: 100%;
+  padding: 5%;
+  height: 100%;
+}
+
+.chat-navigation-button {
+  width: 100%;
+  color: #797979;
+}
+
+.chat-nav-item {
+  width: 100%;
+  padding: 3%;
+  gap: 1%;
+  transition-duration: 0.2s;
+  background: none;
+  border: none;
+  text-align: left;
+}
+
+.chat-nav-item:hover {
+  background-color: #6573c32b;
+  cursor: pointer;
 }

@@ -88,6 +88,11 @@ body {
   height: 100vh;
 }
 
+/* stylings for mui components */
+.MuiButton-root {
+  text-transform: none;
+}
+
 .app-container {
   display: flex;
   flex-direction: column;
@@ -117,4 +122,6 @@ body {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
+  min-width: 75%;
+  background-color: rgba(217, 217, 217, 0.1);
 }

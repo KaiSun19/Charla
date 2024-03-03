@@ -1,8 +1,83 @@
 import { useCharlaContext } from "@/Context";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button, IconButton } from "@mui/material";
 import React, { useState } from "react";
-import Message from "../Message/Message";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputAdornment from "@mui/material/InputAdornment";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import { convertClassname } from "@/Utils";
 
 export default function ChatNavigation() {
-  return <Box className="chat-nav-container"></Box>;
+  const { conversations, mobile, handleNav, setCurrentConversation } =
+    useCharlaContext();
+
+  return (
+    <Box className={`${convertClassname(mobile, "chat-nav-container", true)}`}>
+      {mobile && (
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "flex-end",
+            marginBottom: "-5%",
+          }}
+        >
+          <IconButton
+            onClick={() => {
+              handleNav();
+            }}
+          >
+            <CloseRoundedIcon />
+          </IconButton>
+        </Box>
+      )}
+      <OutlinedInput
+        placeholder=""
+        className="outlined-input record-input"
+        color="primary"
+        // value={userInput}
+        // onChange={handleUserInput}
+        endAdornment={
+          <InputAdornment position="end">
+            <SearchRoundedIcon />
+          </InputAdornment>
+        }
+      />
+      <Button
+        variant="outlined"
+        color="inherit"
+        className="chat-navigation-button"
+      >
+        Start a chat here
+      </Button>
+      {conversations.map((conversation, index) => {
+        return (
+          <Box
+            className="chat-nav-item"
+            onClick={() => {
+              setCurrentConversation(conversation);
+            }}
+            key={`chat-nav-item-${index}`}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h6">{conversation.title}</Typography>
+              <IconButton>
+                <DeleteRoundedIcon color="error" />
+              </IconButton>
+            </Box>
+            <Typography variant="body1">
+              {conversation.chat[conversation.chat.length - 1].message}
+            </Typography>
+          </Box>
+        );
+      })}
+    </Box>
+  );
 }
