@@ -38,7 +38,6 @@ const Record = () => {
   };
 
   const handleUserSend = () => {
-    console.log(document.getElementById("message-text-12"));
     addToChat(userInput, currentConversation);
     setUserInput("");
   };
@@ -169,6 +168,11 @@ const Record = () => {
           endAdornment={
             <InputAdornment position="end">{recordButton}</InputAdornment>
           }
+          sx={{
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              border: "1px solid #292929",
+            },
+          }}
         />
       </Box>
       <Box className="record-icon-buttons-container">
