@@ -1,3 +1,5 @@
+import { initialPrompt } from "@/Constants";
+
 const handleBlobToBase64 = ({ blob, continuous }) => {
   const reader = new FileReader();
   reader.readAsDataURL(blob);
@@ -101,7 +103,58 @@ export const convertClassname = (mobile, classname, agg) => {
   return classname;
 };
 
+export function parseCharlaResponse(response) {
+  // Try parsing the string as JSON
+  try {
+    if (!response.includes("Errors")) {
+      return {
+        Errors: [],
+        Response: response,
+      };
+    }
+    return JSON.parse(response);
+  } catch (error) {
+    // Handle potential parsing errors (fallback)
+    console.error("Error parsing JSON:", error);
+  }
+}
+
+// export function parseCharlaResponse(response) {
+//   // Split the string by semicolons, removing extra spaces
+//   const errorParts = response.split(";").map((part) => part.trim());
+
+//   const hasErrors = errorParts.length > 1;
+//   const errors = hasErrors ? [] : null;
+//   let extractedResponse = null;
+
+//   if (hasErrors) {
+//     const errorObject = {};
+//     for (let i = 0; i < errorParts.length; i++) {
+//       const part = errorParts[i];
+//       const keyValuePair = (i === 0 ? part.slice(7) : part).split(":");
+//       const key = keyValuePair[0].trim();
+//       const value = keyValuePair[1].trim().replace(/^'(.*)'$/, "$1");
+
+//       if (i !== errorParts.length - 1) {
+//         // Skip last key-value pair (response)
+//         errorObject[key] = value;
+//       } else {
+//         extractedResponse = value;
+//       }
+//     }
+//     errors.push(errorObject);
+//   }
+
+//   console.log({
+//     Errors: errors,
+//     Response: hasErrors ? extractedResponse : response,
+//   });
+// }
+
 export const extractResponse = (text) => {
+  if (!text.includes("Response")) {
+    return text;
+  }
   let match = text.match(/Response:\s*(.*)/);
   let res;
   if (match && match.length > 1) {
@@ -116,4 +169,24 @@ export const extractResponse = (text) => {
     res = null;
   }
   return res;
+};
+
+export const formatCompleteQuery = (chat) => {
+  let initialMessage = [
+    {
+      role: "system",
+      content: initialPrompt,
+    },
+  ];
+  let formattedMessages = chat.map((message) => {
+    if (message.type === "Charla") {
+      return { role: "system", content: message.message };
+    } else if (message.type === "User") {
+      return { role: "user", content: message.message };
+    }
+  });
+  return {
+    model: "gpt-4",
+    messages: [...initialMessage, ...formattedMessages],
+  };
 };
