@@ -1,6 +1,17 @@
 import { useMediaQuery, useTheme } from "@mui/material";
 import React, { useContext, useState, useEffect } from "react";
-import { extractResponse } from "./Utils";
+import {
+  extractResponse,
+  formatCompleteQuery,
+  parseCharlaResponse,
+} from "./Utils";
+import {
+  mockMessages,
+  mockUser,
+  mockUserInitials,
+  coffeeCompletionQuery,
+  randomResponses,
+} from "./Constants";
 
 const CharlaContext = React.createContext(); // creates a context
 
@@ -17,186 +28,39 @@ export const CharlaProvider = ({ children }) => {
 
   const mode = "testing";
 
-  const mockUser = {
-    name: "Yuankai Sun",
-    dateJoined: "14/01/2024",
-  };
+  const coffeeChat = coffeeCompletionQuery.messages
+    .slice(1)
+    .map((message, index) => {
+      let response = extractResponse(message.content);
+      let type = message.role === "assistant" ? "Charla" : "User";
+      return {
+        type: type,
+        message: response,
+        saved: [],
+        errors: [],
+      };
+    });
 
-  const mockUserInitials = mockUser.name
-    .match(/\b\w/g)
-    .join(",")
-    .replace(",", "");
-
-  const mockMessages = [
+  const [conversations, setConversations] = useState([
     {
-      type: "Charla",
-      message:
-        "¿Cómo estuvo tu día ayer? ¿Hiciste algo especial? Me gustaría saber",
-      // Saved: [
-      //   { text: "ayer", text_start: null, text_end: null },
-      //   { text: "¿Hiciste algo especial?", text_start: null, text_end: null },
-      // ],
-    },
-    {
-      type: "User",
-      message:
-        "la mayor  de la tiempo, cuando vuelvo a casa , yo termino mi trabajo para la día, y entonces, cocino mi cina a veces para mí familia tambne. antes yo dormí, lo haré práctico patinaje.",
-      // saved: [],
-      // errors: [
-      //   {
-      //     text: "tambne",
-      //     error: "The correct word should be también",
-      //     correction: "también",
-      //     text_start : null,
-      //     text_end : null
-      //   },
-      // ],
-    },
-    {
-      type: "Charla",
-      message:
-        "Patinar en las calles suena muy divertido. Dime, ¿patinas solo o con amigos?",
-      // saved: ["suena"],
-    },
-    {
-      type: "User",
-      message:
-        "Normalmente, como es muy tarde en la noche, patino solo. Pero si tengo planes, patinaré con mi amigas",
-      // saved: [],
-      // errors: [
-      //   {
-      //     Phrase: "mi",
-      //     Error: "The translation for my should be in plural",
-      //     Correction: "mis",
-      //   },
-      //   {
-      //     Phrase: "amigas",
-      //     Error: "The translation for friends should be masculine",
-      //     Correction: "amigos",
-      //   },
-      // ],
-    },
-    {
-      type: "Charla",
-      message:
-        "Ah entiendio! Entonces, ¿patinas en tu ciudad o patinas alrededor de tu casa?",
-      // saved: ["alrededor de tu casa"],
-    },
-    {
-      type: "User",
-      message: "Normalmente patinamos en lugares donde no ayer mucha gente.",
-      // saved: [],
-      // errors: [
-      //   {
-      //     Phrase: "ayer",
-      //     Error: "ayer is yesterday the correct word should be hay",
-      //     Correction: "hay",
-      //   },
-      // ],
-    },
-    {
-      type: "Charla",
-      message:
-        "¿Cómo estuvo tu día ayer? ¿Hiciste algo especial? Me gustaría saber",
-      // saved: ["ayer", "¿Hiciste algo especial?"],
-    },
-    {
-      type: "User",
-      message:
-        "la mayor  de la tiempo, cuando vuelvo a casa , yo termino mi trabajo para la día, y entonces, cocino mi cina a veces para mí familia también. antes yo dormí, lo haré práctico patinaje.",
-    },
-    {
-      type: "Charla",
-      message:
-        "Patinar en las calles suena muy divertido. Dime, ¿patinas solo o con amigos?",
-      // saved: ["suena"],
-    },
-    {
-      type: "User",
-      message:
-        "Normalmente, como es muy tarde en la noche, patino solo. Pero si tengo planes, patinaré con mis amigos",
-    },
-    {
-      type: "Charla",
-      message:
-        "Ah entiendio! Entonces, ¿patinas en tu ciudad o patinas alrededor de tu casa?",
-      // saved: ["alrededor de tu casa"],
-    },
-    {
-      type: "User",
-      message: "Normalmente patinamos en lugares donde no hay mucha gente.",
-    },
-    {
-      type: "User",
-      message:
-        "la mayor  de la tiempo, cuando vuelvo a casa , yo termino mi trabajo para la día, y entonces, cocino mi cina a veces para mí familia también. antes yo dormí, lo haré práctico patinaje.",
-    },
-    {
-      type: "Charla",
-      message:
-        "Patinar en las calles suena muy divertido. Dime, ¿patinas solo o con amigos?",
-      // saved: ["suena"],
-    },
-    {
-      type: "User",
-      message:
-        "Normalmente, como es muy tarde en la noche, patino solo. Pero si tengo planes, patinaré con mis amigos",
-    },
-  ];
-
-  const coffeeCompletionQuery = {
-    model: "gpt-4",
-    messages: [
-      {
-        role: "system",
-        content:
-          "You are a spanish tutor. Your job is to carry on a conversation that I will start. I will set the scenario of the conversation in the first chat as the user and the initial chat I want you to reply to . You will reply in this format : Errors: Phrase : the phrase that is incorrect ; Error: why the phrase is incorrect ; Correction: the correct phrase  ; Response : your response in spanish . An example is this . My first prompt is 'I want to order a coffee from you. Hola, yo quiero comprar un cafe contigas.' Your reply should be : Errors : Phrase : 'contigas''; Error : 'you should use contigo to say with you instead' ; Correction: 'contigo'; Response: 'Claro. ¿Qué tipo de café quieres?' . ",
+      title: "¿Cómo estuvo tu día ayer? ",
+      chat: mockMessages,
+      chat_details: {
+        last_attempted: "07/01/2023",
+        average_chat_time: "342",
+        average_word_count: "150",
       },
-      {
-        role: "user",
-        content:
-          "You are a friendly barista that replies in a casual and simple tone and I want to order a coffee. Hola, como estas?",
-      },
-      {
-        role: "assistant",
-        content:
-          "Errors: \nPhrase: N/A.\nError: N/A.\nCorrection: N/A.\nResponse: 'Hola, estoy bien, gracias. ¿Qué tipo de café te gustaría?'",
-      },
-    ],
-  };
-
-  const coffeeChat = coffeeCompletionQuery.messages.map((message) => {
-    let response = extractResponse(message.content);
-    let type = message.role === "assistant" ? "Charla" : "User";
-    return {
-      type: type,
-      message: response,
-    };
-  });
-
-  const [mockConversation, setMockConversation] = useState({
-    title: "¿Cómo estuvo tu día ayer? ",
-    chat: mockMessages,
-    chat_details: {
-      last_attempted: "07/01/2023",
-      average_chat_time: "342",
-      average_word_count: "150",
     },
-  });
-
-  const [coffeeConversation, setCoffeeConversation] = useState({
-    title: "Un cafe, por favor",
-    chat: coffeeChat.slice(2),
-    chat_details: {
-      last_attempted: "07/01/2023",
-      average_chat_time: "342",
-      average_word_count: "150",
+    {
+      title: "Un cafe, por favor",
+      chat: coffeeChat,
+      chat_details: {
+        last_attempted: "07/01/2023",
+        average_chat_time: "342",
+        average_word_count: "150",
+      },
     },
-  });
-
-  //TOOD: we have to add new convos to these arrays everytime we adda. new chat => only state should be an array holding every chat
-  const conversations = [mockConversation, coffeeConversation];
-  const conversationSetters = [setMockConversation, setCoffeeConversation];
+  ]);
 
   const [audioBlob, setAudioBlob] = useState(" ");
 
@@ -210,22 +74,168 @@ export const CharlaProvider = ({ children }) => {
     conversations[0],
   );
 
+  const [charlaIsLoading, setCharlaIsLoading] = useState(false);
+
+  const [testAudio, setTestAudio] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      if (mode === "testing") {
+        const text =
+          "Normalmente, como es muy tarde en la noche, patino solo. Pero si tengo planes, patinaré con mis amigos";
+        const response = await fetch("/api/textToVoice", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify({
+            text: text,
+          }),
+        });
+        const { audioContent } = await response.json();
+        const mp3Data = `data:audio/mp3;base64,${audioContent}`;
+        setTestAudio(mp3Data);
+      }
+    }
+
+    fetchData(); // Call the function here
+  }, []);
+
   const handleNav = () => {
     setNavOpen(!navOpen);
   };
 
+  const handleConversationsUpdate = (index, message, messageIndex) => {
+    const existingMessageIndex = messageIndex;
+    if (existingMessageIndex !== -1) {
+      const updatedConversations = [
+        ...conversations.slice(0, index),
+        {
+          ...conversations[index],
+          chat: [
+            ...conversations[index].chat.slice(0, existingMessageIndex),
+            { ...conversations[index].chat[existingMessageIndex], ...message },
+            ...conversations[index].chat.slice(existingMessageIndex + 1),
+          ],
+        },
+        ...conversations.slice(index + 1),
+      ];
+      setConversations(updatedConversations);
+      setCurrentConversation(updatedConversations[index]);
+    } else {
+      const updatedConversations = [
+        ...conversations.slice(0, index),
+        {
+          ...conversations[index],
+          chat: [...conversations[index].chat, message],
+        },
+        ...conversations.slice(index + 1),
+      ];
+      setConversations(updatedConversations);
+      setCurrentConversation(updatedConversations[index]);
+    }
+  };
+
   const addToChat = (text, conversation) => {
     let index = conversations.findIndex((item) => item === conversation);
-    conversationSetters[index]((current) => {
-      let newChat = current.chat.push({
+    if (index !== -1) {
+      const newMessage = {
         type: "User",
         message: text,
         saved: [],
         errors: [],
-      });
-      return { ...current, newChat };
-    });
+      };
+      handleConversationsUpdate(index, newMessage, -1);
+    } else {
+      console.warn(`Conversation with title : ${conversation.title} not found`);
+    }
   };
+
+  const getCharlaReply = async (chat) => {
+    let query = formatCompleteQuery(chat);
+    let responseMessage;
+    if (mode === "testing") {
+      const randomResponse =
+        randomResponses[Math.floor(Math.random() * randomResponses.length)];
+      //TODO: when moving onto storing conversations in a database, the message object should only have an id pointing to a saved blob object in the database that contains the the audio content
+      responseMessage = {
+        type: "Charla",
+        message: randomResponse,
+        audio: testAudio,
+        saved: [],
+        errors: [],
+      };
+    } else {
+      let retry = false;
+      let retryCount = 0;
+      do {
+        try {
+          const response = await fetch("/api/chatCompletion", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              messages: query.messages,
+            }),
+          });
+          const data = await response.json();
+          const { Errors, Response } = parseCharlaResponse(
+            data.result.choices[0].message.content,
+          );
+          retry = false;
+          responseMessage = {
+            type: "Charla",
+            message: Response,
+            audio: testAudio,
+            saved: [],
+            errors: Errors,
+          };
+        } catch (error) {
+          console.error(error);
+          console.log(retryCount);
+          if (retryCount < 3) {
+            retryCount++;
+            retry = true;
+          } else {
+            return;
+          }
+        }
+      } while (retry);
+    }
+    return responseMessage;
+  };
+
+  useEffect(() => {
+    if (
+      conversations.length > 0 &&
+      conversations[conversations.indexOf(currentConversation)].chat[
+        conversations[conversations.indexOf(currentConversation)].chat.length -
+          1
+      ].type === "User" &&
+      !charlaIsLoading
+    ) {
+      (async () => {
+        //TODO: figure out how to code in a small timeout as a function then place in getCharlaReply to remove setTimeout
+        setTimeout(async () => {
+          setCharlaIsLoading(true);
+          // setTimeout(async () => {// timeout during testing to see the loading state
+          const responseMessage = await getCharlaReply(
+            conversations[conversations.indexOf(currentConversation)].chat,
+            conversations.indexOf(currentConversation),
+          );
+          console.log(responseMessage);
+          handleConversationsUpdate(
+            conversations.indexOf(currentConversation),
+            responseMessage,
+            -1,
+          );
+          setCharlaIsLoading(false);
+          // }, 3000);
+        }, 500);
+      })();
+    }
+  }, [conversations]);
 
   // mockConversation.conversation.map((message) => {
   //   if (
@@ -256,6 +266,27 @@ export const CharlaProvider = ({ children }) => {
   //   return message;
   // });
 
+  const fetchAudio = async (message, messageIndex) => {
+    const text = message.message;
+    const response = await fetch("/api/textToVoice", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({
+        text: text,
+      }),
+    });
+    const { audioContent } = await response.json();
+    const mp3Data = `data:audio/mp3;base64,${audioContent}`;
+    const responseMessage = { ...message, audio: mp3Data };
+    return responseMessage;
+  };
+
+  useEffect(() => {
+    console.log(conversations);
+  }, [conversations]);
+
   return (
     <CharlaContext.Provider
       value={{
@@ -265,21 +296,24 @@ export const CharlaProvider = ({ children }) => {
         mobile,
         audioBlob,
         setAudioBlob,
-        mockConversation,
         language,
         mockUser,
         mockUserInitials,
-        setMockConversation,
         hasUpdatedErrorsIndex,
         setHasUpdatedErrorsIndex,
-        coffeeCompletionQuery,
         conversations,
+        setConversations,
+        handleConversationsUpdate,
         navOpen,
         setNavOpen,
         handleNav,
         currentConversation,
         setCurrentConversation,
         addToChat,
+        charlaIsLoading,
+        testAudio,
+        setTestAudio,
+        fetchAudio,
       }}
     >
       {children}
