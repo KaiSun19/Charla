@@ -43,6 +43,11 @@ export default function ChatNavigation() {
             <SearchRoundedIcon />
           </InputAdornment>
         }
+        sx={{
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            border: "1px solid #292929",
+          },
+        }}
       />
       <Button
         variant="outlined"

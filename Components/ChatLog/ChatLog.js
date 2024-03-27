@@ -8,12 +8,12 @@ import ChatNavigation from "../ChatNavigation/ChatNavigation";
 
 export default function ChatLog() {
   const {
-    coffeeConversation,
-    mockConversation,
+    conversations,
     currentConversation,
     mobile,
     navOpen,
     handleNav,
+    charlaIsLoading,
   } = useCharlaContext();
 
   const lastMessageRef = useRef(null);
@@ -22,7 +22,7 @@ export default function ChatLog() {
     if (lastMessageRef.current) {
       lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [coffeeConversation, mockConversation]);
+  }, [conversations]);
 
   return (
     <>
@@ -68,14 +68,18 @@ export default function ChatLog() {
               }
               key={`message-${index}`}
               Index={index}
-              Type={message["type"]}
-              Message={message["message"]}
+              Message={message}
               // Saved={message["Saved"]}
               // SavedIndex={message["SavedIndex"]}
               // Errors={message["Errors"]}
               // ErrorIndex={message["ErrorIndex"]}
             />
           ))}
+          {charlaIsLoading && (
+            // <Box sx={{}}>
+            <Message Message={{ type: "Loading" }} />
+            // </Box>
+          )}
         </Box>
       </Box>
     </>
