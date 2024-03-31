@@ -5,6 +5,7 @@ import Message from "../Message/Message";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import ChatNavigation from "../ChatNavigation/ChatNavigation";
+import { useTheme } from "@emotion/react";
 
 export default function ChatLog() {
   const {
@@ -15,6 +16,8 @@ export default function ChatLog() {
     handleNav,
     charlaIsLoading,
   } = useCharlaContext();
+
+  const theme = useTheme();
 
   const lastMessageRef = useRef(null);
 
@@ -37,7 +40,10 @@ export default function ChatLog() {
         </Drawer>
       ) : null}
       <Box className="chat-log-container">
-        <Box className="chat-log-title">
+        <Box
+          sx={{ backgroundColor: theme.palette.background.paper }}
+          className="chat-log-title"
+        >
           {mobile && (
             <IconButton
               onClick={() => {

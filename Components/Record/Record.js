@@ -8,10 +8,13 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 import UnfoldMoreOutlinedIcon from "@mui/icons-material/UnfoldMoreOutlined";
 import { convertClassname } from "@/Utils";
+import { useTheme } from "@mui/material/styles";
 
 const Record = () => {
-  const { language, mobile, mode, currentConversation, addToChat } =
+  const { language, mobile, testing, currentConversation, addToChat } =
     useCharlaContext();
+
+  const theme = useTheme();
 
   const rec = useRef(null);
 
@@ -75,7 +78,7 @@ const Record = () => {
               const reader = new FileReader();
               reader.readAsDataURL(audioBlob);
               reader.onloadend = async function () {
-                if (mode === "testing") {
+                if (testing) {
                   setVoiceText("example voice text");
                 } else {
                   const base64Audio = reader.result.split(",")[1]; // Remove the data URL prefix
@@ -137,12 +140,10 @@ const Record = () => {
       {recording ? (
         <CancelRoundedIcon
           className={`${convertClassname(mobile, "icon-button")}`}
-          sx={{ color: "text" }}
         />
       ) : (
         <KeyboardVoiceOutlinedIcon
           className={`${convertClassname(mobile, "icon-button")}`}
-          sx={{ color: "text" }}
         />
       )}
     </IconButton>
@@ -160,7 +161,6 @@ const Record = () => {
         <OutlinedInput
           placeholder="Decir algo..."
           className="outlined-input record-input"
-          color="primary"
           value={userInput}
           onChange={handleUserInput}
           multiline={expandInput ? true : false}
@@ -169,6 +169,7 @@ const Record = () => {
             <InputAdornment position="end">{recordButton}</InputAdornment>
           }
           sx={{
+            backgroundColor: theme.palette.background.paper,
             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
               border: "1px solid #292929",
             },

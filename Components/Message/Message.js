@@ -1,5 +1,6 @@
 import { useCharlaContext } from "@/Context";
 import { Box, Typography, Avatar, IconButton } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 import React, { forwardRef, useState, useRef } from "react";
@@ -20,6 +21,16 @@ const Message = forwardRef(({ Message, Index }, ref) => {
     fetchAudio,
     handleConversationsUpdate,
   } = useCharlaContext();
+
+  const theme = useTheme();
+
+  const messageStyles = {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    gap: "15px",
+  };
 
   const audioRef = useRef(null); // Create audio ref
 
@@ -197,6 +208,7 @@ const Message = forwardRef(({ Message, Index }, ref) => {
   return (
     <Box
       ref={ref}
+      sx={messageStyles}
       className="message-container"
       key={`message-container-${Index}`}
     >
@@ -232,6 +244,9 @@ const Message = forwardRef(({ Message, Index }, ref) => {
           )}
         </Box>
         <Box
+          sx={{
+            backgroundColor: theme.palette.background.default,
+          }}
           className={
             Message.type === "User"
               ? "message-text message-text-user"

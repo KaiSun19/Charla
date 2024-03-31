@@ -85,7 +85,7 @@ body {
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 /* stylings for mui components */

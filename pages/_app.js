@@ -1,5 +1,9 @@
 import "@/styles/globals.css";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import * as React from "react";
+
+import useMediaQuery from "@mui/material/useMediaQuery";
+
 import { Box } from "@mui/material";
 import "../Components/Header/HeaderStyles.css";
 import "../Components/Record/RecordStyles.css";
@@ -11,18 +15,39 @@ import { CharlaProvider } from "@/Context";
 
 import Header from "../Components/Header/Header";
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#6573C3",
-      // light: will be calculated from palette.primary.main,
-      // dark: will be calculated from palette.primary.main,
-      // contrastText: will be calculated to contrast with palette.primary.main
-    },
-  },
-});
-
 export default function App({ Component, pageProps }) {
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+
+  const theme = React.useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: prefersDarkMode ? "dark" : "light",
+          // palette: {
+          //   // Light mode colors
+          //   light: {
+          //     primary: {
+          //       main: "#3F51B5",
+          //     },
+          //     secondary: {
+          //       main: "#f50057",
+          //     },
+          //   },
+          //   // Dark mode colors
+          //   dark: {
+          //     primary: {
+          //       main: "#3F51B5",
+          //     },
+          //     secondary: {
+          //       main: "#f50057",
+          //     },
+          //   },
+          // },
+        },
+      }),
+    [prefersDarkMode],
+  );
+
   return (
     <CharlaProvider>
       <ThemeProvider theme={theme}>

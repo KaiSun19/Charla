@@ -8,9 +8,11 @@ import MenuItem from "@mui/material/MenuItem";
 import { useCharlaContext } from "@/Context";
 import Avatar from "@mui/material/Avatar";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import { useTheme } from "@mui/material/styles";
 
 export default function Navbar() {
   const { mockUserInitials, mobile } = useCharlaContext();
+  const theme = useTheme();
 
   const [menuAnchor, setMenuAnchor] = useState(false);
 
@@ -28,7 +30,6 @@ export default function Navbar() {
       <Box className="navbar-home">
         <IconButton
           aria-label="delete"
-          sx={{ color: "white" }}
           onClick={() => {
             setOpenMenu(true);
           }}
@@ -51,7 +52,10 @@ export default function Navbar() {
               <SettingsOutlinedIcon />
             </IconButton>
             <Avatar
-              sx={{ backgroundColor: "#6573C3", fontSize: "16px" }}
+              sx={{
+                backgroundColor: theme.palette.primary.main,
+                fontSize: "16px",
+              }}
               className="mobile-navbar-icon"
             >
               {mockUserInitials}

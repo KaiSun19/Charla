@@ -7,13 +7,24 @@ import InputAdornment from "@mui/material/InputAdornment";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { convertClassname } from "@/Utils";
+import CreateChatModal from "../CreateChatModal/CreateChatModal";
 
 export default function ChatNavigation() {
   const { conversations, mobile, handleNav, setCurrentConversation } =
     useCharlaContext();
 
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
+
   return (
     <Box className={`${convertClassname(mobile, "chat-nav-container", true)}`}>
+      <CreateChatModal
+        modalOpen={modalOpen}
+        handleModalClose={handleModalClose}
+      />
       {mobile && (
         <Box
           sx={{
@@ -53,6 +64,9 @@ export default function ChatNavigation() {
         variant="outlined"
         color="inherit"
         className="chat-navigation-button"
+        onClick={() => {
+          setModalOpen(true);
+        }}
       >
         Start a chat here
       </Button>

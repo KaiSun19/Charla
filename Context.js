@@ -26,7 +26,7 @@ export const CharlaProvider = ({ children }) => {
   const tablet = useMediaQuery(theme.breakpoints.between("xs", "md"));
   const mobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const mode = "testing";
+  const testing = false;
 
   const coffeeChat = coffeeCompletionQuery.messages
     .slice(1)
@@ -80,7 +80,7 @@ export const CharlaProvider = ({ children }) => {
 
   useEffect(() => {
     async function fetchData() {
-      if (mode === "testing") {
+      if (testing) {
         const text =
           "Normalmente, como es muy tarde en la noche, patino solo. Pero si tengo planes, patinaré con mis amigos";
         const response = await fetch("/api/textToVoice", {
@@ -107,32 +107,42 @@ export const CharlaProvider = ({ children }) => {
 
   const handleConversationsUpdate = (index, message, messageIndex) => {
     const existingMessageIndex = messageIndex;
+    let newChat;
     if (existingMessageIndex !== -1) {
+      if (existingMessageIndex === conversations[index].chat.length - 1) {
+        newChat = [
+          ...conversations[index].chat.slice(0, existingMessageIndex),
+          { ...conversations[index].chat[existingMessageIndex], ...message },
+        ];
+      } else {
+        newChat = [
+          ...conversations[index].chat.slice(0, existingMessageIndex),
+          { ...conversations[index].chat[existingMessageIndex], ...message },
+          ...conversations[index].chat.slice(existingMessageIndex + 1),
+        ];
+      }
       const updatedConversations = [
-        ...conversations.slice(0, index),
         {
           ...conversations[index],
-          chat: [
-            ...conversations[index].chat.slice(0, existingMessageIndex),
-            { ...conversations[index].chat[existingMessageIndex], ...message },
-            ...conversations[index].chat.slice(existingMessageIndex + 1),
-          ],
+          chat: newChat,
         },
+        ...conversations.slice(0, index),
         ...conversations.slice(index + 1),
       ];
+      console.log(updatedConversations);
       setConversations(updatedConversations);
-      setCurrentConversation(updatedConversations[index]);
+      setCurrentConversation(updatedConversations[0]);
     } else {
       const updatedConversations = [
-        ...conversations.slice(0, index),
         {
           ...conversations[index],
           chat: [...conversations[index].chat, message],
         },
+        ...conversations.slice(0, index),
         ...conversations.slice(index + 1),
       ];
       setConversations(updatedConversations);
-      setCurrentConversation(updatedConversations[index]);
+      setCurrentConversation(updatedConversations[0]);
     }
   };
 
@@ -153,8 +163,11 @@ export const CharlaProvider = ({ children }) => {
 
   const getCharlaReply = async (chat) => {
     let query = formatCompleteQuery(chat);
+    let updatedUserMessage = {
+      ...conversations[0].chat[conversations[0].chat.length - 1],
+    };
     let responseMessage;
-    if (mode === "testing") {
+    if (testing) {
       const randomResponse =
         randomResponses[Math.floor(Math.random() * randomResponses.length)];
       //TODO: when moving onto storing conversations in a database, the message object should only have an id pointing to a saved blob object in the database that contains the the audio content
@@ -184,12 +197,19 @@ export const CharlaProvider = ({ children }) => {
             data.result.choices[0].message.content,
           );
           retry = false;
+          if (Errors.length > 0) {
+            console.log(Errors.length);
+            updatedUserMessage = {
+              ...updatedUserMessage,
+              errors: Errors,
+            };
+          }
           responseMessage = {
             type: "Charla",
             message: Response,
-            audio: testAudio,
+            audio: null,
             saved: [],
-            errors: Errors,
+            errors: [],
           };
         } catch (error) {
           console.error(error);
@@ -203,16 +223,16 @@ export const CharlaProvider = ({ children }) => {
         }
       } while (retry);
     }
-    return responseMessage;
+    //responseMessage = the message charla replies with
+    //updatedUserMessage = if the user made a mistake, then the message updates with errors, if not then its the same message
+    return { responseMessage, updatedUserMessage };
   };
 
   useEffect(() => {
+    const currentChat = conversations[0].chat;
     if (
       conversations.length > 0 &&
-      conversations[conversations.indexOf(currentConversation)].chat[
-        conversations[conversations.indexOf(currentConversation)].chat.length -
-          1
-      ].type === "User" &&
+      currentChat[currentChat.length - 1].type === "User" &&
       !charlaIsLoading
     ) {
       (async () => {
@@ -220,16 +240,18 @@ export const CharlaProvider = ({ children }) => {
         setTimeout(async () => {
           setCharlaIsLoading(true);
           // setTimeout(async () => {// timeout during testing to see the loading state
-          const responseMessage = await getCharlaReply(
-            conversations[conversations.indexOf(currentConversation)].chat,
-            conversations.indexOf(currentConversation),
+          const { responseMessage, updatedUserMessage } = await getCharlaReply(
+            currentChat,
+            conversations[0],
           );
-          console.log(responseMessage);
-          handleConversationsUpdate(
-            conversations.indexOf(currentConversation),
-            responseMessage,
-            -1,
-          );
+          if (updatedUserMessage.errors.length > 0) {
+            handleConversationsUpdate(
+              0,
+              updatedUserMessage,
+              currentChat.length - 1,
+            );
+          }
+          handleConversationsUpdate(0, responseMessage, -1);
           setCharlaIsLoading(false);
           // }, 3000);
         }, 500);
@@ -283,6 +305,25 @@ export const CharlaProvider = ({ children }) => {
     return responseMessage;
   };
 
+  const createNewConversation = (userInput) => {
+    setConversations((prevConversations) => [
+      {
+        title: userInput,
+        chat: [{ type: "User", message: userInput, saved: [], errors: [] }],
+        chat_details: {
+          last_attempted: new Date(),
+          average_chat_time: 0,
+          average_word_count: 0,
+        },
+      },
+      ...prevConversations,
+    ]);
+  };
+
+  useEffect(() => {
+    setCurrentConversation(conversations[0]);
+  }, [conversations.length]);
+
   useEffect(() => {
     console.log(conversations);
   }, [conversations]);
@@ -290,7 +331,7 @@ export const CharlaProvider = ({ children }) => {
   return (
     <CharlaContext.Provider
       value={{
-        mode,
+        testing,
         desktop,
         tablet,
         mobile,
@@ -314,6 +355,7 @@ export const CharlaProvider = ({ children }) => {
         testAudio,
         setTestAudio,
         fetchAudio,
+        createNewConversation,
       }}
     >
       {children}

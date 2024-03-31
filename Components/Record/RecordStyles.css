@@ -4,7 +4,6 @@
   justify-content: flex-start;
   flex-direction: row;
   align-items: center;
-  min-height: 10%;
 }
 
 .outlined-input {
@@ -24,7 +23,6 @@
   align-items: center;
   gap: 10px;
   transition-duration: 0.5s;
-  background: white;
 }
 
 .icon-button {

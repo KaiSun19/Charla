@@ -4,7 +4,6 @@
   width: fit-content;
   padding-right: 20px;
   margin-top: 1%;
-  background-color: white;
 }
 
 .message-text-container {
@@ -61,14 +60,6 @@
   display: flex;
   width: 95%;
   justify-content: flex-start;
-}
-
-.message-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 15px;
 }
 
 .message-highlight-saved {
