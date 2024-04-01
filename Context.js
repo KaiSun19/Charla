@@ -105,45 +105,44 @@ export const CharlaProvider = ({ children }) => {
     setNavOpen(!navOpen);
   };
 
-  const handleConversationsUpdate = (index, message, messageIndex) => {
-    const existingMessageIndex = messageIndex;
-    let newChat;
-    if (existingMessageIndex !== -1) {
-      if (existingMessageIndex === conversations[index].chat.length - 1) {
+  const createUpdatedConversations = (...args) => {
+    let updatedConversations = conversations;
+    for (let i = 0; i < args.length; i++) {
+      let { index, message, messageIndex } = args[i];
+      let newChat;
+      if (messageIndex !== -1) {
         newChat = [
-          ...conversations[index].chat.slice(0, existingMessageIndex),
-          { ...conversations[index].chat[existingMessageIndex], ...message },
+          ...updatedConversations[index].chat.slice(0, messageIndex),
+          { ...updatedConversations[index].chat[messageIndex], ...message },
+          ...updatedConversations[index].chat.slice(messageIndex + 1),
+        ];
+        updatedConversations = [
+          {
+            ...updatedConversations[index],
+            chat: newChat,
+          },
+          ...updatedConversations.slice(0, index),
+          ...updatedConversations.slice(index + 1),
         ];
       } else {
-        newChat = [
-          ...conversations[index].chat.slice(0, existingMessageIndex),
-          { ...conversations[index].chat[existingMessageIndex], ...message },
-          ...conversations[index].chat.slice(existingMessageIndex + 1),
+        updatedConversations = [
+          {
+            ...updatedConversations[index],
+            chat: [...updatedConversations[index].chat, message],
+          },
+          ...updatedConversations.slice(0, index),
+          ...updatedConversations.slice(index + 1),
         ];
       }
-      const updatedConversations = [
-        {
-          ...conversations[index],
-          chat: newChat,
-        },
-        ...conversations.slice(0, index),
-        ...conversations.slice(index + 1),
-      ];
-      console.log(updatedConversations);
-      setConversations(updatedConversations);
-      setCurrentConversation(updatedConversations[0]);
-    } else {
-      const updatedConversations = [
-        {
-          ...conversations[index],
-          chat: [...conversations[index].chat, message],
-        },
-        ...conversations.slice(0, index),
-        ...conversations.slice(index + 1),
-      ];
-      setConversations(updatedConversations);
-      setCurrentConversation(updatedConversations[0]);
     }
+    return updatedConversations;
+  };
+
+  const handleConversationsUpdate = (updatedConversations) => {
+    console.log("at handler");
+    console.log(updatedConversations);
+    setConversations(updatedConversations);
+    setCurrentConversation(updatedConversations[0]);
   };
 
   const addToChat = (text, conversation) => {
@@ -155,7 +154,12 @@ export const CharlaProvider = ({ children }) => {
         saved: [],
         errors: [],
       };
-      handleConversationsUpdate(index, newMessage, -1);
+      const updatedConversations = createUpdatedConversations({
+        index: index,
+        message: newMessage,
+        messageIndex: -1,
+      });
+      handleConversationsUpdate(updatedConversations);
     } else {
       console.warn(`Conversation with title : ${conversation.title} not found`);
     }
@@ -198,7 +202,6 @@ export const CharlaProvider = ({ children }) => {
           );
           retry = false;
           if (Errors.length > 0) {
-            console.log(Errors.length);
             updatedUserMessage = {
               ...updatedUserMessage,
               errors: Errors,
@@ -245,13 +248,23 @@ export const CharlaProvider = ({ children }) => {
             conversations[0],
           );
           if (updatedUserMessage.errors.length > 0) {
-            handleConversationsUpdate(
-              0,
-              updatedUserMessage,
-              currentChat.length - 1,
+            let updatedConversations = createUpdatedConversations(
+              {
+                index: 0,
+                message: updatedUserMessage,
+                messageIndex: conversations[0].chat.length - 1,
+              },
+              { index: 0, message: responseMessage, messageIndex: -1 },
             );
+            handleConversationsUpdate(updatedConversations);
+          } else {
+            let updatedConversations = createUpdatedConversations({
+              index: 0,
+              message: responseMessage,
+              messageIndex: -1,
+            });
+            handleConversationsUpdate(updatedConversations);
           }
-          handleConversationsUpdate(0, responseMessage, -1);
           setCharlaIsLoading(false);
           // }, 3000);
         }, 500);
@@ -344,6 +357,7 @@ export const CharlaProvider = ({ children }) => {
         setHasUpdatedErrorsIndex,
         conversations,
         setConversations,
+        createUpdatedConversations,
         handleConversationsUpdate,
         navOpen,
         setNavOpen,

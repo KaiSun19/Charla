@@ -38,3 +38,12 @@
   background-color: #6573c32b;
   cursor: pointer;
 }
+
+.nav-item-delete-button {
+  opacity: 0;
+  transition-duration: 0.2s;
+}
+
+.chat-nav-item:hover .nav-item-delete-button {
+  opacity: 1;
+}

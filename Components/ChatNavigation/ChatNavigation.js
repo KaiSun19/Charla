@@ -50,7 +50,7 @@ export default function ChatNavigation() {
         // value={userInput}
         // onChange={handleUserInput}
         endAdornment={
-          <InputAdornment position="end">
+          <InputAdornment position="end" sx={{ paddingRight: "2%" }}>
             <SearchRoundedIcon />
           </InputAdornment>
         }
@@ -76,6 +76,7 @@ export default function ChatNavigation() {
             className="chat-nav-item"
             onClick={() => {
               setCurrentConversation(conversation);
+              handleNav();
             }}
             key={`chat-nav-item-${index}`}
           >
@@ -87,7 +88,7 @@ export default function ChatNavigation() {
               }}
             >
               <Typography variant="h6">{conversation.title}</Typography>
-              <IconButton>
+              <IconButton className="nav-item-delete-button">
                 <DeleteRoundedIcon color="error" />
               </IconButton>
             </Box>

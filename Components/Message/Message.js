@@ -20,6 +20,7 @@ const Message = forwardRef(({ Message, Index }, ref) => {
     charlaIsLoading,
     fetchAudio,
     handleConversationsUpdate,
+    createUpdatedConversations,
   } = useCharlaContext();
 
   const theme = useTheme();
@@ -60,11 +61,12 @@ const Message = forwardRef(({ Message, Index }, ref) => {
     audioRef.current.onended = () => {
       // after playback endupdate message state if message state does not have audio
       if (!Message.audio) {
-        handleConversationsUpdate(
-          conversations.indexOf(currentConversation),
-          messageWithAudio,
-          Index,
-        );
+        const updatedConversations = createUpdatedConversations({
+          index: conversations.indexOf(currentConversation),
+          message: messageWithAudio,
+          messageIndex: Index,
+        });
+        handleConversationsUpdate(updatedConversations);
       }
     };
   };
