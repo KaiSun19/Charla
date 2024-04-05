@@ -4,6 +4,7 @@ import {
   extractResponse,
   formatCompleteQuery,
   parseCharlaResponse,
+  usePrevious,
 } from "./Utils";
 import {
   mockMessages,
@@ -77,6 +78,14 @@ export const CharlaProvider = ({ children }) => {
   const [charlaIsLoading, setCharlaIsLoading] = useState(false);
 
   const [testAudio, setTestAudio] = useState(null);
+
+  const [chatSettings, setChatSettings] = useState({
+    showMessages: true,
+    playbackSpeed: 1,
+  });
+
+  // for checking to see if chat settings has been changed
+  const [prevChatSettings, setPrevChatSettings] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -310,11 +319,16 @@ export const CharlaProvider = ({ children }) => {
       method: "POST",
       body: JSON.stringify({
         text: text,
+        testing: testing,
+        speakingRate: chatSettings.playbackSpeed,
       }),
     });
     const { audioContent } = await response.json();
     const mp3Data = `data:audio/mp3;base64,${audioContent}`;
     const responseMessage = { ...message, audio: mp3Data };
+
+    // settings prev chat settings to match current settings
+    setPrevChatSettings(chatSettings);
     return responseMessage;
   };
 
@@ -340,6 +354,11 @@ export const CharlaProvider = ({ children }) => {
   useEffect(() => {
     console.log(conversations);
   }, [conversations]);
+
+  useEffect(() => {
+    console.log("chatSettings", chatSettings);
+    console.log("prevChatSettings", prevChatSettings);
+  }, [chatSettings]);
 
   return (
     <CharlaContext.Provider
@@ -370,6 +389,10 @@ export const CharlaProvider = ({ children }) => {
         setTestAudio,
         fetchAudio,
         createNewConversation,
+        chatSettings,
+        setChatSettings,
+        prevChatSettings,
+        setPrevChatSettings,
       }}
     >
       {children}

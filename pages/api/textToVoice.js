@@ -1,17 +1,16 @@
 import fs from "fs";
-const testing = false;
 
 export default async function POST(request, res) {
   // Parse the request body
   const req = request;
-  const text = req.body.text;
+  const { text, testing , speakingRate} = req.body;
   const endpoint = `https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=${process.env.GOOGLE_TTS_API_KEY}`;
   const payload = JSON.stringify({
     audioConfig: {
       audioEncoding: "MP3",
       effectsProfileId: ["small-bluetooth-speaker-class-device"],
       pitch: 0,
-      speakingRate: 1,
+      speakingRate: speakingRate,
     },
     input: {
       text: text,

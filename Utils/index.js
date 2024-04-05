@@ -1,4 +1,5 @@
 import { initialPrompt } from "@/Constants";
+import React, { useContext, useState, useEffect } from "react";
 
 const handleBlobToBase64 = ({ blob, continuous }) => {
   const reader = new FileReader();

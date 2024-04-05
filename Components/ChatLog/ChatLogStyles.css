@@ -30,3 +30,10 @@
 .chat-log-conversation {
   padding-top: 3%;
 }
+
+.chat-log-accordion-input {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}

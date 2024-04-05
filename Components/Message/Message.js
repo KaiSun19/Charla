@@ -11,6 +11,14 @@ import "react-loading-skeleton/dist/skeleton.css";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 
+const messageStyles = {
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "flex-start",
+  alignItems: "center",
+  gap: "15px",
+};
+
 const Message = forwardRef(({ Message, Index }, ref) => {
   const {
     mobile,
@@ -21,17 +29,15 @@ const Message = forwardRef(({ Message, Index }, ref) => {
     fetchAudio,
     handleConversationsUpdate,
     createUpdatedConversations,
+    chatSettings,
+    prevChatSettings,
   } = useCharlaContext();
 
-  const theme = useTheme();
+  const isSettingsSpeedChanged = prevChatSettings
+    ? prevChatSettings.playbackSpeed !== chatSettings.playbackSpeed
+    : false;
 
-  const messageStyles = {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    gap: "15px",
-  };
+  const theme = useTheme();
 
   const audioRef = useRef(null); // Create audio ref
 
@@ -44,7 +50,7 @@ const Message = forwardRef(({ Message, Index }, ref) => {
 
   const playAudio = async () => {
     let messageWithAudio;
-    if (!Message.audio && !audioRef.current.src) {
+    if ((!Message.audio && !audioRef.current.src) || isSettingsSpeedChanged) {
       setAudioStatus("loading");
       // If message does not have audio, fetch audio
       messageWithAudio = await fetchAudio(Message, Index);
@@ -264,7 +270,7 @@ const Message = forwardRef(({ Message, Index }, ref) => {
                   onEnded={() => setAudioStatus("idle")}
                 />
                 <IconButton
-                  sx={{ aspectRatio: "1" }}
+                  sx={{ width: "36px", height: "36px" }}
                   onClick={audioStatus === "playing" ? pauseAudio : playAudio}
                 >
                   {audioStatus === "playing" ? (
@@ -306,7 +312,7 @@ const Message = forwardRef(({ Message, Index }, ref) => {
                   onEnded={() => setAudioStatus("idle")}
                 />
                 <IconButton
-                  sx={{ aspectRatio: "1" }}
+                  sx={{ width: "36px", height: "36px" }}
                   onClick={audioStatus === "playing" ? pauseAudio : playAudio}
                 >
                   {/* TODO FIX : the button should have the same height as its width */}

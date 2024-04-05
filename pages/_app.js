@@ -23,26 +23,12 @@ export default function App({ Component, pageProps }) {
       createTheme({
         palette: {
           mode: prefersDarkMode ? "dark" : "light",
-          // palette: {
-          //   // Light mode colors
-          //   light: {
-          //     primary: {
-          //       main: "#3F51B5",
-          //     },
-          //     secondary: {
-          //       main: "#f50057",
-          //     },
-          //   },
-          //   // Dark mode colors
-          //   dark: {
-          //     primary: {
-          //       main: "#3F51B5",
-          //     },
-          //     secondary: {
-          //       main: "#f50057",
-          //     },
-          //   },
-          // },
+          primary: {
+            main: "#6573C3",
+          },
+          secondary: {
+            main: "#f50057",
+          },
         },
       }),
     [prefersDarkMode],
