@@ -1,4 +1,4 @@
-import { useCharlaContext } from "@/Context";
+import { useCharlaContext } from "@/Contexts/UserContext";
 import { Box, Typography, Avatar, IconButton } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
@@ -27,8 +27,8 @@ const Message = forwardRef(({ Message, Index }, ref) => {
     currentConversation,
     charlaIsLoading,
     fetchAudio,
-    handleConversationsUpdate,
     createUpdatedConversations,
+    handleConversationsUpdate,
     chatSettings,
     prevChatSettings,
   } = useCharlaContext();

@@ -5,7 +5,7 @@ import Image from "next/image";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { useCharlaContext } from "@/Context";
+import { useCharlaContext } from "@/Contexts/UserContext";
 import Avatar from "@mui/material/Avatar";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import { useTheme } from "@mui/material/styles";

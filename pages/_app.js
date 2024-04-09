@@ -11,9 +11,9 @@ import "../Components/ChatLog/ChatLogStyles.css";
 import "../Components/Message/MessageStyles.css";
 import "../Components/ChatNavigation/ChatNavigationStyles.css";
 import "../Components/CreateChatModal/CreateChatModalStyles.css";
-import { CharlaProvider } from "@/Context";
 
 import Header from "../Components/Header/Header";
+import { CharlaProvider } from "@/Contexts/UserContext";
 
 export default function App({ Component, pageProps }) {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");

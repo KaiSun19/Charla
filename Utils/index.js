@@ -191,3 +191,69 @@ export const formatCompleteQuery = (chat) => {
     messages: [...initialMessage, ...formattedMessages],
   };
 };
+
+export const getCharlaReply = async (testing, chat, conversations) => {
+  let query = formatCompleteQuery(chat);
+  let updatedUserMessage = {
+    ...conversations[0].chat[conversations[0].chat.length - 1],
+  };
+  let responseMessage;
+  if (testing) {
+    const randomResponse =
+      randomResponses[Math.floor(Math.random() * randomResponses.length)];
+    //TODO: when moving onto storing conversations in a database, the message object should only have an id pointing to a saved blob object in the database that contains the the audio content
+    responseMessage = {
+      type: "Charla",
+      message: randomResponse,
+      audio: testAudio,
+      saved: [],
+      errors: [],
+    };
+  } else {
+    let retry = false;
+    let retryCount = 0;
+    do {
+      try {
+        const response = await fetch("/api/chatCompletion", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            messages: query.messages,
+          }),
+        });
+        const data = await response.json();
+        const { Errors, Response } = parseCharlaResponse(
+          data.result.choices[0].message.content,
+        );
+        retry = false;
+        if (Errors.length > 0) {
+          updatedUserMessage = {
+            ...updatedUserMessage,
+            errors: Errors,
+          };
+        }
+        responseMessage = {
+          type: "Charla",
+          message: Response,
+          audio: null,
+          saved: [],
+          errors: [],
+        };
+      } catch (error) {
+        console.error(error);
+        console.log(retryCount);
+        if (retryCount < 3) {
+          retryCount++;
+          retry = true;
+        } else {
+          return;
+        }
+      }
+    } while (retry);
+  }
+  //responseMessage = the message charla replies with
+  //updatedUserMessage = if the user made a mistake, then the message updates with errors, if not then its the same message
+  return { responseMessage, updatedUserMessage };
+};

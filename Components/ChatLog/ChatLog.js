@@ -1,4 +1,4 @@
-import { useCharlaContext } from "@/Context";
+import { useCharlaContext } from "@/Contexts/UserContext";
 import {
   Box,
   Typography,
@@ -57,7 +57,7 @@ export default function ChatLog() {
 
   const theme = useTheme();
 
-  const lastMessageRef = useRef(null);
+  const lastUpdatedMessageRef = useRef(null);
 
   const [sliderValue, setSliderValue] = useState(1);
   const handleSliderChange = (event, newValue) => {
@@ -65,8 +65,8 @@ export default function ChatLog() {
   };
 
   useEffect(() => {
-    if (lastMessageRef.current) {
-      lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+    if (lastUpdatedMessageRef.current) {
+      lastUpdatedMessageRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [conversations]);
 
@@ -118,9 +118,7 @@ export default function ChatLog() {
           </IconButton>
         </Box>
         <Accordion className="chat-log-accordion" disableGutters={true}>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon sx={{ color: "white" }} />}
-          >
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant={mobile ? "body1" : "h6"}>
               Chat settings
             </Typography>
@@ -160,8 +158,8 @@ export default function ChatLog() {
           {currentConversation.chat.map((message, index) => (
             <Message
               ref={
-                index === currentConversation.chat.length - 1
-                  ? lastMessageRef
+                index === currentConversation.chat.lastUpdatedMessage
+                  ? lastUpdatedMessageRef
                   : null
               }
               key={`message-${index}`}
