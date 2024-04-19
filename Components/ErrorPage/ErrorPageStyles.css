@@ -1,0 +1,19 @@
+.error-page {
+  text-align: center;
+  padding: 2rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.error-content {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.error-content pre {
+  max-width: 50%;
+}

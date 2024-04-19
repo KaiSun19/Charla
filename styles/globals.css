@@ -133,3 +133,43 @@ body {
   min-width: 75%;
   background-color: rgba(217, 217, 217, 0.1);
 }
+
+/* stylings for sign up page */
+
+.sign-up-container,
+.sign-in-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+.sign-up-container,
+.sign-in-container h1 {
+  margin-bottom: 2rem;
+}
+
+.sign-up-container form,
+.sign-in-container form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 50%;
+}
+
+@media only screen and (max-width: 600px) {
+  .sign-up-container form,
+  .sign-in-container form {
+    width: 100%;
+  }
+}
+
+.sign-up-container form .MuiTextField-root,
+.sign-in-container form .MuiTextField-root {
+  margin-bottom: 1rem;
+}
+
+.sign-up-container .sign-up-button {
+  width: 50%;
+}

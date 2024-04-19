@@ -257,3 +257,13 @@ export const getCharlaReply = async (testing, chat, conversations) => {
   //updatedUserMessage = if the user made a mistake, then the message updates with errors, if not then its the same message
   return { responseMessage, updatedUserMessage };
 };
+
+export const createUser = (username, email) => {
+  return {
+    id: btoa(username + email),
+    username: username,
+    email: email,
+    datetimeJoined: new Date().toDateString(),
+    initials: username.match(/\b\w/g).join(",").replace(",", ""),
+  };
+};

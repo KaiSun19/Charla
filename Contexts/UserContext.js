@@ -3,11 +3,11 @@ import React, { useContext, useState, useEffect } from "react";
 import { extractResponse, formatCompleteQuery, getCharlaReply } from "../Utils";
 import {
   mockMessages,
-  mockUser,
-  mockUserInitials,
   coffeeCompletionQuery,
   randomResponses,
 } from "../Constants";
+
+import { auth } from "../firebase";
 
 const CharlaContext = React.createContext(); // creates a context
 
@@ -81,6 +81,23 @@ export const CharlaProvider = ({ children }) => {
 
   // for checking to see if chat settings has been changed
   const [prevChatSettings, setPrevChatSettings] = useState(null);
+
+  const [user, setUser] = useState(null);
+  const [userDetails, setUserDetails] = useState("");
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(
+      (user) => {
+        console.log(user);
+        setUser(user);
+      },
+      (error) => {
+        console.log(error);
+      },
+    );
+
+    return unsubscribe; // Cleanup function to prevent memory leaks
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -295,8 +312,8 @@ export const CharlaProvider = ({ children }) => {
         audioBlob,
         setAudioBlob,
         language,
-        mockUser,
-        mockUserInitials,
+        userDetails,
+        setUserDetails,
         hasUpdatedErrorsIndex,
         setHasUpdatedErrorsIndex,
         conversations,
@@ -318,6 +335,7 @@ export const CharlaProvider = ({ children }) => {
         setChatSettings,
         prevChatSettings,
         setPrevChatSettings,
+        user,
       }}
     >
       {children}

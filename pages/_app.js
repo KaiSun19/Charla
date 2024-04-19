@@ -11,6 +11,7 @@ import "../Components/ChatLog/ChatLogStyles.css";
 import "../Components/Message/MessageStyles.css";
 import "../Components/ChatNavigation/ChatNavigationStyles.css";
 import "../Components/CreateChatModal/CreateChatModalStyles.css";
+import "../Components/ErrorPage/ErrorPageStyles.css";
 
 import Header from "../Components/Header/Header";
 import { CharlaProvider } from "@/Contexts/UserContext";

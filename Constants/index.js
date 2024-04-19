@@ -1,13 +1,3 @@
-export const mockUser = {
-  name: "Yuankai Sun",
-  dateJoined: "14/01/2024",
-};
-
-export const mockUserInitials = mockUser.name
-  .match(/\b\w/g)
-  .join(",")
-  .replace(",", "");
-
 export const mockMessages = [
   {
     type: "Charla",

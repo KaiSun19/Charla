@@ -22,7 +22,7 @@ const messageStyles = {
 const Message = forwardRef(({ Message, Index }, ref) => {
   const {
     mobile,
-    mockUserInitials,
+    userDetails,
     conversations,
     currentConversation,
     charlaIsLoading,
@@ -239,7 +239,7 @@ const Message = forwardRef(({ Message, Index }, ref) => {
               className={`${convertClassname(mobile, "message-icon")}`}
               sx={{ backgroundColor: "#6573C3" }}
             >
-              {mockUserInitials}
+              {userDetails.initials}
             </Avatar>
           ) : (
             <Image
