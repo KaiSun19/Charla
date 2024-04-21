@@ -11,6 +11,7 @@ import {
   FormControlLabel,
   Switch,
   Slider,
+  Button,
 } from "@mui/material";
 import React, { useState, useEffect, useRef } from "react";
 import Message from "../Message/Message";
@@ -19,6 +20,7 @@ import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChatNavigation from "../ChatNavigation/ChatNavigation";
 import { useTheme } from "@emotion/react";
+import CreateChatModal from "../CreateChatModal/CreateChatModal";
 
 export default function ChatLog() {
   const sliderMarks = [
@@ -64,6 +66,12 @@ export default function ChatLog() {
     setSliderValue(newValue);
   };
 
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
+
   useEffect(() => {
     if (lastUpdatedMessageRef.current) {
       lastUpdatedMessageRef.current.scrollIntoView({ behavior: "smooth" });
@@ -93,91 +101,122 @@ export default function ChatLog() {
         </Drawer>
       ) : null}
       <Box className="chat-log-container">
-        <Box
-          sx={{ backgroundColor: theme.palette.background.paper }}
-          className="chat-log-title"
-        >
-          {mobile && (
-            <IconButton
+        {conversations.length > 0 ? (
+          <>
+            <Box
+              sx={{ backgroundColor: theme.palette.background.paper }}
+              className="chat-log-title"
+            >
+              {mobile && (
+                <IconButton
+                  onClick={() => {
+                    handleNav();
+                  }}
+                >
+                  <MenuRoundedIcon
+                    sx={{ color: "#929292", width: "30px", height: "30px" }}
+                  />
+                </IconButton>
+              )}
+              <Typography variant={mobile ? "h6" : "h4"}>
+                {currentConversation && currentConversation.title}
+              </Typography>
+              <IconButton>
+                <MoreHorizRoundedIcon
+                  sx={{ color: "#929292", width: "30px", height: "30px" }}
+                />
+              </IconButton>
+            </Box>
+            <Accordion className="chat-log-accordion" disableGutters={true}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant={mobile ? "body1" : "h6"}>
+                  Chat settings
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails
+                sx={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "flex-start",
+                  flexDirection: "column",
+                  gap: "16px",
+                  width: "100%",
+                }}
+              >
+                <Box className="chat-log-accordion-input">
+                  <Typography variant="body1">Show messages</Typography>
+                  <Switch defaultChecked color="primary" />
+                </Box>
+                <Box className="chat-log-accordion-input">
+                  <Typography variant="body1">Set playback speed</Typography>
+                  <Slider
+                    value={typeof sliderValue === "number" ? sliderValue : 1}
+                    onChange={handleSliderChange}
+                    step={0.2}
+                    marks={sliderMarks}
+                    valueLabelDisplay="auto"
+                    min={0.2}
+                    max={1}
+                    sx={{
+                      marginRight: "16px",
+                    }}
+                  />
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+            <Box className="chat-log-conversation">
+              {currentConversation &&
+                currentConversation.chat.map((message, index) => (
+                  <Message
+                    ref={
+                      index === currentConversation.chat.lastUpdatedMessage
+                        ? lastUpdatedMessageRef
+                        : null
+                    }
+                    key={`message-${index}`}
+                    Index={index}
+                    Message={message}
+                    // Saved={message["Saved"]}
+                    // SavedIndex={message["SavedIndex"]}
+                    // Errors={message["Errors"]}
+                    // ErrorIndex={message["ErrorIndex"]}
+                  />
+                ))}
+              {charlaIsLoading && (
+                // <Box sx={{}}>
+                <Message Message={{ type: "Loading" }} />
+                // </Box>
+              )}
+            </Box>
+          </>
+        ) : (
+          <Box
+            sx={{
+              backgroundColor: theme.palette.background.paper,
+            }}
+            className="chat-log-empty-conversations"
+          >
+            <Typography
+              variant={mobile ? "h6" : "h4"}
+              sx={{ color: "#929292" }}
+            >
+              No conversations
+            </Typography>
+            <Button
+              variant="outlined"
+              sx={{ width: "30%" }}
               onClick={() => {
-                handleNav();
+                setModalOpen(true);
               }}
             >
-              <MenuRoundedIcon
-                sx={{ color: "#929292", width: "30px", height: "30px" }}
-              />
-            </IconButton>
-          )}
-          <Typography variant={mobile ? "h6" : "h4"}>
-            {currentConversation && currentConversation.title}
-          </Typography>
-          <IconButton>
-            <MoreHorizRoundedIcon
-              sx={{ color: "#929292", width: "30px", height: "30px" }}
+              Start a chat here
+            </Button>
+            <CreateChatModal
+              modalOpen={modalOpen}
+              handleModalClose={handleModalClose}
             />
-          </IconButton>
-        </Box>
-        <Accordion className="chat-log-accordion" disableGutters={true}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant={mobile ? "body1" : "h6"}>
-              Chat settings
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails
-            sx={{
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "flex-start",
-              flexDirection: "column",
-              gap: "16px",
-              width: "100%",
-            }}
-          >
-            <Box className="chat-log-accordion-input">
-              <Typography variant="body1">Show messages</Typography>
-              <Switch defaultChecked color="primary" />
-            </Box>
-            <Box className="chat-log-accordion-input">
-              <Typography variant="body1">Set playback speed</Typography>
-              <Slider
-                value={typeof sliderValue === "number" ? sliderValue : 1}
-                onChange={handleSliderChange}
-                step={0.2}
-                marks={sliderMarks}
-                valueLabelDisplay="auto"
-                min={0.2}
-                max={1}
-                sx={{
-                  marginRight: "16px",
-                }}
-              />
-            </Box>
-          </AccordionDetails>
-        </Accordion>
-        <Box className="chat-log-conversation">
-          {currentConversation &&
-            currentConversation.chat.map((message, index) => (
-              <Message
-                ref={
-                  index === currentConversation.chat.lastUpdatedMessage
-                    ? lastUpdatedMessageRef
-                    : null
-                }
-                key={`message-${index}`}
-                Index={index}
-                Message={message}
-                // Saved={message["Saved"]}
-                // SavedIndex={message["SavedIndex"]}
-                // Errors={message["Errors"]}
-                // ErrorIndex={message["ErrorIndex"]}
-              />
-            ))}
-          {charlaIsLoading && (
-            // <Box sx={{}}>
-            <Message Message={{ type: "Loading" }} />
-            // </Box>
-          )}
-        </Box>
+          </Box>
+        )}
       </Box>
     </>
   );

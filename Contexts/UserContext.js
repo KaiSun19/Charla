@@ -24,7 +24,7 @@ export const CharlaProvider = ({ children }) => {
   const tablet = useMediaQuery(theme.breakpoints.between("xs", "md"));
   const mobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const testing = true;
+  const testing = false;
 
   const [conversations, setConversations] = useState([]);
 
