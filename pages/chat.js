@@ -6,22 +6,10 @@ import ChatLog from "../Components/ChatLog/ChatLog";
 import ChatNavigation from "../Components/ChatNavigation/ChatNavigation";
 import ErrorPage from "@/Components/ErrorPage/ErrorPage";
 
-import { useRouter } from "next/router";
-
 export default function Chat() {
-  const { mobile, user } = useCharlaContext();
+  const { mobile, user, conversations } = useCharlaContext();
 
-  const router = useRouter();
-
-  // useEffect(() => {
-  //   const userSession = sessionStorage.getItem("user");
-  //   if (!user || !userSession) {
-  //     console.log("here");
-  //     router.push("/sign-in");
-  //   }
-  // }, []);
-
-  if (user && user.email === "yksun15@gmail.com") {
+  if (user && user.email === "yksun15@gmail.com" && conversations.length > 0) {
     return (
       <CharlaProvider>
         <Box className="chat-container">
@@ -33,6 +21,12 @@ export default function Chat() {
         </Box>
       </CharlaProvider>
     );
+  } else if (
+    user &&
+    user.email === "yksun15@gmail.com" &&
+    !conversations.length > 0
+  ) {
+    return <p>Loading ...</p>;
   } else {
     return (
       <ErrorPage error={{ message: "Please sign in or make an account" }} />

@@ -9,6 +9,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { useCharlaContext } from "@/Contexts/UserContext";
 import Avatar from "@mui/material/Avatar";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
 import { useTheme } from "@mui/material/styles";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase";
@@ -35,10 +36,9 @@ export default function Navbar() {
 
   const handleSignOut = () => {
     handleClose();
-    setUserDetails({});
     router.push("/");
+    setUserDetails({});
     signOut(auth);
-    sessionStorage.removeItem("user");
   };
 
   return (
@@ -64,15 +64,23 @@ export default function Navbar() {
             <IconButton onClick={handleSettingsClick}>
               <SettingsOutlinedIcon />
             </IconButton>
-            <Avatar
-              sx={{
-                backgroundColor: theme.palette.primary.main,
-                fontSize: "16px",
-              }}
-              className="mobile-navbar-icon"
-            >
-              {userDetails.initials}
-            </Avatar>
+            {user ? (
+              <IconButton onClick={handleSignOut}>
+                <Avatar
+                  sx={{
+                    backgroundColor: theme.palette.primary.main,
+                    fontSize: "16px",
+                  }}
+                  className="mobile-navbar-icon"
+                >
+                  {userDetails.initials}
+                </Avatar>
+              </IconButton>
+            ) : (
+              <IconButton href="/sign-in">
+                <LoginRoundedIcon />
+              </IconButton>
+            )}
             <Menu
               id="settings-menu"
               anchorEl={menuAnchor}
@@ -87,26 +95,32 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <Button variant="outlined" color="inherit" href="/chat">
-              Chat
-            </Button>
+            <IconButton onClick={() => router.push("/chat")}>
+              <Typography variant="h6">Chat</Typography>
+            </IconButton>
             <Button variant="outlined" color="inherit">
               Library
             </Button>
             <Button variant="outlined" color="inherit">
               Dashboard
             </Button>
-            <IconButton onClick={handleSettingsClick}>
-              <Avatar
-                sx={{
-                  backgroundColor: "#6573C3",
-                  width: "45px",
-                  height: "45px",
-                }}
-              >
-                {userDetails.initials}
-              </Avatar>
-            </IconButton>
+            {user ? (
+              <IconButton onClick={handleSettingsClick}>
+                <Avatar
+                  sx={{
+                    backgroundColor: "#6573C3",
+                    width: "45px",
+                    height: "45px",
+                  }}
+                >
+                  {userDetails.initials}
+                </Avatar>
+              </IconButton>
+            ) : (
+              <Button variant="contained" href="/sign-in">
+                Sign In
+              </Button>
+            )}
             <Menu
               id="user-menu"
               anchorEl={menuAnchor}

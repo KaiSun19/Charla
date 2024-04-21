@@ -34,7 +34,6 @@ export default function SignIn() {
       router.push("/");
       setEmail("");
       setPassword("");
-      sessionStorage.setItem("user", true);
     } else {
       error.current = true;
     }

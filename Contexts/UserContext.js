@@ -2,12 +2,14 @@ import { useMediaQuery, useTheme } from "@mui/material";
 import React, { useContext, useState, useEffect } from "react";
 import { extractResponse, formatCompleteQuery, getCharlaReply } from "../Utils";
 import {
-  mockMessages,
-  coffeeCompletionQuery,
   randomResponses,
+  mockUserDetails,
+  mockConversations,
 } from "../Constants";
 
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
+
+import { doc, getDoc } from "firebase/firestore";
 
 const CharlaContext = React.createContext(); // creates a context
 
@@ -22,41 +24,9 @@ export const CharlaProvider = ({ children }) => {
   const tablet = useMediaQuery(theme.breakpoints.between("xs", "md"));
   const mobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const testing = false;
+  const testing = true;
 
-  const coffeeChat = coffeeCompletionQuery.messages
-    .slice(1)
-    .map((message, index) => {
-      let response = extractResponse(message.content);
-      let type = message.role === "assistant" ? "Charla" : "User";
-      return {
-        type: type,
-        message: response,
-        saved: [],
-        errors: [],
-      };
-    });
-
-  const [conversations, setConversations] = useState([
-    {
-      title: "¿Cómo estuvo tu día ayer? ",
-      chat: mockMessages,
-      chat_details: {
-        last_attempted: "07/01/2023",
-        average_chat_time: "342",
-        average_word_count: "150",
-      },
-    },
-    {
-      title: "Un cafe, por favor",
-      chat: coffeeChat,
-      chat_details: {
-        last_attempted: "07/01/2023",
-        average_chat_time: "342",
-        average_word_count: "150",
-      },
-    },
-  ]);
+  const [conversations, setConversations] = useState([]);
 
   const [audioBlob, setAudioBlob] = useState(" ");
 
@@ -66,9 +36,7 @@ export const CharlaProvider = ({ children }) => {
 
   const [navOpen, setNavOpen] = useState(false);
 
-  const [currentConversation, setCurrentConversation] = useState(
-    conversations[0],
-  );
+  const [currentConversation, setCurrentConversation] = useState(null);
 
   const [charlaIsLoading, setCharlaIsLoading] = useState(false);
 
@@ -87,9 +55,20 @@ export const CharlaProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(
-      (user) => {
+      async (user) => {
         console.log(user);
         setUser(user);
+        if (!testing && user) {
+          const userRef = doc(db, "userDetails", user.email); // Document reference based on email
+          const docSnap = await getDoc(userRef);
+          if (docSnap.exists()) {
+            setUserDetails(docSnap.data());
+          }
+        } else {
+          setUserDetails(mockUserDetails);
+          setConversations(mockConversations);
+          setCurrentConversation(mockConversations[0]);
+        }
       },
       (error) => {
         console.log(error);
@@ -187,44 +166,43 @@ export const CharlaProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const currentChat = conversations[0].chat;
-    if (
-      conversations.length > 0 &&
-      currentChat[currentChat.length - 1].type === "User" &&
-      !charlaIsLoading
-    ) {
-      (async () => {
-        //TODO: figure out how to code in a small timeout as a function then place in getCharlaReply to remove setTimeout
-        setTimeout(async () => {
-          setCharlaIsLoading(true);
-          // setTimeout(async () => {// timeout during testing to see the loading state
-          const { responseMessage, updatedUserMessage } = await getCharlaReply(
-            testing,
-            currentChat,
-            conversations,
-          );
-          if (updatedUserMessage.errors.length > 0) {
-            let updatedConversations = createUpdatedConversations(
-              {
+    if (conversations.length > 0) {
+      const currentChat = conversations[0].chat;
+      if (
+        conversations.length > 0 &&
+        currentChat[currentChat.length - 1].type === "User" &&
+        !charlaIsLoading
+      ) {
+        (async () => {
+          //TODO: figure out how to code in a small timeout as a function then place in getCharlaReply to remove setTimeout
+          setTimeout(async () => {
+            setCharlaIsLoading(true);
+            // setTimeout(async () => {// timeout during testing to see the loading state
+            const { responseMessage, updatedUserMessage } =
+              await getCharlaReply(testing, currentChat, conversations);
+            if (updatedUserMessage.errors.length > 0) {
+              let updatedConversations = createUpdatedConversations(
+                {
+                  index: 0,
+                  message: updatedUserMessage,
+                  messageIndex: conversations[0].chat.length - 1,
+                },
+                { index: 0, message: responseMessage, messageIndex: -1 },
+              );
+              handleConversationsUpdate(updatedConversations);
+            } else {
+              let updatedConversations = createUpdatedConversations({
                 index: 0,
-                message: updatedUserMessage,
-                messageIndex: conversations[0].chat.length - 1,
-              },
-              { index: 0, message: responseMessage, messageIndex: -1 },
-            );
-            handleConversationsUpdate(updatedConversations);
-          } else {
-            let updatedConversations = createUpdatedConversations({
-              index: 0,
-              message: responseMessage,
-              messageIndex: -1,
-            });
-            handleConversationsUpdate(updatedConversations);
-          }
-          setCharlaIsLoading(false);
-          // }, 3000);
-        }, 500);
-      })();
+                message: responseMessage,
+                messageIndex: -1,
+              });
+              handleConversationsUpdate(updatedConversations);
+            }
+            setCharlaIsLoading(false);
+            // }, 3000);
+          }, 500);
+        })();
+      }
     }
   }, [conversations]);
 

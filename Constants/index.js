@@ -161,3 +161,65 @@ export const randomResponses = [
   "No hay problema. Puedo intentar responder a una pregunta diferente.", // No problem. I can try answering a different question.
   "¡Siempre es un placer charlar contigo!", // It's always a pleasure to chat with you!
 ];
+
+export const mockUserDetails = {
+  datetimeJoined: "Sun Apr 21 2024",
+  email: "yksun15@gmail.com",
+  id: "dGVzdHVzZXIxdGVzdHVzZXIxQGdtYWlsLmNvbQ==",
+  initials: "YS",
+  username: "Kai Sun",
+};
+
+const extractResponse = (text) => {
+  if (!text.includes("Response")) {
+    return text;
+  }
+  let match = text.match(/Response:\s*(.*)/);
+  let res;
+  if (match && match.length > 1) {
+    res = match[1];
+    if (res[0] === "'") {
+      res = res.slice(1);
+    }
+    if (res[res.length - 1] === "'") {
+      res = res.slice(0, -1);
+    }
+  } else {
+    res = null;
+  }
+  return res;
+};
+
+export const coffeeChat = coffeeCompletionQuery.messages
+  .slice(1)
+  .map((message) => {
+    let response = extractResponse(message.content);
+    let type = message.role === "assistant" ? "Charla" : "User";
+    return {
+      type: type,
+      message: response,
+      saved: [],
+      errors: [],
+    };
+  });
+
+export const mockConversations = [
+  {
+    title: "¿Cómo estuvo tu día ayer? ",
+    chat: mockMessages,
+    chat_details: {
+      last_attempted: "07/01/2023",
+      average_chat_time: "342",
+      average_word_count: "150",
+    },
+  },
+  {
+    title: "Un cafe, por favor",
+    chat: coffeeChat,
+    chat_details: {
+      last_attempted: "07/01/2023",
+      average_chat_time: "342",
+      average_word_count: "150",
+    },
+  },
+];

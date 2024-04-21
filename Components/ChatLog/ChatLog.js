@@ -109,7 +109,7 @@ export default function ChatLog() {
             </IconButton>
           )}
           <Typography variant={mobile ? "h6" : "h4"}>
-            {currentConversation.title}
+            {currentConversation && currentConversation.title}
           </Typography>
           <IconButton>
             <MoreHorizRoundedIcon
@@ -155,22 +155,23 @@ export default function ChatLog() {
           </AccordionDetails>
         </Accordion>
         <Box className="chat-log-conversation">
-          {currentConversation.chat.map((message, index) => (
-            <Message
-              ref={
-                index === currentConversation.chat.lastUpdatedMessage
-                  ? lastUpdatedMessageRef
-                  : null
-              }
-              key={`message-${index}`}
-              Index={index}
-              Message={message}
-              // Saved={message["Saved"]}
-              // SavedIndex={message["SavedIndex"]}
-              // Errors={message["Errors"]}
-              // ErrorIndex={message["ErrorIndex"]}
-            />
-          ))}
+          {currentConversation &&
+            currentConversation.chat.map((message, index) => (
+              <Message
+                ref={
+                  index === currentConversation.chat.lastUpdatedMessage
+                    ? lastUpdatedMessageRef
+                    : null
+                }
+                key={`message-${index}`}
+                Index={index}
+                Message={message}
+                // Saved={message["Saved"]}
+                // SavedIndex={message["SavedIndex"]}
+                // Errors={message["Errors"]}
+                // ErrorIndex={message["ErrorIndex"]}
+              />
+            ))}
           {charlaIsLoading && (
             // <Box sx={{}}>
             <Message Message={{ type: "Loading" }} />

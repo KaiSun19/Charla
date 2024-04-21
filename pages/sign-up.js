@@ -3,7 +3,9 @@ import React, { useRef, useState } from "react";
 import { CharlaProvider, useCharlaContext } from "@/Contexts/UserContext";
 
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { auth } from "@/firebase";
+import { auth, db } from "@/firebase";
+import { doc, setDoc } from "firebase/firestore";
+
 import { useRouter } from "next/router";
 
 import { createUser } from "@/Utils";
@@ -40,7 +42,8 @@ export default function SignUp() {
     const res = await createUserWithEmailAndPassword(email, password);
     console.log({ res });
     if (res) {
-      setUserDetails(createUser(username, email));
+      const userDetails = createUser(username, email);
+      await setDoc(doc(db, "userDetails", `${email}`), userDetails);
       router.push("/");
       setEmail("");
       setPassword("");

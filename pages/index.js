@@ -1,10 +1,16 @@
 import Head from "next/head";
+import Image from "next/image";
+
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
+
+import { Box, Typography, Button, Stack } from "@mui/material";
+import { useCharlaContext } from "@/Contexts/UserContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const { mobile } = useCharlaContext();
   return (
     <>
       <Head>
@@ -13,7 +19,70 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={`${inter.className}`}></main>
+      <main className={`${inter.className}`}>
+        <Box sx={{ display: "flex", minHeight: "100vh" }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              margin: "2rem",
+              maxWidth: mobile ? "100%" : "50%",
+            }}
+          >
+            <Typography
+              variant={mobile ? "h2" : "h1"}
+              sx={{ marginBottom: "1rem", textAlign: "left" }}
+            >
+              Introducing Charla
+            </Typography>
+            <Stack direction="row" justifyContent="center" alignItems="center">
+              <Typography
+                variant={mobile ? "h5" : "h3"}
+                sx={{ marginBottom: "1rem", textAlign: "left" }}
+              >
+                Converse your way to fluency. Charla, your AI language partner,
+                makes learning natural.
+              </Typography>
+              {mobile && (
+                <Image
+                  src="/charla-icon-light.svg"
+                  alt="Charla icon"
+                  height={150}
+                  width={150}
+                />
+              )}
+            </Stack>
+            <Button
+              href="/sign-up"
+              variant="contained"
+              sx={{
+                color: "#fff",
+                padding: "1rem 2rem",
+                width: mobile ? "100%" : "50%",
+                borderRadius: "2rem",
+              }}
+            >
+              Get Started
+            </Button>
+          </Box>
+          {!mobile && (
+            <Box
+              sx={{
+                marginTop: "2rem",
+                maxWidth: "50%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                src="/charla-icon-light.svg"
+                alt="Charla icon"
+                height={300}
+                width={300}
+              />
+            </Box>
+          )}
+        </Box>
+      </main>
     </>
   );
 }
