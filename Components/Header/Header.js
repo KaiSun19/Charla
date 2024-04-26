@@ -34,6 +34,11 @@ export default function Navbar() {
     setMenuAnchor(false);
   };
 
+  const goToChat = () => {
+    handleClose();
+    router.push("/chat");
+  };
+
   const handleSignOut = () => {
     handleClose();
     router.push("/");
@@ -61,11 +66,8 @@ export default function Navbar() {
       <Box className="navbar-buttons">
         {mobile ? (
           <>
-            <IconButton onClick={handleSettingsClick}>
-              <SettingsOutlinedIcon />
-            </IconButton>
             {user ? (
-              <IconButton onClick={handleSignOut}>
+              <IconButton onClick={handleSettingsClick}>
                 <Avatar
                   sx={{
                     backgroundColor: theme.palette.primary.main,
@@ -88,9 +90,12 @@ export default function Navbar() {
               onClose={handleClose}
               MenuListProps={{ "aria-labelledby": "basic-button" }}
             >
-              <MenuItem onClick={handleClose}>Chat</MenuItem>
+              <MenuItem onClick={goToChat}>Chat</MenuItem>
               <MenuItem onClick={handleClose}>Library</MenuItem>
               <MenuItem onClick={handleClose}>Dashboard</MenuItem>
+              <MenuItem onClick={handleSignOut} sx={{ color: "error.main" }}>
+                Sign out
+              </MenuItem>
             </Menu>
           </>
         ) : (

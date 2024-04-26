@@ -44,6 +44,11 @@ export default function SignUp() {
     if (res) {
       const userDetails = createUser(username, email);
       await setDoc(doc(db, "userDetails", `${email}`), userDetails);
+      console.log(userDetails.id);
+      await setDoc(doc(db, "conversations", userDetails.id), {
+        id: userDetails.id,
+        conversations: [],
+      });
       router.push("/");
       setEmail("");
       setPassword("");

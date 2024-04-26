@@ -9,7 +9,7 @@ import ErrorPage from "@/Components/ErrorPage/ErrorPage";
 export default function Chat() {
   const { mobile, user, conversations } = useCharlaContext();
 
-  if (user && user.email === "yksun15@gmail.com" && conversations.length > 0) {
+  if (user && user.email === "yksun15@gmail.com" && conversations.length >= 0) {
     return (
       <CharlaProvider>
         <Box className="chat-container">
@@ -24,7 +24,7 @@ export default function Chat() {
   } else if (
     user &&
     user.email === "yksun15@gmail.com" &&
-    !conversations.length > 0
+    !conversations.length >= 0
   ) {
     return <p>Loading ...</p>;
   } else {

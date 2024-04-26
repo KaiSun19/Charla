@@ -87,7 +87,9 @@ export default function ChatNavigation() {
                 alignItems: "center",
               }}
             >
-              <Typography variant="h6">{conversation.title}</Typography>
+              <Typography variant="h5" sx={{ marginBottom: "5px" }}>
+                {conversation.title}
+              </Typography>
               <IconButton className="nav-item-delete-button">
                 <DeleteRoundedIcon color="error" />
               </IconButton>

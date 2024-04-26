@@ -194,7 +194,7 @@ export default function ChatLog() {
             sx={{
               backgroundColor: theme.palette.background.paper,
             }}
-            className="chat-log-empty-conversations"
+            className="flex-items-center chat-log-empty-conversations"
           >
             <Typography
               variant={mobile ? "h6" : "h4"}

@@ -9,7 +9,7 @@ import {
 
 import { auth, db } from "../firebase";
 
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 const CharlaContext = React.createContext(); // creates a context
 
@@ -54,6 +54,7 @@ export const CharlaProvider = ({ children }) => {
   const [userDetails, setUserDetails] = useState("");
 
   useEffect(() => {
+    //this gets fired whenever a user signs in or refreshes
     const unsubscribe = auth.onAuthStateChanged(
       async (user) => {
         console.log(user);
@@ -63,6 +64,20 @@ export const CharlaProvider = ({ children }) => {
           const docSnap = await getDoc(userRef);
           if (docSnap.exists()) {
             setUserDetails(docSnap.data());
+            const conversationsRef = doc(
+              db,
+              "conversations",
+              docSnap.data().id,
+            );
+            const conversationsSnap = await getDoc(conversationsRef);
+            if (conversationsSnap.exists()) {
+              setConversations(conversationsSnap.data().conversations);
+              if (conversationsSnap.data().conversations.length > 0) {
+                setCurrentConversation(
+                  conversationsSnap.data().conversations[0],
+                );
+              }
+            }
           }
         } else {
           setUserDetails(mockUserDetails);
@@ -98,7 +113,7 @@ export const CharlaProvider = ({ children }) => {
       }
     }
 
-    fetchData(); // Call the function here
+    fetchData();
   }, []);
 
   const handleNav = () => {
@@ -275,6 +290,18 @@ export const CharlaProvider = ({ children }) => {
   useEffect(() => {
     setCurrentConversation(conversations[0]);
   }, [conversations.length]);
+
+  useEffect(() => {
+    async function updateDatabase() {
+      await setDoc(doc(db, "conversations", userDetails.id), {
+        id: userDetails.id,
+        conversations: conversations,
+      });
+    }
+    if (conversations.length > 0) {
+      updateDatabase();
+    }
+  }, [conversations]);
 
   useEffect(() => {
     console.log(conversations);

@@ -41,7 +41,7 @@
 .chat-log-empty-conversations {
   height: 100%;
   padding: 1rem;
-  display: flex;
-  align-items: center;
   gap: 1rem;
+  width: 100%;
+  flex-direction: column;
 }
