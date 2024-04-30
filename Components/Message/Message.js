@@ -1,5 +1,5 @@
 import { useCharlaContext } from "@/Contexts/UserContext";
-import { Box, Typography, Avatar, IconButton } from "@mui/material";
+import { Box, Typography, Avatar, IconButton, Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
@@ -10,6 +10,10 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
+import DoneRoundedIcon from "@mui/icons-material/DoneRounded";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+
+import ErrorHighlightedMessage from "./ErrorHighlightedMessage";
 
 const messageStyles = {
   display: "flex",
@@ -48,6 +52,11 @@ const Message = forwardRef(({ Message, Index }, ref) => {
   //error = audio error
   const [audioStatus, setAudioStatus] = useState("idle");
 
+  // state and handling related to error toolip
+  const [errorTooltipOpen, setErrorTooltipOpen] = useState(
+    new Array(Message.errors.length).fill(false),
+  );
+
   const playAudio = async () => {
     let messageWithAudio;
     if ((!Message.audio && !audioRef.current.src) || isSettingsSpeedChanged) {
@@ -83,25 +92,26 @@ const Message = forwardRef(({ Message, Index }, ref) => {
     setAudioStatus("paused");
   };
 
-  const handleErrorCorrection = (errorIndex, error, correction) => {
-    // setMockConversation((currentMockConversation) => ({
-    //   ...currentMockConversation,
-    //   conversation: currentMockConversation["conversation"].map(
-    //     (currentMessage, index) => {
-    //       if (index === Index) {
-    //         return {
-    //           ...currentMessage,
-    //           Message: Message.replace(error, correction),
-    //           Errors: Errors.filter((error, index) => index !== errorIndex),
-    //           ErrorIndex: ErrorIndex.filter(
-    //             (error, index) => index !== errorIndex,
-    //           ),
-    //         };
-    //       }
-    //       return currentMessage;
-    //     },
-    //   ),
-    // }));
+  const handleErrorCorrection = (errorIndex, phrase, correction) => {
+    let updatedChat = currentConversation.chat;
+    updatedChat = [
+      ...updatedChat.slice(0, Index),
+      {
+        ...updatedChat[Index],
+        message: Message.message.replace(phrase, correction),
+        errors: Message.errors.filter(({ Phrase }) => Phrase !== phrase),
+      },
+      ...updatedChat.slice(Index + 1),
+    ];
+    let updatedConversations = [
+      {
+        ...currentConversation,
+        chat: updatedChat,
+      },
+      ...conversations.slice(1),
+    ];
+    handleConversationsUpdate(updatedConversations);
+    setErrorTooltipOpen(new Array(Message.errors.length).fill(false));
   };
 
   const SavedHighlightedMessage = ({ message, savedIndex }) => {
@@ -126,93 +136,13 @@ const Message = forwardRef(({ Message, Index }, ref) => {
       <Typography
         variant="body1"
         className="flex-items-center"
-        sx={!mobile && { fontSize: "22px" }}
+        sx={mobile ? {} : { fontSize: "22px" }}
       >
         {/* {messageWithHighlights()} */}
         {message}
       </Typography>
     );
   };
-
-  const ErrorHighlightedMessage = ({ message, errorIndex, errors }) => {
-    // const messageWithHighlights = () => {
-    //   let renderedMessage = [];
-    //   let lastIndex = 0;
-    //   errorIndex.map(([start, end], index) => {
-    //     renderedMessage.push(message.substring(lastIndex, start));
-    //     const substringToHighlight = message.substring(start, end);
-    //     const highlightText = (
-    //       <HtmlTooltip
-    //         title={
-    //           <React.Fragment>
-    //             <Typography
-    //               color="inherit"
-    //               sx={{ borderRight: "1px solid #C8C8C8", paddingRight: "5px" }}
-    //             >
-    //               error
-    //             </Typography>
-    //             <Typography color="inherit">
-    //               {errors[index]["Error"]}
-    //             </Typography>
-    //             <IconButton
-    //               onClick={() => {
-    //                 handleErrorCorrection(
-    //                   index,
-    //                   errors[index]["Phrase"],
-    //                   errors[index]["Correction"],
-    //                 );
-    //               }}
-    //             >
-    //               <DoneRoundedIcon />
-    //             </IconButton>
-    //           </React.Fragment>
-    //         }
-    //       >
-    //         <span
-    //           className="message-highlight-error"
-    //           id={`highlight-error-${index}`}
-    //         >
-    //           {substringToHighlight}
-    //         </span>
-    //       </HtmlTooltip>
-    //     );
-    //     renderedMessage.push(highlightText);
-    //     lastIndex = end;
-    //   });
-    //   renderedMessage.push(<span>{message.substring(lastIndex)}</span>);
-    //   return renderedMessage;
-    // };
-    return (
-      <>
-        <Typography
-          variant="body1"
-          className="flex-items-center"
-          sx={!mobile && { fontSize: "22px" }}
-        >
-          {/* {messageWithHighlights()} */}
-          {message}
-        </Typography>
-      </>
-    );
-  };
-
-  // const HtmlTooltip = styled(({ className, ...Message }) => (
-  //   <Tooltip {...Message} classes={{ popper: className }} />
-  // ))(({ theme }) => ({
-  //   [`& .${tooltipClasses.tooltip}`]: {
-  //     display: "flex",
-  //     flexDirection: "row",
-  //     alignItems: "center",
-  //     gap: "10px",
-  //     backgroundColor: "#ffffff",
-  //     color: "rgba(0, 0, 0, 0.87)",
-  //     boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
-  //     maxWidth: "fit-content",
-  //     padding: "5px",
-  //     border: "1px solid #C8C8C8",
-  //     borderRadius: "5px",
-  //   }}))
-
   return (
     <Box
       ref={ref}
@@ -287,11 +217,23 @@ const Message = forwardRef(({ Message, Index }, ref) => {
                   )}
                 </IconButton>
               </>
-              <ErrorHighlightedMessage
-                message={Message.message}
-                // errorIndex={ErrorIndex}
-                // errors={Errors}
-              />
+              {Message.errors.length > 0 ? (
+                <ErrorHighlightedMessage
+                  message={Message.message}
+                  errors={Message.errors}
+                  setErrorTooltipOpen={setErrorTooltipOpen}
+                  errorTooltipOpen={errorTooltipOpen}
+                  handleErrorCorrection={handleErrorCorrection}
+                />
+              ) : (
+                <Typography
+                  variant="body1"
+                  className="flex-items-center"
+                  sx={!mobile ? { fontSize: "22px" } : {}}
+                >
+                  {Message.message}
+                </Typography>
+              )}
             </>
           ) : Message.type === "Loading" ? (
             <Box

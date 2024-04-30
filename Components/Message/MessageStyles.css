@@ -69,3 +69,17 @@
 .message-highlight-error {
   background-color: rgb(229, 115, 115, 0.3);
 }
+
+.error-message-text {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-size: 22px;
+  line-height: 1.5;
+  font-weight: 400;
+  letter-spacing: 0.00938em;
+}
+
+@media only screen and (max-width: 600px) {
+  .error-message-text {
+    font-size: 16px;
+  }
+}
