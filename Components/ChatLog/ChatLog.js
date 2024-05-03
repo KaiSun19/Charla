@@ -7,17 +7,18 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  FormGroup,
-  FormControlLabel,
+  Fab,
   Switch,
   Slider,
   Button,
 } from "@mui/material";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, cloneElement } from "react";
 import Message from "../Message/Message";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import UnfoldMoreRoundedIcon from "@mui/icons-material/UnfoldMoreRounded";
+import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import ChatNavigation from "../ChatNavigation/ChatNavigation";
 import { useTheme } from "@emotion/react";
 import CreateChatModal from "../CreateChatModal/CreateChatModal";
@@ -68,6 +69,9 @@ export default function ChatLog() {
 
   const [modalOpen, setModalOpen] = useState(false);
 
+  const [highlightedText, setHighlightedText] = useState(null);
+  const [isTextSelected, setIsTextSelected] = useState(false);
+
   const handleModalClose = () => {
     setModalOpen(false);
   };
@@ -87,6 +91,27 @@ export default function ChatLog() {
       };
     });
   }, [sliderValue]);
+
+  const handleSelectionChange = () => {
+    const selection = window.getSelection();
+    if (selection.toString().trim() && selection.toString().trim() !== "") {
+      setHighlightedText(selection.toString().trim());
+      setIsTextSelected(true);
+    } else {
+      setIsTextSelected(false);
+      setHighlightedText(null);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mouseup", handleSelectionChange);
+    document.addEventListener("touchend", handleSelectionChange);
+    // clean up function when this component gets destroyed
+    return () => {
+      document.removeEventListener("mouseup", handleSelectionChange);
+      document.removeEventListener("touchend", handleSelectionChange);
+    };
+  }, []);
 
   return (
     <>
@@ -190,6 +215,7 @@ export default function ChatLog() {
             </Box>
           </>
         ) : (
+          // state for no current conversation
           <Box
             sx={{
               backgroundColor: theme.palette.background.paper,
@@ -217,6 +243,18 @@ export default function ChatLog() {
             />
           </Box>
         )}
+        <Box className="chat-log-action-buttons">
+          <Fab
+            color="primary"
+            className="highlight-action-button"
+            disabled={highlightedText === null}
+          >
+            <UnfoldMoreRoundedIcon />
+          </Fab>
+          <Fab color="primary" className="restart-action-button">
+            <RestartAltRoundedIcon />
+          </Fab>
+        </Box>
       </Box>
     </>
   );

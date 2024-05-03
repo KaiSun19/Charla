@@ -7,9 +7,11 @@ import ChatNavigation from "../Components/ChatNavigation/ChatNavigation";
 import ErrorPage from "@/Components/ErrorPage/ErrorPage";
 
 export default function Chat() {
-  const { mobile, user, conversations } = useCharlaContext();
+  const { mobile, user, conversations, userLoading } = useCharlaContext();
 
-  if (user && user.email === "yksun15@gmail.com" && conversations.length >= 0) {
+  if (userLoading.current) {
+    return <p>Loading ...</p>;
+  } else if (user && user.email === "yksun15@gmail.com") {
     return (
       <CharlaProvider>
         <Box className="chat-container">
@@ -21,12 +23,6 @@ export default function Chat() {
         </Box>
       </CharlaProvider>
     );
-  } else if (
-    user &&
-    user.email === "yksun15@gmail.com" &&
-    !conversations.length >= 0
-  ) {
-    return <p>Loading ...</p>;
   } else {
     return (
       <ErrorPage error={{ message: "Please sign in or make an account" }} />

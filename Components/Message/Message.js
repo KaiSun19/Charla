@@ -1,17 +1,13 @@
 import { useCharlaContext } from "@/Contexts/UserContext";
 import { Box, Typography, Avatar, IconButton, Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
-import { styled } from "@mui/material/styles";
-import React, { forwardRef, useState, useRef } from "react";
+import React, { forwardRef, useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { convertClassname } from "@/Utils";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
-import DoneRoundedIcon from "@mui/icons-material/DoneRounded";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
 
 import ErrorHighlightedMessage from "./ErrorHighlightedMessage";
 
@@ -54,8 +50,11 @@ const Message = forwardRef(({ Message, Index }, ref) => {
 
   // state and handling related to error toolip
   const [errorTooltipOpen, setErrorTooltipOpen] = useState(
-    new Array(Message.errors.length).fill(false),
+    Message.errors ? new Array(Message.errors.length).fill(false) : null,
   );
+
+  //text that is highlighted for translation
+  const [highlightedText, setHighlightedText] = useState(null);
 
   const playAudio = async () => {
     let messageWithAudio;
@@ -143,6 +142,7 @@ const Message = forwardRef(({ Message, Index }, ref) => {
       </Typography>
     );
   };
+
   return (
     <Box
       ref={ref}

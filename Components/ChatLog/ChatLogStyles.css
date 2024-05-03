@@ -45,3 +45,17 @@
   width: 100%;
   flex-direction: column;
 }
+
+.chat-log-action-buttons {
+  position: sticky;
+  bottom: 0;
+  padding: 1rem 0;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.chat-log-action-buttons button {
+  width: 36px;
+  height: 36px;
+}
