@@ -16,14 +16,32 @@ import "../Components/ErrorPage/ErrorPageStyles.css";
 import Header from "../Components/Header/Header";
 import { CharlaProvider } from "@/Contexts/UserContext";
 
-export default function App({ Component, pageProps }) {
-  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+export const ThemePaletteModeContext = React.createContext({
+  toggleThemePaletteMode: () => {},
+});
 
-  const theme = React.useMemo(
+export default function App({ Component, pageProps }) {
+  const isSystemDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+  const [themePaletteMode, setThemePaletteMode] = React.useState(
+    isSystemDarkMode ? "dark" : "light",
+  );
+
+  const themePaletteModeContextProvider = React.useMemo(
+    () => ({
+      toggleThemePaletteMode: () => {
+        setThemePaletteMode((prevMode) =>
+          prevMode === "light" ? "dark" : "light",
+        );
+      },
+    }),
+    [],
+  );
+
+  const themeProvider = React.useMemo(
     () =>
       createTheme({
         palette: {
-          mode: prefersDarkMode ? "dark" : "light",
+          mode: themePaletteMode,
           primary: {
             main: "#6573C3",
           },
@@ -32,17 +50,18 @@ export default function App({ Component, pageProps }) {
           },
         },
       }),
-    [prefersDarkMode],
+    [themePaletteMode],
   );
-
   return (
     <CharlaProvider>
-      <ThemeProvider theme={theme}>
-        <Box className="app-container">
-          <Header />
-          <Component {...pageProps} />
-        </Box>
-      </ThemeProvider>
+      <ThemePaletteModeContext.Provider value={themePaletteModeContextProvider}>
+        <ThemeProvider theme={themeProvider}>
+          <Box className="app-container">
+            <Header />
+            <Component {...pageProps} />
+          </Box>
+        </ThemeProvider>
+      </ThemePaletteModeContext.Provider>
     </CharlaProvider>
   );
 }

@@ -5,18 +5,24 @@ import Image from "next/image";
 import Link from "next/link";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
+import { ListItemIcon, ListItemText } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import { useCharlaContext } from "@/Contexts/UserContext";
 import Avatar from "@mui/material/Avatar";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import { useTheme } from "@mui/material/styles";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase";
 import { useRouter } from "next/router";
 
+import { ThemePaletteModeContext } from "@/pages/_app";
+
 export default function Navbar() {
   const { mobile, userDetails, setUserDetails, user } = useCharlaContext();
+  const themePaletteModeContext = React.useContext(ThemePaletteModeContext);
   const theme = useTheme();
 
   const router = useRouter();
@@ -96,6 +102,14 @@ export default function Navbar() {
               <MenuItem onClick={handleSignOut} sx={{ color: "error.main" }}>
                 Sign out
               </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  themePaletteModeContext.toggleThemePaletteMode();
+                  handleClose();
+                }}
+              >
+                Toggle display mode
+              </MenuItem>
             </Menu>
           </>
         ) : (
@@ -133,7 +147,23 @@ export default function Navbar() {
               onClose={handleClose}
               MenuListProps={{ "aria-labelledby": "basic-button" }}
             >
-              <MenuItem onClick={handleSignOut}>Sign out</MenuItem>
+              <MenuItem onClick={handleSignOut}>
+                <ListItemIcon>
+                  <LogoutRoundedIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Sign out</ListItemText>
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  themePaletteModeContext.toggleThemePaletteMode();
+                  handleClose();
+                }}
+              >
+                <ListItemIcon>
+                  <DarkModeRoundedIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Toggle display mode</ListItemText>
+              </MenuItem>
             </Menu>
           </>
         )}

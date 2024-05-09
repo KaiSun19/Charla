@@ -12,7 +12,7 @@ import {
   Slider,
   Button,
 } from "@mui/material";
-import React, { useState, useEffect, useRef, cloneElement } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Message from "../Message/Message";
 import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
@@ -50,6 +50,7 @@ export default function ChatLog() {
   const {
     conversations,
     currentConversation,
+    handleConversationsUpdate,
     mobile,
     navOpen,
     handleNav,
@@ -101,6 +102,14 @@ export default function ChatLog() {
       setIsTextSelected(false);
       setHighlightedText(null);
     }
+  };
+
+  const handleRestartChat = () => {
+    let updatedConversation = {
+      ...currentConversation,
+      chat: [currentConversation.chat.shift()],
+    };
+    handleConversationsUpdate([updatedConversation, ...conversations.slice(1)]);
   };
 
   useEffect(() => {
@@ -251,7 +260,13 @@ export default function ChatLog() {
           >
             <UnfoldMoreRoundedIcon />
           </Fab>
-          <Fab color="primary" className="restart-action-button">
+          <Fab
+            color="primary"
+            className="restart-action-button"
+            onClick={() => {
+              handleRestartChat();
+            }}
+          >
             <RestartAltRoundedIcon />
           </Fab>
         </Box>
