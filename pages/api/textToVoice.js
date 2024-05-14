@@ -3,7 +3,7 @@ import fs from "fs";
 export default async function POST(request, res) {
   // Parse the request body
   const req = request;
-  const { text, testing , speakingRate} = req.body;
+  const { text, testing, speakingRate } = req.body;
   const endpoint = `https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=${process.env.GOOGLE_TTS_API_KEY}`;
   const payload = JSON.stringify({
     audioConfig: {

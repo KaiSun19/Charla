@@ -11,6 +11,8 @@ import {
   Switch,
   Slider,
   Button,
+  ButtonGroup,
+  Popover,
 } from "@mui/material";
 import React, { useState, useEffect, useRef } from "react";
 import Message from "../Message/Message";
@@ -22,6 +24,7 @@ import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import ChatNavigation from "../ChatNavigation/ChatNavigation";
 import { useTheme } from "@emotion/react";
 import CreateChatModal from "../CreateChatModal/CreateChatModal";
+import TranslateModal from "../TranslateModal/TranslateModal";
 
 export default function ChatLog() {
   const sliderMarks = [
@@ -68,13 +71,18 @@ export default function ChatLog() {
     setSliderValue(newValue);
   };
 
-  const [modalOpen, setModalOpen] = useState(false);
+  const [createChatModalOpen, setCreateChatModalOpen] = useState(false);
+  const [translateModalOpen, setTranslateModalOpen] = useState(false);
 
   const [highlightedText, setHighlightedText] = useState(null);
   const [isTextSelected, setIsTextSelected] = useState(false);
 
-  const handleModalClose = () => {
-    setModalOpen(false);
+  const handleCreateChatModalClose = () => {
+    setCreateChatModalOpen(false);
+  };
+
+  const handleTranslateModalClose = () => {
+    setTranslateModalOpen(false);
   };
 
   useEffect(() => {
@@ -93,17 +101,6 @@ export default function ChatLog() {
     });
   }, [sliderValue]);
 
-  const handleSelectionChange = () => {
-    const selection = window.getSelection();
-    if (selection.toString().trim() && selection.toString().trim() !== "") {
-      setHighlightedText(selection.toString().trim());
-      setIsTextSelected(true);
-    } else {
-      setIsTextSelected(false);
-      setHighlightedText(null);
-    }
-  };
-
   const handleRestartChat = () => {
     let updatedConversation = {
       ...currentConversation,
@@ -113,6 +110,19 @@ export default function ChatLog() {
   };
 
   useEffect(() => {
+    const handleSelectionChange = (e) => {
+      e.preventDefault();
+      const selection = window.getSelection();
+      console.log(selection);
+      console.log(selection.toString());
+      if (selection.toString().trim() && selection.toString().trim() !== "") {
+        setHighlightedText(selection.toString().trim());
+        setIsTextSelected(true);
+      } else {
+        setIsTextSelected(false);
+        setHighlightedText(null);
+      }
+    };
     document.addEventListener("mouseup", handleSelectionChange);
     document.addEventListener("touchend", handleSelectionChange);
     // clean up function when this component gets destroyed
@@ -121,6 +131,19 @@ export default function ChatLog() {
       document.removeEventListener("touchend", handleSelectionChange);
     };
   }, []);
+
+  //popover logic
+  const [popoverAnchorEl, setPopoverAnchorEl] = useState(null);
+
+  const handlePopoverClick = (event) => {
+    setPopoverAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setPopoverAnchorEl(null);
+  };
+
+  const popoverOpen = Boolean(popoverAnchorEl);
 
   return (
     <>
@@ -241,14 +264,14 @@ export default function ChatLog() {
               variant="outlined"
               sx={{ width: "30%" }}
               onClick={() => {
-                setModalOpen(true);
+                setCreateChatModalOpen(true);
               }}
             >
               Start a chat here
             </Button>
             <CreateChatModal
-              modalOpen={modalOpen}
-              handleModalClose={handleModalClose}
+              modalOpen={createChatModalOpen}
+              handleModalClose={handleCreateChatModalClose}
             />
           </Box>
         )}
@@ -257,6 +280,7 @@ export default function ChatLog() {
             color="primary"
             className="highlight-action-button"
             disabled={highlightedText === null}
+            onClick={handlePopoverClick}
           >
             <UnfoldMoreRoundedIcon />
           </Fab>
@@ -270,7 +294,36 @@ export default function ChatLog() {
             <RestartAltRoundedIcon />
           </Fab>
         </Box>
+        <Popover
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+          transformOrigin={{
+            vertical: "bottom",
+            horizontal: "right",
+          }}
+          open={popoverOpen}
+          anchorEl={popoverAnchorEl}
+          onClose={handlePopoverClose}
+        >
+          <ButtonGroup variant="contained">
+            <Button
+              onClick={() => {
+                setTranslateModalOpen(true);
+              }}
+            >
+              Translate
+            </Button>
+            <Button>Save</Button>
+          </ButtonGroup>
+        </Popover>
       </Box>
+      <TranslateModal
+        modalOpen={translateModalOpen}
+        handleModalClose={handleTranslateModalClose}
+        text={highlightedText}
+      />
     </>
   );
 }
