@@ -34,6 +34,7 @@ export default function TranslateModal({ modalOpen, handleModalClose, text }) {
 
   useEffect(() => {
     async function translateText(text, sourceLang, targetLang, testing) {
+      setIsLoading(true);
       const response = await fetch("/api/translateText", {
         headers: {
           "Content-Type": "application/json",
@@ -47,6 +48,7 @@ export default function TranslateModal({ modalOpen, handleModalClose, text }) {
         }),
       });
       const { translatedText } = await response.json();
+      setIsLoading(false);
       return translatedText;
     }
     if (text && modalOpen) {

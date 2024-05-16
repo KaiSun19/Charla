@@ -110,11 +110,8 @@ export default function ChatLog() {
   };
 
   useEffect(() => {
-    const handleSelectionChange = (e) => {
-      e.preventDefault();
+    const handleSelectionChange = () => {
       const selection = window.getSelection();
-      console.log(selection);
-      console.log(selection.toString());
       if (selection.toString().trim() && selection.toString().trim() !== "") {
         setHighlightedText(selection.toString().trim());
         setIsTextSelected(true);
@@ -165,11 +162,7 @@ export default function ChatLog() {
               className="chat-log-title"
             >
               {mobile && (
-                <IconButton
-                  onClick={() => {
-                    handleNav();
-                  }}
-                >
+                <IconButton onClick={handleNav}>
                   <MenuRoundedIcon
                     sx={{ color: "#929292", width: "30px", height: "30px" }}
                   />
