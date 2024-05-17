@@ -48,11 +48,6 @@ const Message = forwardRef(({ Message, Index }, ref) => {
   //error = audio error
   const [audioStatus, setAudioStatus] = useState("idle");
 
-  // state and handling related to error toolip
-  const [errorTooltipOpen, setErrorTooltipOpen] = useState(
-    Message.errors ? new Array(Message.errors.length).fill(false) : null,
-  );
-
   //text that is highlighted for translation
   const [highlightedText, setHighlightedText] = useState(null);
 
@@ -110,7 +105,6 @@ const Message = forwardRef(({ Message, Index }, ref) => {
       ...conversations.slice(1),
     ];
     handleConversationsUpdate(updatedConversations);
-    setErrorTooltipOpen(new Array(Message.errors.length).fill(false));
   };
 
   const SavedHighlightedMessage = ({ message, savedIndex }) => {
@@ -221,8 +215,6 @@ const Message = forwardRef(({ Message, Index }, ref) => {
                 <ErrorHighlightedMessage
                   message={Message.message}
                   errors={Message.errors}
-                  setErrorTooltipOpen={setErrorTooltipOpen}
-                  errorTooltipOpen={errorTooltipOpen}
                   handleErrorCorrection={handleErrorCorrection}
                 />
               ) : (

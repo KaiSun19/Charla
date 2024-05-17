@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Typography, IconButton, Button } from "@mui/material";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
@@ -10,10 +10,13 @@ import { useCharlaContext } from "@/Contexts/UserContext";
 const ErrorHighlightedMessage = ({
   message,
   errors,
-  setErrorTooltipOpen,
-  errorTooltipOpen,
   handleErrorCorrection,
 }) => {
+  // state and handling related to error toolip
+  const [errorTooltipOpen, setErrorTooltipOpen] = useState(
+    new Array(errors.length).fill(false),
+  );
+
   let errorIndexes = errors.map(({ Phrase }) => {
     const startIndex = message.indexOf(Phrase);
     if (startIndex === -1) {
