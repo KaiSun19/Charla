@@ -75,7 +75,6 @@ export default function ChatLog() {
   const [translateModalOpen, setTranslateModalOpen] = useState(false);
 
   const [highlightedText, setHighlightedText] = useState(null);
-  const [isTextSelected, setIsTextSelected] = useState(false);
 
   const handleCreateChatModalClose = () => {
     setCreateChatModalOpen(false);
@@ -114,10 +113,6 @@ export default function ChatLog() {
       const selection = window.getSelection();
       if (selection.toString().trim() && selection.toString().trim() !== "") {
         setHighlightedText(selection.toString().trim());
-        setIsTextSelected(true);
-      } else {
-        setIsTextSelected(false);
-        setHighlightedText(null);
       }
     };
     document.addEventListener("mouseup", handleSelectionChange);
