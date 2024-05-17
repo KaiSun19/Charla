@@ -52,13 +52,13 @@ export const CharlaProvider = ({ children }) => {
 
   const [user, setUser] = useState(null);
   const [userDetails, setUserDetails] = useState("");
-  const userLoading = useRef(false);
+
+  const [userIsLoading, setUserisLoading] = useState(true);
 
   useEffect(() => {
     //this gets fired whenever a user signs in or refreshes
     const unsubscribe = auth.onAuthStateChanged(
       async (user) => {
-        userLoading.current = true;
         console.log(user);
         setUser(user);
         if (!testing && user) {
@@ -86,8 +86,7 @@ export const CharlaProvider = ({ children }) => {
           setConversations(mockConversations);
           setCurrentConversation(mockConversations[0]);
         }
-
-        userLoading.current = false;
+        setUserisLoading(false);
       },
       (error) => {
         console.log(error);
@@ -345,7 +344,7 @@ export const CharlaProvider = ({ children }) => {
         prevChatSettings,
         setPrevChatSettings,
         user,
-        userLoading,
+        userIsLoading,
       }}
     >
       {children}

@@ -5,13 +5,15 @@ import Record from "../Components/Record/Record";
 import ChatLog from "../Components/ChatLog/ChatLog";
 import ChatNavigation from "../Components/ChatNavigation/ChatNavigation";
 import ErrorPage from "@/Components/ErrorPage/ErrorPage";
+import LoadingScreen from "@/Components/LoadingScreen/LoadingScreen";
 
 export default function Chat() {
-  const { mobile, user, conversations, userLoading } = useCharlaContext();
+  const { mobile, user, conversations, userIsLoading } = useCharlaContext();
 
-  if (userLoading.current) {
-    return <p>Loading ...</p>;
-  } else if (user && user.email === "yksun15@gmail.com") {
+  if (userIsLoading) {
+    return <LoadingScreen />;
+  }
+  if (user && user.email === "yksun15@gmail.com") {
     return (
       <CharlaProvider>
         <Box className="chat-container">

@@ -19,9 +19,12 @@ import { auth } from "@/firebase";
 import { useRouter } from "next/router";
 
 import { ThemePaletteModeContext } from "@/pages/_app";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function Navbar() {
-  const { mobile, userDetails, setUserDetails, user } = useCharlaContext();
+  const { mobile, userDetails, setUserDetails, user, userIsLoading } =
+    useCharlaContext();
   const themePaletteModeContext = React.useContext(ThemePaletteModeContext);
   const theme = useTheme();
 
@@ -84,6 +87,13 @@ export default function Navbar() {
                   {userDetails.initials}
                 </Avatar>
               </IconButton>
+            ) : userIsLoading ? (
+              <Skeleton
+                baseColor="#6573C3"
+                circle={true}
+                height={24}
+                width={24}
+              />
             ) : (
               <IconButton href="/sign-in">
                 <LoginRoundedIcon />
@@ -135,6 +145,13 @@ export default function Navbar() {
                   {userDetails.initials}
                 </Avatar>
               </IconButton>
+            ) : userIsLoading ? (
+              <Skeleton
+                baseColor="#6573C3"
+                circle={true}
+                height={24}
+                width={24}
+              />
             ) : (
               <Button variant="contained" href="/sign-in">
                 Sign In

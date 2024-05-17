@@ -13,6 +13,7 @@ import "../Components/ChatNavigation/ChatNavigationStyles.css";
 import "../Components/CreateChatModal/CreateChatModalStyles.css";
 import "../Components/ErrorPage/ErrorPageStyles.css";
 import "../Components/TranslateModal/TranslateModalStyles.css";
+import "../Components/LoadingScreen/LoadingScreenStyles.css";
 
 import Header from "../Components/Header/Header";
 import { CharlaProvider } from "@/Contexts/UserContext";
