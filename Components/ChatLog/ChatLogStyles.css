@@ -3,7 +3,6 @@
   flex-direction: column;
   overflow-y: auto;
   position: relative;
-  min-height: 90%;
 }
 /* .chat-log-conversation::after {
   content: "";
@@ -46,10 +45,22 @@
   flex-direction: column;
 }
 
-.chat-log-action-buttons {
+.chat-log-action {
   position: sticky;
   bottom: 0;
   padding: 1rem 0;
+  display: flex;
+  justify-content: center;
+  background-repeat: no-repeat;
+}
+
+@media only screen and (max-width: 390px) {
+  .chat-log-action {
+    padding-bottom: 0;
+  }
+}
+
+.chat-log-action-buttons {
   display: flex;
   justify-content: center;
   gap: 1rem;

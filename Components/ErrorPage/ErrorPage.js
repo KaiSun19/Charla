@@ -8,7 +8,7 @@ function ErrorPage({ error }) {
         Error
       </Typography>
       <Box className="error-content">
-        {error && <pre>{error.message}</pre>}
+        {error && <Typography variant="body1">{error.message}</Typography>}
         <Button variant="contained" href="/">
           Go back to Home
         </Button>

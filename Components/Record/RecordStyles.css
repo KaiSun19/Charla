@@ -1,7 +1,7 @@
 .record-container {
   margin: 10px 0 10px 0;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   flex-direction: row;
   align-items: center;
 }
@@ -50,6 +50,7 @@
 @media only screen and (max-device-width: 480px) {
   .record-container {
     justify-content: center;
+    margin-bottom: 0;
   }
   .record-textfield {
     width: 80%;

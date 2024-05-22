@@ -59,7 +59,6 @@ export const CharlaProvider = ({ children }) => {
     //this gets fired whenever a user signs in or refreshes
     const unsubscribe = auth.onAuthStateChanged(
       async (user) => {
-        console.log(user);
         setUser(user);
         if (!testing && user) {
           const userRef = doc(db, "userDetails", user.email); // Document reference based on email
@@ -153,7 +152,7 @@ export const CharlaProvider = ({ children }) => {
           {
             ...updatedConversations[index],
             chat: [...updatedConversations[index].chat, message],
-            lastUpdatedMessage: -1,
+            lastUpdatedMessage: updatedConversations[index].chat.length,
           },
           ...updatedConversations.slice(0, index),
           ...updatedConversations.slice(index + 1),

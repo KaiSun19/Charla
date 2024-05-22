@@ -34,12 +34,18 @@ export default function CreateChatModal({ modalOpen, handleModalClose }) {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 700,
     bgcolor: "background.paper",
     border: "1px solid #c8c8c8",
     boxShadow: 24,
     p: 4,
     borderRadius: 1,
+    ...(mobile
+      ? {
+          width: "80%",
+        }
+      : {
+          width: 700,
+        }),
   };
 
   const sendButton = (

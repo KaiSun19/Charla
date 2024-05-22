@@ -1,4 +1,11 @@
-import { Box, Typography, TextField, Button, Stack } from "@mui/material";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Stack,
+  CssBaseline,
+} from "@mui/material";
 import React, { useRef, useState } from "react";
 import { CharlaProvider, useCharlaContext } from "@/Contexts/UserContext";
 
@@ -59,6 +66,7 @@ export default function SignUp() {
 
   return (
     <CharlaProvider>
+      <CssBaseline />
       <Box className="sign-up-container">
         <Typography variant="h4" component="h1">
           Sign Up

@@ -13,6 +13,7 @@ import {
   Button,
   ButtonGroup,
   Popover,
+  Stack,
 } from "@mui/material";
 import React, { useState, useEffect, useRef } from "react";
 import Message from "../Message/Message";
@@ -25,6 +26,7 @@ import ChatNavigation from "../ChatNavigation/ChatNavigation";
 import { useTheme } from "@emotion/react";
 import CreateChatModal from "../CreateChatModal/CreateChatModal";
 import TranslateModal from "../TranslateModal/TranslateModal";
+import Record from "../Record/Record";
 
 export default function ChatLog() {
   const sliderMarks = [
@@ -211,27 +213,21 @@ export default function ChatLog() {
             </Accordion>
             <Box className="chat-log-conversation">
               {currentConversation &&
-                currentConversation.chat.map((message, index) => (
-                  <Message
-                    ref={
-                      index === currentConversation.chat.lastUpdatedMessage
-                        ? lastUpdatedMessageRef
-                        : null
-                    }
-                    key={`message-${index}`}
-                    Index={index}
-                    Message={message}
-                    // Saved={message["Saved"]}
-                    // SavedIndex={message["SavedIndex"]}
-                    // Errors={message["Errors"]}
-                    // ErrorIndex={message["ErrorIndex"]}
-                  />
-                ))}
-              {charlaIsLoading && (
-                // <Box sx={{}}>
-                <Message Message={{ type: "Loading" }} />
-                // </Box>
-              )}
+                currentConversation.chat.map((message, index) => {
+                  return (
+                    <Message
+                      ref={
+                        index === currentConversation.lastUpdatedMessage
+                          ? lastUpdatedMessageRef
+                          : null
+                      }
+                      key={`message-${index}`}
+                      Index={index}
+                      Message={message}
+                    />
+                  );
+                })}
+              {charlaIsLoading && <Message Message={{ type: "Loading" }} />}
             </Box>
           </>
         ) : (
@@ -263,25 +259,34 @@ export default function ChatLog() {
             />
           </Box>
         )}
-        <Box className="chat-log-action-buttons">
-          <Fab
-            color="primary"
-            className="highlight-action-button"
-            disabled={highlightedText === null}
-            onClick={handlePopoverClick}
-          >
-            <UnfoldMoreRoundedIcon />
-          </Fab>
-          <Fab
-            color="primary"
-            className="restart-action-button"
-            onClick={() => {
-              handleRestartChat();
-            }}
-          >
-            <RestartAltRoundedIcon />
-          </Fab>
-        </Box>
+        <Stack
+          className="chat-log-action"
+          sx={{
+            backgroundImage: `linear-gradient(to top, ${theme.palette.background.default}, transparent)`,
+          }}
+        >
+          <Box className="chat-log-action-buttons">
+            <Fab
+              color="primary"
+              className="highlight-action-button"
+              disabled={highlightedText === null}
+              onClick={handlePopoverClick}
+            >
+              <UnfoldMoreRoundedIcon />
+            </Fab>
+            <Fab
+              color="primary"
+              className="restart-action-button"
+              onClick={() => {
+                handleRestartChat();
+              }}
+            >
+              <RestartAltRoundedIcon />
+            </Fab>
+          </Box>
+
+          <Record />
+        </Stack>
         <Popover
           anchorOrigin={{
             vertical: "top",

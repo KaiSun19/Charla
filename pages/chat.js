@@ -8,7 +8,8 @@ import ErrorPage from "@/Components/ErrorPage/ErrorPage";
 import LoadingScreen from "@/Components/LoadingScreen/LoadingScreen";
 
 export default function Chat() {
-  const { mobile, user, conversations, userIsLoading } = useCharlaContext();
+  const { mobile, user, conversations, userIsLoading, currentConversation } =
+    useCharlaContext();
 
   if (userIsLoading) {
     return <LoadingScreen />;
@@ -20,10 +21,13 @@ export default function Chat() {
           {!mobile && <ChatNavigation />}
           <Box className="conversation-container">
             <ChatLog />
-            <Record />
           </Box>
         </Box>
       </CharlaProvider>
+    );
+  } else if (user.email !== "yksun15@gmail.com") {
+    return (
+      <ErrorPage error={{ message: "We're working on welcoming new users!" }} />
     );
   } else {
     return (

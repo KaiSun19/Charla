@@ -1,12 +1,5 @@
 import { useCharlaContext } from "@/Contexts/UserContext";
-import {
-  Box,
-  Typography,
-  IconButton,
-  Modal,
-  OutlinedInput,
-  InputAdornment,
-} from "@mui/material";
+import { Box, Typography, IconButton, Modal } from "@mui/material";
 import React, { useState, useEffect, useRef } from "react";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { convertClassname } from "@/Utils";
@@ -24,12 +17,18 @@ export default function TranslateModal({ modalOpen, handleModalClose, text }) {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 700,
     bgcolor: "background.paper",
     border: "1px solid #c8c8c8",
     boxShadow: 24,
     p: 4,
     borderRadius: 1,
+    ...(mobile
+      ? {
+          width: "80%",
+        }
+      : {
+          width: 700,
+        }),
   };
 
   useEffect(() => {
