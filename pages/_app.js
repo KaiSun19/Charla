@@ -46,6 +46,7 @@ export default function App({ Component, pageProps }) {
           mode: themePaletteMode,
           primary: {
             main: "#6573C3",
+            light: "#6573c39c",
           },
           secondary: {
             main: "#f50057",

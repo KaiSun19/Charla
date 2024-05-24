@@ -3,10 +3,9 @@ import { Box, IconButton } from "@mui/material";
 import { useCharlaContext } from "@/Contexts/UserContext";
 import KeyboardVoiceOutlinedIcon from "@mui/icons-material/KeyboardVoiceOutlined";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
-import SendRoundedIcon from "@mui/icons-material/SendRounded";
+import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
-import UnfoldMoreOutlinedIcon from "@mui/icons-material/UnfoldMoreOutlined";
 import { convertClassname } from "@/Utils";
 import { useTheme } from "@mui/material/styles";
 
@@ -133,6 +132,7 @@ const Record = () => {
 
   const recordButton = (
     <IconButton
+      sx={{ paddingRight: "0" }}
       onClick={() => {
         handleRecording();
       }}
@@ -140,10 +140,12 @@ const Record = () => {
       {recording ? (
         <CancelRoundedIcon
           className={`${convertClassname(mobile, "icon-button")}`}
+          color="primary"
         />
       ) : (
         <KeyboardVoiceOutlinedIcon
           className={`${convertClassname(mobile, "icon-button")}`}
+          color="primary"
         />
       )}
     </IconButton>
@@ -163,10 +165,26 @@ const Record = () => {
           className="outlined-input record-input"
           value={userInput}
           onChange={handleUserInput}
-          multiline={expandInput ? true : false}
-          minRows={5}
+          multiline
+          maxRows={5}
           endAdornment={
-            <InputAdornment position="end">{recordButton}</InputAdornment>
+            <>
+              <InputAdornment position="end">{recordButton}</InputAdornment>
+              <InputAdornment position="end">
+                <IconButton
+                  sx={{ paddingLeft: "0" }}
+                  onClick={() => {
+                    handleUserSend();
+                  }}
+                  disabled={recording}
+                >
+                  <ArrowUpwardRoundedIcon
+                    className={`${convertClassname(mobile, "icon-button")}`}
+                    color={recording ? "primary.light" : "primary"}
+                  />
+                </IconButton>
+              </InputAdornment>
+            </>
           }
           sx={{
             backgroundColor: theme.palette.background.paper,
@@ -175,28 +193,6 @@ const Record = () => {
             },
           }}
         />
-      </Box>
-      <Box className="record-icon-buttons-container">
-        {mobile && (
-          <IconButton
-            onClick={() => {
-              handleExpandInput();
-            }}
-          >
-            <UnfoldMoreOutlinedIcon
-              className={`${convertClassname(mobile, "icon-button")}`}
-            />
-          </IconButton>
-        )}
-        <IconButton
-          onClick={() => {
-            handleUserSend();
-          }}
-        >
-          <SendRoundedIcon
-            className={`${convertClassname(mobile, "icon-button")} send-button`}
-          />
-        </IconButton>
       </Box>
     </Box>
   );

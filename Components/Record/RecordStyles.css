@@ -17,6 +17,10 @@
   font-size: 18px;
 }
 
+.record-input > textarea {
+  padding: 1rem;
+}
+
 .record-input-container {
   display: flex;
   justify-content: flex-start;
@@ -50,7 +54,6 @@
 @media only screen and (max-device-width: 480px) {
   .record-container {
     justify-content: center;
-    margin-bottom: 0;
   }
   .record-textfield {
     width: 80%;
