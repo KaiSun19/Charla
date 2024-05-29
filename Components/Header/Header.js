@@ -124,15 +124,15 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <IconButton onClick={() => router.push("/chat")}>
+            <IconButton onClick={() => router.push("/chat")} disableRipple>
               <Typography variant="h6">Chat</Typography>
             </IconButton>
-            <Button variant="outlined" color="inherit">
-              Library
-            </Button>
-            <Button variant="outlined" color="inherit">
-              Dashboard
-            </Button>
+            <IconButton onClick={() => router.push("/library")} disableRipple>
+              <Typography variant="h6">Library</Typography>
+            </IconButton>
+            <IconButton onClick={() => router.push("/dashboard")} disableRipple>
+              <Typography variant="h6">Dashboard</Typography>
+            </IconButton>
             {user ? (
               <IconButton onClick={handleSettingsClick}>
                 <Avatar

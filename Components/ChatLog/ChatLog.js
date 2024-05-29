@@ -14,10 +14,10 @@ import {
   ButtonGroup,
   Popover,
   Stack,
+  Divider,
 } from "@mui/material";
 import React, { useState, useEffect, useRef } from "react";
 import Message from "../Message/Message";
-import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import UnfoldMoreRoundedIcon from "@mui/icons-material/UnfoldMoreRounded";
@@ -139,10 +139,18 @@ export default function ChatLog() {
 
   const popoverOpen = Boolean(popoverAnchorEl);
 
+  // states and handlers for Chat Settings
+
   const [hideText, setHideText] = useState(false);
 
   const handleHideText = (e) => {
     setHideText(!hideText);
+  };
+
+  const [autoplay, setAutoplay] = useState(false);
+
+  const handleAutoplay = (e) => {
+    setAutoplay(!hideText);
   };
 
   return (
@@ -192,12 +200,28 @@ export default function ChatLog() {
                 }}
               >
                 <Box className="chat-log-accordion-input">
-                  <Typography variant="body1">Hide Text</Typography>
-                  <Switch
-                    color="primary"
-                    checked={hideText}
-                    onChange={handleHideText}
-                  />
+                  <Stack
+                    direction="row"
+                    gap={1}
+                    divider={<Divider orientation="vertical" flexItem />}
+                  >
+                    <Box className="flex-items-center">
+                      <Typography variant="body1">Hide Text</Typography>
+                      <Switch
+                        color="primary"
+                        checked={hideText}
+                        onChange={handleHideText}
+                      />
+                    </Box>
+                    <Box className="flex-items-center">
+                      <Typography variant="body1">Autoplay Speech</Typography>
+                      <Switch
+                        color="primary"
+                        checked={autoplay}
+                        onChange={handleAutoplay}
+                      />
+                    </Box>
+                  </Stack>
                 </Box>
                 <Box className="chat-log-accordion-input">
                   <Typography variant="body1">Set playback speed</Typography>
@@ -230,6 +254,7 @@ export default function ChatLog() {
                       Index={index}
                       Message={message}
                       Hide={hideText}
+                      Autoplay={autoplay}
                     />
                   );
                 })}

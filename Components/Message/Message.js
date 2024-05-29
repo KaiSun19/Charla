@@ -40,13 +40,12 @@ const calculateAudioDuration = async (arrayBuffer) => {
   return audioBuffer.duration;
 };
 
-const Message = forwardRef(({ Message, Index, Hide }, ref) => {
+const Message = forwardRef(({ Message, Index, Hide, Autoplay }, ref) => {
   const {
     mobile,
     userDetails,
     conversations,
     currentConversation,
-    charlaIsLoading,
     fetchAudio,
     createUpdatedConversations,
     handleConversationsUpdate,
@@ -182,6 +181,17 @@ const Message = forwardRef(({ Message, Index, Hide }, ref) => {
     }
     return count / 2;
   };
+
+  useEffect(() => {
+    if (
+      Autoplay &&
+      Index === currentConversation.lastUpdatedMessage &&
+      !audioRef.current.src &&
+      Message.type === "Charla"
+    ) {
+      playAudio();
+    }
+  }, []);
 
   return (
     <Box
