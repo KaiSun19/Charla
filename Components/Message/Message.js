@@ -10,6 +10,7 @@ import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 
 import ErrorHighlightedMessage from "./ErrorHighlightedMessage";
+import VoiceOnlyUI from "../VoiceOnlyUI/VoiceOnlyUI";
 
 const messageStyles = {
   display: "flex",
@@ -19,7 +20,27 @@ const messageStyles = {
   gap: "15px",
 };
 
-const Message = forwardRef(({ Message, Index }, ref) => {
+const decodeBase64Audio = (base64) => {
+  const binaryString = atob(base64.split(",")[1]);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+
+  return bytes.buffer;
+};
+
+const calculateAudioDuration = async (arrayBuffer) => {
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+  const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+  return audioBuffer.duration;
+};
+
+const Message = forwardRef(({ Message, Index, Hide }, ref) => {
   const {
     mobile,
     userDetails,
@@ -51,6 +72,9 @@ const Message = forwardRef(({ Message, Index }, ref) => {
   //text that is highlighted for translation
   const [highlightedText, setHighlightedText] = useState(null);
 
+  //audio duration count to pass to voice only ui
+  const audioDurationRef = useRef(Message.audioDuration || null);
+
   const playAudio = async () => {
     let messageWithAudio;
     if ((!Message.audio && !audioRef.current.src) || isSettingsSpeedChanged) {
@@ -58,6 +82,14 @@ const Message = forwardRef(({ Message, Index }, ref) => {
       // If message does not have audio, fetch audio
       messageWithAudio = await fetchAudio(Message, Index);
       audioRef.current.src = messageWithAudio.audio;
+
+      messageWithAudio.audioDuration = await calculateAudioDuration(
+        decodeBase64Audio(messageWithAudio.audio),
+      );
+
+      audioDurationRef.current = messageWithAudio.audioDuration;
+    } else if (Message.audio) {
+      audioDurationRef.current = Message.audioDuration;
     }
     try {
       await audioRef.current.play(); // Wait for playback to start
@@ -67,6 +99,7 @@ const Message = forwardRef(({ Message, Index }, ref) => {
       // Handle other potential errors
       setAudioStatus("error"); // Reset state on error
     }
+    //TODO: for audio to be uploaded to firebase the audio cannot be stopped before it ends
     audioRef.current.onended = () => {
       // after playback endupdate message state if message state does not have audio
       if (!Message.audio) {
@@ -135,6 +168,19 @@ const Message = forwardRef(({ Message, Index }, ref) => {
         {message}
       </Typography>
     );
+  };
+
+  const calcSpeechOnlyWidth = (count) => {
+    if (mobile) {
+      if (count / 5 > 20) {
+        return 20;
+      }
+      return count / 5;
+    }
+    if (count / 2 > 50) {
+      return 50;
+    }
+    return count / 2;
   };
 
   return (
@@ -249,7 +295,6 @@ const Message = forwardRef(({ Message, Index }, ref) => {
                   sx={{ width: "36px", height: "36px" }}
                   onClick={audioStatus === "playing" ? pauseAudio : playAudio}
                 >
-                  {/* TODO FIX : the button should have the same height as its width */}
                   {audioStatus === "playing" ? (
                     <PauseRoundedIcon />
                   ) : audioStatus === "loading" ? (
@@ -264,10 +309,18 @@ const Message = forwardRef(({ Message, Index }, ref) => {
                   )}
                 </IconButton>
               </>
-              <SavedHighlightedMessage
-                message={Message.message}
-                // savedIndex={SavedIndex}
-              />
+              {Hide ? (
+                <VoiceOnlyUI
+                  count={Math.ceil(calcSpeechOnlyWidth(Message.message.length))}
+                  duration={audioDurationRef.current}
+                  isPlaying={audioStatus === "playing"}
+                />
+              ) : (
+                <SavedHighlightedMessage
+                  message={Message.message}
+                  // savedIndex={SavedIndex}
+                />
+              )}
             </>
           )}
         </Box>

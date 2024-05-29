@@ -7,7 +7,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 import { CssBaseline } from "@mui/material";
 
-export default function ChatNavigation() {
+export default function LoadingScreen() {
   const { mobile } = useCharlaContext();
 
   return (

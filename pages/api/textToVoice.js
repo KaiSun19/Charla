@@ -30,7 +30,7 @@ export default async function POST(request, res) {
       res.status(200).json(response.data);
       return;
     } else {
-      const response = await fetch(endpoint, {
+      let response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: payload,
@@ -40,7 +40,7 @@ export default async function POST(request, res) {
           `TTS API request failed with status ${response.status}`,
         );
       }
-      const data = await response.json();
+      let data = await response.json();
       res.status(200).json(data); // Return the response data
     }
   } catch (error) {

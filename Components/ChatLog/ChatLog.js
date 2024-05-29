@@ -139,6 +139,12 @@ export default function ChatLog() {
 
   const popoverOpen = Boolean(popoverAnchorEl);
 
+  const [hideText, setHideText] = useState(false);
+
+  const handleHideText = (e) => {
+    setHideText(!hideText);
+  };
+
   return (
     <>
       {mobile ? (
@@ -168,11 +174,6 @@ export default function ChatLog() {
               <Typography variant={mobile ? "h6" : "h4"}>
                 {currentConversation && currentConversation.title}
               </Typography>
-              <IconButton>
-                <MoreHorizRoundedIcon
-                  sx={{ color: "#929292", width: "30px", height: "30px" }}
-                />
-              </IconButton>
             </Box>
             <Accordion className="chat-log-accordion" disableGutters={true}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -191,8 +192,12 @@ export default function ChatLog() {
                 }}
               >
                 <Box className="chat-log-accordion-input">
-                  <Typography variant="body1">Show messages</Typography>
-                  <Switch defaultChecked color="primary" />
+                  <Typography variant="body1">Hide Text</Typography>
+                  <Switch
+                    color="primary"
+                    checked={hideText}
+                    onChange={handleHideText}
+                  />
                 </Box>
                 <Box className="chat-log-accordion-input">
                   <Typography variant="body1">Set playback speed</Typography>
@@ -224,6 +229,7 @@ export default function ChatLog() {
                       key={`message-${index}`}
                       Index={index}
                       Message={message}
+                      Hide={hideText}
                     />
                   );
                 })}

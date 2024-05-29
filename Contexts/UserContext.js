@@ -75,7 +75,7 @@ export const CharlaProvider = ({ children }) => {
               setConversations(conversationsSnap.data().conversations);
               if (conversationsSnap.data().conversations.length > 0) {
                 setCurrentConversation(
-                  conversationsSnap.data().conversations[0],
+                  conversationsSnap.data().conversations[1],
                 );
               }
             }
@@ -252,7 +252,7 @@ export const CharlaProvider = ({ children }) => {
   //   return message;
   // });
 
-  const fetchAudio = async (message, messageIndex) => {
+  const fetchAudio = async (message) => {
     const text = message.message;
     const response = await fetch("/api/textToVoice", {
       headers: {
