@@ -33,6 +33,7 @@
   background: none;
   border: none;
   text-align: left;
+  border-radius: 1rem;
 }
 
 .chat-nav-item:hover {
@@ -40,11 +41,6 @@
   cursor: pointer;
 }
 
-.nav-item-delete-button {
-  opacity: 0;
+.nav-item-action-button {
   transition-duration: 0.2s;
-}
-
-.chat-nav-item:hover .nav-item-delete-button {
-  opacity: 1;
 }

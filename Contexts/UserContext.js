@@ -182,6 +182,21 @@ export const CharlaProvider = ({ children }) => {
     }
   };
 
+  const deleteConversation = (lastAttempted) => {
+    console.log(
+      conversations.filter(
+        (conversation) =>
+          conversation.chat_details.last_attempted !== lastAttempted,
+      ),
+    );
+    // handleConversationsUpdate(
+    //   conversations.filter(
+    //     (conversation, index) => index !== conversationIndex,
+    //   ),
+    // );
+    return;
+  };
+
   useEffect(() => {
     if (conversations.length > 0) {
       const currentChat = conversations[0].chat;
@@ -332,6 +347,7 @@ export const CharlaProvider = ({ children }) => {
         handleNav,
         currentConversation,
         setCurrentConversation,
+        deleteConversation,
         addToChat,
         charlaIsLoading,
         testAudio,

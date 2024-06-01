@@ -8,7 +8,7 @@ import {
   InputAdornment,
 } from "@mui/material";
 import React, { useState, useEffect, useRef } from "react";
-import SendRoundedIcon from "@mui/icons-material/SendRounded";
+import ArrowUpwardRounded from "@mui/icons-material/ArrowUpwardRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { convertClassname } from "@/Utils";
 
@@ -54,8 +54,9 @@ export default function CreateChatModal({ modalOpen, handleModalClose }) {
         handleUserSend();
       }}
     >
-      <SendRoundedIcon
-        className={`${convertClassname(mobile, "icon-button")} send-button`}
+      <ArrowUpwardRounded
+        className={`${convertClassname(mobile, "icon-button")}`}
+        color="primary"
       />
     </IconButton>
   );
