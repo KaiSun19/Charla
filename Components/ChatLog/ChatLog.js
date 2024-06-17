@@ -15,6 +15,8 @@ import {
   Popover,
   Stack,
   Divider,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import React, { useState, useEffect, useRef } from "react";
 import Message from "../Message/Message";
@@ -22,11 +24,13 @@ import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import UnfoldMoreRoundedIcon from "@mui/icons-material/UnfoldMoreRounded";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
+import CheckIcon from "@mui/icons-material/Check";
 import ChatNavigation from "../ChatNavigation/ChatNavigation";
 import { useTheme } from "@emotion/react";
 import CreateChatModal from "../CreateChatModal/CreateChatModal";
 import TranslateModal from "../TranslateModal/TranslateModal";
 import Record from "../Record/Record";
+import { findConversations, findStartEndIndex } from "@/Utils";
 
 export default function ChatLog() {
   const sliderMarks = [
@@ -56,6 +60,7 @@ export default function ChatLog() {
     conversations,
     currentConversation,
     handleConversationsUpdate,
+    createUpdatedConversations,
     mobile,
     navOpen,
     handleNav,
@@ -153,8 +158,69 @@ export default function ChatLog() {
     setAutoplay(!hideText);
   };
 
+  const handleSavePhrase = () => {
+    let matchingConversations = findConversations(
+      highlightedText,
+      conversations,
+    );
+    let messagesToAdd = [];
+    matchingConversations.map(({ conversation, index }) => {
+      //if highlightedText is already a saved phrase then skip
+      if (
+        conversation.chat[index].saved.some(
+          ({ text }) => text === highlightedText,
+        )
+      ) {
+        return;
+      }
+      let updatedMessage = conversation.chat[index];
+      let [start, end] = findStartEndIndex(
+        highlightedText,
+        conversation.chat[index].message,
+      );
+      updatedMessage = {
+        ...updatedMessage,
+        saved: [
+          ...updatedMessage.saved,
+          {
+            text: highlightedText,
+            text_start: start,
+            text_end: end,
+          },
+        ],
+      };
+      messagesToAdd.push({
+        index: conversations.indexOf(conversation),
+        message: updatedMessage,
+        messageIndex: index,
+      });
+    });
+    let updatedConversations = createUpdatedConversations(...messagesToAdd);
+    handleConversationsUpdate(updatedConversations);
+    handlePopoverClose();
+    setSuccessAlertOpen(true);
+  };
+
+  const [successAlertOpen, setSuccessAlertOpen] = useState(false);
+
+  const handleSuccessAlertClose = (e, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSuccessAlertOpen(false);
+  };
+
   return (
     <>
+      <Snackbar
+        open={successAlertOpen}
+        onClose={handleSuccessAlertClose}
+        autoHideDuration={3000}
+      >
+        <Alert onClose={handleSuccessAlertClose} severity="success">
+          Saved.
+        </Alert>
+      </Snackbar>
       {mobile ? (
         <Drawer
           open={navOpen}
@@ -184,7 +250,10 @@ export default function ChatLog() {
               </Typography>
             </Box>
             <Accordion className="chat-log-accordion" disableGutters={true}>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                sx={{ height: "6%" }}
+              >
                 <Typography variant={mobile ? "body1" : "h6"}>
                   Chat settings
                 </Typography>
@@ -339,7 +408,13 @@ export default function ChatLog() {
             >
               Translate
             </Button>
-            <Button>Save</Button>
+            <Button
+              onClick={() => {
+                handleSavePhrase();
+              }}
+            >
+              Save
+            </Button>
           </ButtonGroup>
         </Popover>
       </Box>

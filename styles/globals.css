@@ -132,6 +132,17 @@ body {
   }
 }
 
+@media only screen and (max-width: 400px) {
+  .sign-up-container form,
+  .sign-in-container form {
+    width: 100%;
+  }
+  .conversation-container {
+    min-width: 100%;
+    min-height: 100%;
+  }
+}
+
 .sign-up-container form .MuiTextField-root,
 .sign-in-container form .MuiTextField-root {
   margin-bottom: 1rem;

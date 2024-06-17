@@ -1,6 +1,14 @@
 import { initialPrompt } from "@/Constants";
 import React, { useContext, useState, useEffect } from "react";
 
+export const findStartEndIndex = (subtext, text) => {
+  let startIndex = text.indexOf(subtext);
+  if (!startIndex) {
+    return null;
+  }
+  return [startIndex, startIndex + subtext.length - 1];
+};
+
 const handleBlobToBase64 = ({ blob, continuous }) => {
   const reader = new FileReader();
   reader.readAsDataURL(blob);
@@ -266,4 +274,16 @@ export const createUser = (username, email) => {
     datetimeJoined: new Date().toDateString(),
     initials: username.match(/\b\w/g).join(",").replace(",", ""),
   };
+};
+// matches phrase with text within a conversation chat and then returns array of matching conversations
+export const findConversations = (phrase, conversations) => {
+  let matchConversations = [];
+  conversations.map((conversation) => {
+    conversation.chat.map((chat, i) => {
+      if (chat.message.includes(phrase)) {
+        matchConversations.push({ conversation, index: i });
+      }
+    });
+  });
+  return matchConversations;
 };

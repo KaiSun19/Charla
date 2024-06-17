@@ -11,6 +11,7 @@ import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 
 import ErrorHighlightedMessage from "./ErrorHighlightedMessage";
 import VoiceOnlyUI from "../VoiceOnlyUI/VoiceOnlyUI";
+import SavedHighlightedMessage from "./SavedHighlightedMessage";
 
 const messageStyles = {
   display: "flex",
@@ -137,36 +138,6 @@ const Message = forwardRef(({ Message, Index, Hide, Autoplay }, ref) => {
       ...conversations.slice(1),
     ];
     handleConversationsUpdate(updatedConversations);
-  };
-
-  const SavedHighlightedMessage = ({ message, savedIndex }) => {
-    // const messageWithHighlights = () => {
-    //   let renderedMessage = [];
-    //   let lastIndex = 0;
-    //   savedIndex.map(([start, end]) => {
-    //     renderedMessage.push(message.substring(lastIndex, start));
-    //     const substringToHighlight = message.substring(start, end);
-    //     const highlightText = (
-    //       <span className="message-highlight-saved">
-    //         {substringToHighlight}
-    //       </span>
-    //     );
-    //     renderedMessage.push(highlightText);
-    //     lastIndex = end;
-    //   });
-    //   renderedMessage.push(<span>{message.substring(lastIndex)}</span>);
-    //   return renderedMessage;
-    // };
-    return (
-      <Typography
-        variant="body1"
-        className="flex-items-center"
-        sx={mobile ? {} : { fontSize: "22px" }}
-      >
-        {/* {messageWithHighlights()} */}
-        {message}
-      </Typography>
-    );
   };
 
   const calcSpeechOnlyWidth = (count) => {
@@ -328,7 +299,7 @@ const Message = forwardRef(({ Message, Index, Hide, Autoplay }, ref) => {
               ) : (
                 <SavedHighlightedMessage
                   message={Message.message}
-                  // savedIndex={SavedIndex}
+                  saved={Message.saved}
                 />
               )}
             </>

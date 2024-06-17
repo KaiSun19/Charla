@@ -135,6 +135,7 @@ export default function ChatNavigation() {
           variant="outlined"
           color="inherit"
           className="chat-navigation-button"
+          sx={{ border: `1px solid ${theme.palette.divider} ` }}
           onClick={() => {
             setModalOpen(true);
           }}

@@ -23,6 +23,7 @@
 .chat-navigation-button {
   width: 100%;
   color: #797979;
+  border-radius: 10px;
 }
 
 .chat-nav-item {

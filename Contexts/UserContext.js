@@ -126,10 +126,11 @@ export const CharlaProvider = ({ children }) => {
     setConversations(updatedConversations);
     setCurrentConversation(updatedConversations[0]);
   };
-
+  // args -> index : convetsation index ; message : message to add ; messageIndex : message index within conversation.chat
   const createUpdatedConversations = (...args) => {
     let updatedConversations = conversations;
     for (let i = 0; i < args.length; i++) {
+      console.log(args[i]);
       let { index, message, messageIndex } = args[i];
       let newChat;
       if (messageIndex !== -1) {
