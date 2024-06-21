@@ -42,6 +42,10 @@
   cursor: pointer;
 }
 
+#chat-nav-item-first {
+  background-color: #6573c32b;
+}
+
 .nav-item-action-button {
   transition-duration: 0.2s;
 }

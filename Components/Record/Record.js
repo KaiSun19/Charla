@@ -4,6 +4,7 @@ import { useCharlaContext } from "@/Contexts/UserContext";
 import KeyboardVoiceOutlinedIcon from "@mui/icons-material/KeyboardVoiceOutlined";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
+import PendingOutlinedIcon from "@mui/icons-material/PendingOutlined";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 import { convertClassname } from "@/Utils";
@@ -19,8 +20,8 @@ const Record = () => {
 
   const [recording, setRecording] = useState(false);
   const [voiceText, setVoiceText] = useState("");
+  const [voiceApiLoading, setVoiceApiLoading] = useState(false);
   const [userInput, setUserInput] = useState("");
-  const [expandInput, setExpandInput] = useState(false);
 
   const handleStopRecording = () => {
     if (rec.current) {
@@ -33,10 +34,6 @@ const Record = () => {
 
   const handleUserInput = (e) => {
     setUserInput(e.target.value);
-  };
-
-  const handleExpandInput = () => {
-    setExpandInput(!expandInput);
   };
 
   const handleUserSend = () => {
@@ -92,6 +89,7 @@ const Record = () => {
                     }),
                   });
                   const data = await response.json();
+                  setVoiceApiLoading(false);
                   setVoiceText(data.result);
                   if (response.status !== 200) {
                     throw (
@@ -119,6 +117,7 @@ const Record = () => {
     } else {
       setRecording(false);
       handleStopRecording();
+      setVoiceApiLoading(true);
     }
   }
 
@@ -167,6 +166,16 @@ const Record = () => {
           onChange={handleUserInput}
           multiline
           maxRows={5}
+          startAdornment={
+            voiceApiLoading && (
+              <InputAdornment position="start">
+                <PendingOutlinedIcon
+                  className={`${convertClassname(mobile, "icon-button")}`}
+                  color="primary.light"
+                />
+              </InputAdornment>
+            )
+          }
           endAdornment={
             <>
               <InputAdornment position="end">{recordButton}</InputAdornment>

@@ -8,12 +8,13 @@ const SavedHighlightedMessage = ({ message, saved }) => {
       renderedMessage.push(
         <span>{message.substring(lastIndex, text_start)}</span>,
       );
-      const substringToHighlight = message.substring(text_start, text_end);
+      const substringToHighlight = message.substring(text_start, text_end + 1);
+      console.log(substringToHighlight);
       const highlightText = (
         <span className="message-highlight-saved">{substringToHighlight}</span>
       );
       renderedMessage.push(highlightText);
-      lastIndex = text_end;
+      lastIndex = text_end + 1;
     }
   });
   renderedMessage.push(<span>{message.substring(lastIndex)}</span>);

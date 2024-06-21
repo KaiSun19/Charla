@@ -1,0 +1,24 @@
+.loading-ellipsis-container {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+@keyframes fade-in-out {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.loading-ellipsis-item {
+  width: 0.75rem;
+  height: 0.75rem;
+  background-color: #6573c32b;
+  border-radius: 100%;
+  opacity: 0;
+  animation: fade-in-out 1s infinite;
+}

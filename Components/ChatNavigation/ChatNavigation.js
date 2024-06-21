@@ -27,6 +27,7 @@ export default function ChatNavigation() {
     conversations,
     mobile,
     handleNav,
+    currentConversation,
     setCurrentConversation,
     deleteConversation,
   } = useCharlaContext();
@@ -146,6 +147,7 @@ export default function ChatNavigation() {
           return (
             <Box
               className="chat-nav-item"
+              id={conversation === currentConversation && "chat-nav-item-first"}
               onClick={() => {
                 setCurrentConversation(conversation);
               }}

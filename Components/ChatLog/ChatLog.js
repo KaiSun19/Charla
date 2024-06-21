@@ -24,7 +24,6 @@ import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import UnfoldMoreRoundedIcon from "@mui/icons-material/UnfoldMoreRounded";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
-import CheckIcon from "@mui/icons-material/Check";
 import ChatNavigation from "../ChatNavigation/ChatNavigation";
 import { useTheme } from "@emotion/react";
 import CreateChatModal from "../CreateChatModal/CreateChatModal";
