@@ -271,7 +271,7 @@ export const createUser = (username, email) => {
     id: btoa(username + email),
     username: username,
     email: email,
-    datetimeJoined: new Date().toDateString(),
+    datetime_joined: new Date().toDateString(),
     initials: username.match(/\b\w/g).join(",").replace(",", ""),
   };
 };

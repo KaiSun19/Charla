@@ -28,6 +28,8 @@ export const CharlaProvider = ({ children }) => {
 
   const [conversations, setConversations] = useState([]);
 
+  const [userInput, setUserInput] = useState("");
+
   const [audioBlob, setAudioBlob] = useState(" ");
 
   const [language, setLanguage] = useState("es");
@@ -361,6 +363,8 @@ export const CharlaProvider = ({ children }) => {
         setPrevChatSettings,
         user,
         userIsLoading,
+        userInput,
+        setUserInput,
       }}
     >
       {children}

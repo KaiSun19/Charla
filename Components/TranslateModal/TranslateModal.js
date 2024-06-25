@@ -1,5 +1,15 @@
 import { useCharlaContext } from "@/Contexts/UserContext";
-import { Box, Typography, IconButton, Modal } from "@mui/material";
+import {
+  Box,
+  Typography,
+  IconButton,
+  Modal,
+  InputLabel,
+  Select,
+  MenuItem,
+  Stack,
+  Button,
+} from "@mui/material";
 import React, { useState, useEffect, useRef } from "react";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { convertClassname } from "@/Utils";
@@ -7,11 +17,30 @@ import { convertClassname } from "@/Utils";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-export default function TranslateModal({ modalOpen, handleModalClose, text }) {
-  const { mobile } = useCharlaContext();
+const getLanguageCoding = (lang_full) => {
+  switch (lang_full) {
+    case "english":
+      return "en";
+    case "spanish":
+      return "es";
+  }
+};
 
-  const [translation, setTranslation] = useState("example translation");
+export default function TranslateModal({ modalOpen, handleModalClose, text }) {
+  const { mobile, userDetails, setUserInput } = useCharlaContext();
+
+  const [translation, setTranslation] = useState("");
+  const [sourceLang, setSourceLang] = useState("");
+  const [targetLang, setTargetLang] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (userDetails) {
+      setSourceLang(userDetails["knows_languages"][0]);
+      setTargetLang(userDetails["learning_languages"][0]);
+    }
+  }, [userDetails]);
+
   const style = {
     position: "absolute",
     top: "50%",
@@ -51,11 +80,33 @@ export default function TranslateModal({ modalOpen, handleModalClose, text }) {
       return translatedText;
     }
     if (text && modalOpen) {
-      translateText(text, "es", "en", false).then((translation) => {
+      translateText(
+        text,
+        getLanguageCoding(sourceLang),
+        getLanguageCoding(targetLang),
+        false,
+      ).then((translation) => {
         setTranslation(translation);
       });
     }
-  }, [text, modalOpen]);
+  }, [text, modalOpen, sourceLang, targetLang]);
+
+  //logic for language select setters
+
+  const handleSourceLangChange = (event) => {
+    setSourceLang(event.target.value);
+  };
+
+  const handleTargetLangChange = (event) => {
+    setTargetLang(event.target.value);
+  };
+
+  const handleReplaceText = () => {
+    setUserInput((currentInput) => {
+      return currentInput.replace(text, translation);
+    });
+    handleModalClose();
+  };
 
   return (
     <Modal open={modalOpen} onClose={handleModalClose}>
@@ -82,6 +133,44 @@ export default function TranslateModal({ modalOpen, handleModalClose, text }) {
             />
           </IconButton>
         </Box>
+        <Stack
+          direction="row"
+          justifyContent="flex-start"
+          alignItems="center"
+          spacing={3}
+          sx={{ margin: "1rem 0 1rem 0" }}
+        >
+          <Box>
+            <InputLabel>From</InputLabel>
+            <Select
+              value={sourceLang}
+              label="Source"
+              onChange={handleSourceLangChange}
+            >
+              {userDetails &&
+                userDetails["knows_languages"]
+                  .concat(userDetails["learning_languages"])
+                  .map((lang) => {
+                    return <MenuItem value={lang}>{lang}</MenuItem>;
+                  })}
+            </Select>
+          </Box>
+          <Box>
+            <InputLabel>To</InputLabel>
+            <Select
+              value={targetLang}
+              label="Target"
+              onChange={handleTargetLangChange}
+            >
+              {userDetails &&
+                userDetails["knows_languages"]
+                  .concat(userDetails["learning_languages"])
+                  .map((lang) => {
+                    return <MenuItem value={lang}>{lang}</MenuItem>;
+                  })}
+            </Select>
+          </Box>
+        </Stack>
         <Typography variant="body1" color="primary" sx={{ mt: 2 }}>
           Translation
         </Typography>
@@ -101,6 +190,13 @@ export default function TranslateModal({ modalOpen, handleModalClose, text }) {
             {translation}
           </Typography>
         )}
+        <Button
+          variant="outlined"
+          sx={{ marginTop: "1rem" }}
+          onClick={handleReplaceText}
+        >
+          Replace
+        </Button>
       </Box>
     </Modal>
   );

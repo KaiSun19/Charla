@@ -11,8 +11,15 @@ import { convertClassname } from "@/Utils";
 import { useTheme } from "@mui/material/styles";
 
 const Record = () => {
-  const { language, mobile, testing, currentConversation, addToChat } =
-    useCharlaContext();
+  const {
+    language,
+    mobile,
+    testing,
+    currentConversation,
+    addToChat,
+    userInput,
+    setUserInput,
+  } = useCharlaContext();
 
   const theme = useTheme();
 
@@ -21,7 +28,6 @@ const Record = () => {
   const [recording, setRecording] = useState(false);
   const [voiceText, setVoiceText] = useState("");
   const [voiceApiLoading, setVoiceApiLoading] = useState(false);
-  const [userInput, setUserInput] = useState("");
 
   const handleStopRecording = () => {
     if (rec.current) {

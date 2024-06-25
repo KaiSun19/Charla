@@ -163,7 +163,7 @@ export const randomResponses = [
 ];
 
 export const mockUserDetails = {
-  datetimeJoined: "Sun Apr 21 2024",
+  datetime_joined: "Sun Apr 21 2024",
   email: "yksun15@gmail.com",
   id: "dGVzdHVzZXIxdGVzdHVzZXIxQGdtYWlsLmNvbQ==",
   initials: "YS",
