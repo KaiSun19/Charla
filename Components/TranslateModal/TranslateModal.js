@@ -17,7 +17,7 @@ import { convertClassname } from "@/Utils";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-const getLanguageCoding = (lang_full) => {
+export const getLanguageCoding = (lang_full) => {
   switch (lang_full) {
     case "english":
       return "en";

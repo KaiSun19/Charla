@@ -13,6 +13,7 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
+import Person2RoundedIcon from "@mui/icons-material/Person2Rounded";
 import { useTheme } from "@mui/material/styles";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase";
@@ -164,11 +165,16 @@ export default function Navbar() {
               onClose={handleClose}
               MenuListProps={{ "aria-labelledby": "basic-button" }}
             >
-              <MenuItem onClick={handleSignOut}>
+              <MenuItem
+                onClick={() => {
+                  handleClose();
+                  router.push(`/profile/${userDetails.username}`);
+                }}
+              >
                 <ListItemIcon>
-                  <LogoutRoundedIcon fontSize="small" />
+                  <Person2RoundedIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>Sign out</ListItemText>
+                <ListItemText>Profile</ListItemText>
               </MenuItem>
               <MenuItem
                 onClick={() => {
@@ -180,6 +186,12 @@ export default function Navbar() {
                   <DarkModeRoundedIcon fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>Toggle display mode</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={handleSignOut}>
+                <ListItemIcon>
+                  <LogoutRoundedIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Sign out</ListItemText>
               </MenuItem>
             </Menu>
           </>

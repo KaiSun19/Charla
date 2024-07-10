@@ -170,6 +170,39 @@ export const mockUserDetails = {
   username: "Kai Sun",
 };
 
+export const interests = [
+  "traveling",
+  "cooking",
+  "reading",
+  "hiking",
+  "photography",
+  "painting",
+  "gardening",
+  "music",
+  "dancing",
+  "yoga",
+  "movies",
+  "gaming",
+  "fitness",
+  "writing",
+  "cycling",
+  "swimming",
+  "fishing",
+  "knitting",
+  "baking",
+  "running",
+  "camping",
+  "skiing",
+  "surfing",
+  "kayaking",
+  "scuba diving",
+  "bird watching",
+  "volunteering",
+  "crafting",
+  "collecting",
+  "astronomy",
+];
+
 const extractResponse = (text) => {
   if (!text.includes("Response")) {
     return text;

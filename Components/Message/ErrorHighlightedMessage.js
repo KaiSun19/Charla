@@ -10,6 +10,7 @@ import { useCharlaContext } from "@/Contexts/UserContext";
 const ErrorHighlightedMessage = ({
   message,
   errors,
+  saved,
   handleErrorCorrection,
 }) => {
   // state and handling related to error toolip

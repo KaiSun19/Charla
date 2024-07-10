@@ -238,21 +238,12 @@ const Message = forwardRef(({ Message, Index, Hide, Autoplay }, ref) => {
                   )}
                 </IconButton>
               </>
-              {Message.errors.length > 0 ? (
-                <ErrorHighlightedMessage
-                  message={Message.message}
-                  errors={Message.errors}
-                  handleErrorCorrection={handleErrorCorrection}
-                />
-              ) : (
-                <Typography
-                  variant="body1"
-                  className="flex-items-center"
-                  sx={!mobile ? { fontSize: "22px" } : {}}
-                >
-                  {Message.message}
-                </Typography>
-              )}
+              <ErrorHighlightedMessage
+                message={Message.message}
+                errors={Message.errors}
+                saved={Message.saved}
+                handleErrorCorrection={handleErrorCorrection}
+              />
             </>
           ) : Message.type === "Loading" ? (
             <Box

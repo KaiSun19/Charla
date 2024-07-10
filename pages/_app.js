@@ -16,6 +16,8 @@ import "../Components/TranslateModal/TranslateModalStyles.css";
 import "../Components/LoadingScreen/LoadingScreenStyles.css";
 import "../Components/VoiceOnlyUI/VoiceOnlyUIStyles.css";
 import "../Components/LoadingEllipsis/LoadingEllipsisStyles.css";
+import "../styles/profile.css";
+
 import Header from "../Components/Header/Header";
 import { CharlaProvider } from "@/Contexts/UserContext";
 

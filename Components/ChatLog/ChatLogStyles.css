@@ -60,6 +60,7 @@
 @media only screen and (max-width: 390px) {
   .chat-log-action {
     padding-bottom: 0;
+    height: 24%;
   }
 }
 

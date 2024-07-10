@@ -1,15 +1,12 @@
 import { useMediaQuery, useTheme } from "@mui/material";
-import React, { useContext, useState, useEffect, useRef } from "react";
-import { extractResponse, formatCompleteQuery, getCharlaReply } from "../Utils";
-import {
-  randomResponses,
-  mockUserDetails,
-  mockConversations,
-} from "../Constants";
+import React, { useContext, useState, useEffect, useCallback } from "react";
+import { getAllSaved, getCharlaReply, getTranslations } from "../Utils";
+import { mockUserDetails, mockConversations } from "../Constants";
 
 import { auth, db } from "../firebase";
 
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { getLanguageCoding } from "@/Components/TranslateModal/TranslateModal";
 
 const CharlaContext = React.createContext(); // creates a context
 
@@ -27,6 +24,7 @@ export const CharlaProvider = ({ children }) => {
   const testing = false;
 
   const [conversations, setConversations] = useState([]);
+  const [savedPhrases, setSavedPhrases] = useState([]);
 
   const [userInput, setUserInput] = useState("");
 
@@ -41,6 +39,8 @@ export const CharlaProvider = ({ children }) => {
   const [currentConversation, setCurrentConversation] = useState(null);
 
   const [charlaIsLoading, setCharlaIsLoading] = useState(false);
+
+  const [initialLoad, setInitialLoad] = useState(true);
 
   const [testAudio, setTestAudio] = useState(null);
 
@@ -60,18 +60,21 @@ export const CharlaProvider = ({ children }) => {
   useEffect(() => {
     //this gets fired whenever a user signs in or refreshes
     const unsubscribe = auth.onAuthStateChanged(
-      async (user) => {
-        setUser(user);
-        if (!testing && user) {
-          const userRef = doc(db, "userDetails", user.email); // Document reference based on email
-          const docSnap = await getDoc(userRef);
+      async (currentUser) => {
+        let docSnap;
+        setUser(currentUser);
+        if (!testing && currentUser) {
+          const userRef = doc(db, "userDetails", currentUser.email);
+          docSnap = await getDoc(userRef);
           if (docSnap.exists()) {
             setUserDetails(docSnap.data());
+            console.log(docSnap.data());
             const conversationsRef = doc(
               db,
               "conversations",
               docSnap.data().id,
             );
+
             const conversationsSnap = await getDoc(conversationsRef);
             if (conversationsSnap.exists()) {
               setConversations(conversationsSnap.data().conversations);
@@ -81,6 +84,12 @@ export const CharlaProvider = ({ children }) => {
                 );
               }
             }
+
+            const savedPhrasesRef = doc(db, "savedPhrases", docSnap.data().id);
+            docSnap = await getDoc(savedPhrasesRef);
+            if (docSnap.exists()) {
+              setSavedPhrases(docSnap.data().saved_phrases);
+            }
           }
         } else {
           setUserDetails(mockUserDetails);
@@ -88,6 +97,7 @@ export const CharlaProvider = ({ children }) => {
           setCurrentConversation(mockConversations[0]);
         }
         setUserisLoading(false);
+        setInitialLoad(false);
       },
       (error) => {
         console.log(error);
@@ -241,35 +251,6 @@ export const CharlaProvider = ({ children }) => {
     }
   }, [conversations]);
 
-  // mockConversation.conversation.map((message) => {
-  //   if (
-  //     message["Saved"].length > 0 &&
-  //     message["Saved"].length > message["SavedIndex"].length
-  //   ) {
-  //     message["Saved"].map((saved) => {
-  //       const savedStartIndex = message["Message"].indexOf(saved);
-  //       message["SavedIndex"].push([
-  //         savedStartIndex,
-  //         savedStartIndex + saved.length,
-  //       ]);
-  //     });
-  //   }
-  //   if (
-  //     message["Errors"] &&
-  //     message["Errors"].length > 0 &&
-  //     message["Errors"].length > message["ErrorIndex"].length
-  //   ) {
-  //     message["Errors"].map((errors) => {
-  //       const errorsStartIndex = message["Message"].indexOf(errors["Phrase"]);
-  //       message["ErrorIndex"].push([
-  //         errorsStartIndex,
-  //         errorsStartIndex + errors["Phrase"].length,
-  //       ]);
-  //     });
-  //   }
-  //   return message;
-  // });
-
   const fetchAudio = async (message) => {
     const text = message.message;
     const response = await fetch("/api/textToVoice", {
@@ -312,16 +293,68 @@ export const CharlaProvider = ({ children }) => {
   }, [conversations.length]);
 
   useEffect(() => {
-    async function updateDatabase() {
+    async function updateDatabaseConversations() {
       await setDoc(doc(db, "conversations", userDetails.id), {
         id: userDetails.id,
         conversations: conversations,
       });
     }
+
+    async function updateDatabaseSavedPhrases() {
+      let savedPhrasesCurrent = getAllSaved(conversations);
+      if (
+        savedPhrasesCurrent.length > 0 &&
+        savedPhrasesCurrent.filter(
+          ({ aPhrase }) =>
+            !savedPhrases.some(({ bPhrase }) => aPhrase === bPhrase),
+        )
+      ) {
+        const translations = await getTranslations(
+          savedPhrasesCurrent.flatMap(({ phrase }) => phrase),
+          getLanguageCoding(userDetails["learning_languages"][0]),
+          getLanguageCoding(userDetails["knows_languages"][0]),
+        );
+        savedPhrasesCurrent = savedPhrasesCurrent.map((phrase, i) => {
+          return { ...phrase, translation: translations[i] };
+        });
+        await setDoc(doc(db, "savedPhrases", userDetails.id), {
+          id: userDetails.id,
+          saved_phrases: savedPhrasesCurrent,
+        });
+      }
+    }
     if (conversations.length > 0) {
-      updateDatabase();
+      updateDatabaseConversations();
+      updateDatabaseSavedPhrases();
     }
   }, [conversations]);
+
+  const updateUserDetails = (field, data) => {
+    console.log(field);
+    switch (field) {
+      case "bio":
+        setUserDetails((prev) => {
+          return { ...prev, bio: data };
+        });
+    }
+  };
+
+  const uploadUserDetailsFirebase = useCallback(async () => {
+    try {
+      await setDoc(doc(db, "userDetails", userDetails.email), {
+        ...userDetails,
+      });
+      console.log("User details uploaded to Firebase!");
+    } catch (error) {
+      console.error("Error uploading user details to Firebase:", error);
+    }
+  }, [userDetails]);
+
+  useEffect(() => {
+    if (userDetails.email && !initialLoad) {
+      uploadUserDetailsFirebase();
+    }
+  }, [userDetails, uploadUserDetailsFirebase]);
 
   useEffect(() => {
     console.log(conversations);
@@ -339,10 +372,13 @@ export const CharlaProvider = ({ children }) => {
         language,
         userDetails,
         setUserDetails,
+        updateUserDetails,
         hasUpdatedErrorsIndex,
         setHasUpdatedErrorsIndex,
         conversations,
         setConversations,
+        savedPhrases,
+        setSavedPhrases,
         createUpdatedConversations,
         handleConversationsUpdate,
         navOpen,

@@ -287,3 +287,40 @@ export const findConversations = (phrase, conversations) => {
   });
   return matchConversations;
 };
+
+export const getAllSaved = (conversations) => {
+  let savedPhrases = conversations.flatMap((conversation, conversation_index) =>
+    conversation.chat.flatMap(({ saved }, message_index) =>
+      saved
+        ? saved.map(({ text }) => ({
+            phrase: text,
+            conversation_index,
+            message_index,
+          }))
+        : [],
+    ),
+  );
+  if (savedPhrases.length) {
+    return savedPhrases;
+  } else {
+    return [];
+  }
+};
+
+export const getTranslations = async (phrases, sourceLang, targetLang) => {
+  let text = phrases.join(";");
+  const response = await fetch("/api/translateText", {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+    body: JSON.stringify({
+      text: text,
+      sourceLang: sourceLang,
+      targetLang: targetLang,
+      testing: false,
+    }),
+  });
+  const { translatedText } = await response.json();
+  return translatedText.split(";");
+};
