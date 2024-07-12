@@ -12,6 +12,8 @@ import {
 } from "@mui/material";
 import React, { useState, useEffect, useRef } from "react";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import SwapHorizRoundedIcon from "@mui/icons-material/SwapHorizRounded";
+
 import { convertClassname } from "@/Utils";
 
 import Skeleton from "react-loading-skeleton";
@@ -101,6 +103,11 @@ export default function TranslateModal({ modalOpen, handleModalClose, text }) {
     setTargetLang(event.target.value);
   };
 
+  const switchLanguages = (e) => {
+    setSourceLang(targetLang);
+    setTargetLang(sourceLang);
+  };
+
   const handleReplaceText = () => {
     setUserInput((currentInput) => {
       return currentInput.replace(text, translation);
@@ -150,11 +157,23 @@ export default function TranslateModal({ modalOpen, handleModalClose, text }) {
               {userDetails &&
                 userDetails["knows_languages"]
                   .concat(userDetails["learning_languages"])
-                  .map((lang) => {
-                    return <MenuItem value={lang}>{lang}</MenuItem>;
+                  .map((lang, i) => {
+                    return (
+                      <MenuItem value={lang} key={`lang-item-${i}`}>
+                        {lang}
+                      </MenuItem>
+                    );
                   })}
             </Select>
           </Box>
+          <IconButton
+            onClick={() => {
+              switchLanguages();
+            }}
+            sx={{ marginTop: "16px" }}
+          >
+            <SwapHorizRoundedIcon />
+          </IconButton>
           <Box>
             <InputLabel>To</InputLabel>
             <Select

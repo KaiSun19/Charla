@@ -165,9 +165,11 @@ export const randomResponses = [
 export const mockUserDetails = {
   datetime_joined: "Sun Apr 21 2024",
   email: "yksun15@gmail.com",
-  id: "dGVzdHVzZXIxdGVzdHVzZXIxQGdtYWlsLmNvbQ==",
+  id: "S2FpIFN1bnlrc3VuMTVAZ21haWwuY29t",
   initials: "YS",
   username: "Kai Sun",
+  knows_languages: ["english"],
+  learning_languages: ["spanish"],
 };
 
 export const interests = [

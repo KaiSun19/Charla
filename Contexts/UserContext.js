@@ -61,6 +61,7 @@ export const CharlaProvider = ({ children }) => {
     //this gets fired whenever a user signs in or refreshes
     const unsubscribe = auth.onAuthStateChanged(
       async (currentUser) => {
+        console.log(currentUser);
         let docSnap;
         setUser(currentUser);
         if (!testing && currentUser) {
@@ -91,10 +92,6 @@ export const CharlaProvider = ({ children }) => {
               setSavedPhrases(docSnap.data().saved_phrases);
             }
           }
-        } else {
-          setUserDetails(mockUserDetails);
-          setConversations(mockConversations);
-          setCurrentConversation(mockConversations[0]);
         }
         setUserisLoading(false);
         setInitialLoad(false);
@@ -330,12 +327,17 @@ export const CharlaProvider = ({ children }) => {
   }, [conversations]);
 
   const updateUserDetails = (field, data) => {
-    console.log(field);
     switch (field) {
       case "bio":
         setUserDetails((prev) => {
           return { ...prev, bio: data };
         });
+        break;
+      case "interests":
+        setUserDetails((prev) => {
+          return { ...prev, interests: [...prev.interests, data] };
+        });
+        break;
     }
   };
 

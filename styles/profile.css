@@ -17,6 +17,10 @@
   gap: 1rem;
 }
 
+.interest-chip {
+  margin: 8px;
+}
+
 @media only screen and (max-width: 400px) {
   .profile-container {
     flex-direction: column;
