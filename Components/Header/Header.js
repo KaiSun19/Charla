@@ -49,6 +49,11 @@ export default function Navbar() {
     router.push("/chat");
   };
 
+  const goToDictionary = () => {
+    handleClose();
+    router.push("/dictionary");
+  };
+
   const handleSignOut = () => {
     handleClose();
     router.push("/");
@@ -108,7 +113,7 @@ export default function Navbar() {
               MenuListProps={{ "aria-labelledby": "basic-button" }}
             >
               <MenuItem onClick={goToChat}>Chat</MenuItem>
-              <MenuItem onClick={handleClose}>Library</MenuItem>
+              <MenuItem onClick={goToDictionary}>Dictionary</MenuItem>
               <MenuItem onClick={handleClose}>Dashboard</MenuItem>
               <MenuItem onClick={handleSignOut} sx={{ color: "error.main" }}>
                 Sign out
@@ -128,8 +133,11 @@ export default function Navbar() {
             <IconButton onClick={() => router.push("/chat")} disableRipple>
               <Typography variant="h6">Chat</Typography>
             </IconButton>
-            <IconButton onClick={() => router.push("/library")} disableRipple>
-              <Typography variant="h6">Library</Typography>
+            <IconButton
+              onClick={() => router.push("/dictionary")}
+              disableRipple
+            >
+              <Typography variant="h6">Dictionary</Typography>
             </IconButton>
             <IconButton onClick={() => router.push("/dashboard")} disableRipple>
               <Typography variant="h6">Dashboard</Typography>

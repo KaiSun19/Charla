@@ -258,3 +258,31 @@ export const mockConversations = [
     },
   },
 ];
+
+export const examplePrompts = [
+  "¿Cuál es tu comida favorita y por qué?",
+  "¿Qué lugares te gustaría visitar en el futuro?",
+  "¿Tienes algún pasatiempo o actividad favorita?",
+  "¿Cómo fue tu fin de semana?",
+  "¿Puedes recomendarme una película o serie que te haya gustado?",
+];
+
+export const modalStyle = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  bgcolor: "background.paper",
+  border: "1px solid #c8c8c8",
+  boxShadow: 24,
+  p: 4,
+  borderRadius: 1,
+  width :700,
+  // ...(mobile
+  //   ? {
+  //       width: "80%",
+  //     }
+  //   : {
+  //       width: 700,
+  //     }),
+};

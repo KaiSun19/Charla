@@ -73,7 +73,7 @@ export const CharlaProvider = ({ children }) => {
             const conversationsRef = doc(
               db,
               "conversations",
-              docSnap.data().id,
+              docSnap.data().id
             );
 
             const conversationsSnap = await getDoc(conversationsRef);
@@ -81,7 +81,7 @@ export const CharlaProvider = ({ children }) => {
               setConversations(conversationsSnap.data().conversations);
               if (conversationsSnap.data().conversations.length > 0) {
                 setCurrentConversation(
-                  conversationsSnap.data().conversations[1],
+                  conversationsSnap.data().conversations[1]
                 );
               }
             }
@@ -98,7 +98,7 @@ export const CharlaProvider = ({ children }) => {
       },
       (error) => {
         console.log(error);
-      },
+      }
     );
 
     return unsubscribe; // Cleanup function to prevent memory leaks
@@ -139,7 +139,6 @@ export const CharlaProvider = ({ children }) => {
   const createUpdatedConversations = (...args) => {
     let updatedConversations = conversations;
     for (let i = 0; i < args.length; i++) {
-      console.log(args[i]);
       let { index, message, messageIndex } = args[i];
       let newChat;
       if (messageIndex !== -1) {
@@ -196,8 +195,8 @@ export const CharlaProvider = ({ children }) => {
     console.log(
       conversations.filter(
         (conversation) =>
-          conversation.chat_details.last_attempted !== lastAttempted,
-      ),
+          conversation.chat_details.last_attempted !== lastAttempted
+      )
     );
     // handleConversationsUpdate(
     //   conversations.filter(
@@ -229,7 +228,7 @@ export const CharlaProvider = ({ children }) => {
                   message: updatedUserMessage,
                   messageIndex: conversations[0].chat.length - 1,
                 },
-                { index: 0, message: responseMessage, messageIndex: -1 },
+                { index: 0, message: responseMessage, messageIndex: -1 }
               );
               handleConversationsUpdate(updatedConversations);
             } else {
@@ -299,25 +298,26 @@ export const CharlaProvider = ({ children }) => {
 
     async function updateDatabaseSavedPhrases() {
       let savedPhrasesCurrent = getAllSaved(conversations);
+      console.log(savedPhrases);
+      console.log(savedPhrasesCurrent);
       if (
         savedPhrasesCurrent.length > 0 &&
+        savedPhrases.length > 0 &&
         savedPhrasesCurrent.filter(
-          ({ aPhrase }) =>
-            !savedPhrases.some(({ bPhrase }) => aPhrase === bPhrase),
+          ({ currentPhrase }) =>
+            !savedPhrases.some(({ phrase }) => phrase === currentPhrase)
         )
       ) {
+        console.log("it passes");
         const translations = await getTranslations(
           savedPhrasesCurrent.flatMap(({ phrase }) => phrase),
           getLanguageCoding(userDetails["learning_languages"][0]),
-          getLanguageCoding(userDetails["knows_languages"][0]),
+          getLanguageCoding(userDetails["knows_languages"][0])
         );
         savedPhrasesCurrent = savedPhrasesCurrent.map((phrase, i) => {
           return { ...phrase, translation: translations[i] };
         });
-        await setDoc(doc(db, "savedPhrases", userDetails.id), {
-          id: userDetails.id,
-          saved_phrases: savedPhrasesCurrent,
-        });
+        setSavedPhrases(savedPhrasesCurrent);
       }
     }
     if (conversations.length > 0) {
@@ -325,6 +325,20 @@ export const CharlaProvider = ({ children }) => {
       updateDatabaseSavedPhrases();
     }
   }, [conversations]);
+
+  useEffect(() => {
+    async function uploadSavedPhrases() {
+      console.log(savedPhrases);
+      console.log(userDetails.id);
+      await setDoc(doc(db, "savedPhrases", userDetails.id), {
+        id: userDetails.id,
+        saved_phrases: savedPhrases,
+      });
+    }
+    if (savedPhrases.length > 0) {
+      uploadSavedPhrases();
+    }
+  }, [savedPhrases]);
 
   const updateUserDetails = (field, data) => {
     switch (field) {

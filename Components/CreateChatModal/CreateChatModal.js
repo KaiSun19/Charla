@@ -11,6 +11,7 @@ import React, { useState, useEffect, useRef } from "react";
 import ArrowUpwardRounded from "@mui/icons-material/ArrowUpwardRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { convertClassname } from "@/Utils";
+import { modalStyle } from "@/Constants";
 
 export default function CreateChatModal({ modalOpen, handleModalClose }) {
   const { mobile, createNewConversation } = useCharlaContext();
@@ -29,25 +30,6 @@ export default function CreateChatModal({ modalOpen, handleModalClose }) {
     }
   };
 
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    bgcolor: "background.paper",
-    border: "1px solid #c8c8c8",
-    boxShadow: 24,
-    p: 4,
-    borderRadius: 1,
-    ...(mobile
-      ? {
-          width: "80%",
-        }
-      : {
-          width: 700,
-        }),
-  };
-
   const sendButton = (
     <IconButton
       onClick={() => {
@@ -63,7 +45,7 @@ export default function CreateChatModal({ modalOpen, handleModalClose }) {
 
   return (
     <Modal open={modalOpen} onClose={handleModalClose}>
-      <Box sx={style}>
+      <Box sx={modalStyle}>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography variant="h5">Start a chat</Typography>
           <IconButton

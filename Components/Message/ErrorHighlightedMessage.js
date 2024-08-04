@@ -1,16 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Typography, IconButton, Button } from "@mui/material";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 import DoneRoundedIcon from "@mui/icons-material/DoneRounded";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
-import { useCharlaContext } from "@/Contexts/UserContext";
 
 const ErrorHighlightedMessage = ({
   message,
   errors,
-  saved,
   handleErrorCorrection,
 }) => {
   // state and handling related to error toolip
@@ -41,7 +39,11 @@ const ErrorHighlightedMessage = ({
 
     if (indexArray) {
       let [start, end] = indexArray;
-      renderedMessage.push(<span>{message.substring(lastIndex, start)}</span>);
+      if (start > 0) {
+        renderedMessage.push(
+          <span>{message.substring(lastIndex, start)}</span>,
+        );
+      }
       const substringToHighlight = message.substring(start, end);
       const highlightText = (
         <ClickAwayListener

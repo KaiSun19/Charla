@@ -18,6 +18,7 @@ import { convertClassname } from "@/Utils";
 
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { modalStyle } from "@/Constants";
 
 export const getLanguageCoding = (lang_full) => {
   switch (lang_full) {
@@ -42,25 +43,6 @@ export default function TranslateModal({ modalOpen, handleModalClose, text }) {
       setTargetLang(userDetails["learning_languages"][0]);
     }
   }, [userDetails]);
-
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    bgcolor: "background.paper",
-    border: "1px solid #c8c8c8",
-    boxShadow: 24,
-    p: 4,
-    borderRadius: 1,
-    ...(mobile
-      ? {
-          width: "80%",
-        }
-      : {
-          width: 700,
-        }),
-  };
 
   useEffect(() => {
     async function translateText(text, sourceLang, targetLang, testing) {
@@ -117,7 +99,7 @@ export default function TranslateModal({ modalOpen, handleModalClose, text }) {
 
   return (
     <Modal open={modalOpen} onClose={handleModalClose}>
-      <Box sx={style}>
+      <Box sx={modalStyle}>
         <Box
           sx={{
             display: "flex",
