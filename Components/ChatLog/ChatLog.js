@@ -31,29 +31,30 @@ import TranslateModal from "../TranslateModal/TranslateModal";
 import Record from "../Record/Record";
 import { findConversations, findStartEndIndex } from "@/Utils";
 
+const sliderMarks = [
+  {
+    value: 0.2,
+    label: "0.2",
+  },
+  {
+    value: 0.4,
+    label: "0.4",
+  },
+  {
+    value: 0.6,
+    label: "0.6",
+  },
+  {
+    value: 0.8,
+    label: "0.8",
+  },
+  {
+    value: 1,
+    label: "1",
+  },
+];
+
 export default function ChatLog() {
-  const sliderMarks = [
-    {
-      value: 0.2,
-      label: "0.2",
-    },
-    {
-      value: 0.4,
-      label: "0.4",
-    },
-    {
-      value: 0.6,
-      label: "0.6",
-    },
-    {
-      value: 0.8,
-      label: "0.8",
-    },
-    {
-      value: 1,
-      label: "1",
-    },
-  ];
 
   const {
     conversations,
@@ -79,8 +80,13 @@ export default function ChatLog() {
 
   const [createChatModalOpen, setCreateChatModalOpen] = useState(false);
   const [translateModalOpen, setTranslateModalOpen] = useState(false);
-
   const [highlightedText, setHighlightedText] = useState(null);
+  const [popoverAnchorEl, setPopoverAnchorEl] = useState(null);
+  const [hideText, setHideText] = useState(false);
+  const [autoplay, setAutoplay] = useState(false);
+  const [successAlertOpen, setSuccessAlertOpen] = useState(false);
+
+  const popoverOpen = Boolean(popoverAnchorEl);
 
   const handleCreateChatModalClose = () => {
     setCreateChatModalOpen(false);
@@ -90,22 +96,6 @@ export default function ChatLog() {
     setTranslateModalOpen(false);
   };
 
-  useEffect(() => {
-    if (lastUpdatedMessageRef.current) {
-      lastUpdatedMessageRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [conversations]);
-
-  useEffect(() => {
-    setChatSettings((chatSettings) => {
-      setPrevChatSettings(chatSettings);
-      return {
-        ...chatSettings,
-        playbackSpeed: sliderValue,
-      };
-    });
-  }, [sliderValue]);
-
   const handleRestartChat = () => {
     let updatedConversation = {
       ...currentConversation,
@@ -113,25 +103,6 @@ export default function ChatLog() {
     };
     handleConversationsUpdate([updatedConversation, ...conversations.slice(1)]);
   };
-
-  useEffect(() => {
-    const handleSelectionChange = () => {
-      const selection = window.getSelection();
-      if (selection.toString().trim() && selection.toString().trim() !== "") {
-        setHighlightedText(selection.toString().trim());
-      }
-    };
-    document.addEventListener("mouseup", handleSelectionChange);
-    document.addEventListener("touchend", handleSelectionChange);
-    // clean up function when this component gets destroyed
-    return () => {
-      document.removeEventListener("mouseup", handleSelectionChange);
-      document.removeEventListener("touchend", handleSelectionChange);
-    };
-  }, []);
-
-  //popover logic
-  const [popoverAnchorEl, setPopoverAnchorEl] = useState(null);
 
   const handlePopoverClick = (event) => {
     setPopoverAnchorEl(event.currentTarget);
@@ -141,17 +112,9 @@ export default function ChatLog() {
     setPopoverAnchorEl(null);
   };
 
-  const popoverOpen = Boolean(popoverAnchorEl);
-
-  // states and handlers for Chat Settings
-
-  const [hideText, setHideText] = useState(false);
-
   const handleHideText = (e) => {
     setHideText(!hideText);
   };
-
-  const [autoplay, setAutoplay] = useState(false);
 
   const handleAutoplay = (e) => {
     setAutoplay(!hideText);
@@ -200,14 +163,44 @@ export default function ChatLog() {
     setSuccessAlertOpen(true);
   };
 
-  const [successAlertOpen, setSuccessAlertOpen] = useState(false);
-
   const handleSuccessAlertClose = (e, reason) => {
     if (reason === "clickaway") {
       return;
     }
     setSuccessAlertOpen(false);
   };
+
+  useEffect(() => {
+    if (lastUpdatedMessageRef.current) {
+      lastUpdatedMessageRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [conversations]);
+
+  useEffect(() => {
+    setChatSettings((chatSettings) => {
+      setPrevChatSettings(chatSettings);
+      return {
+        ...chatSettings,
+        playbackSpeed: sliderValue,
+      };
+    });
+  }, [sliderValue]);
+
+  useEffect(() => {
+    const handleSelectionChange = () => {
+      const selection = window.getSelection();
+      if (selection.toString().trim() && selection.toString().trim() !== "") {
+        setHighlightedText(selection.toString().trim());
+      }
+    };
+    document.addEventListener("mouseup", handleSelectionChange);
+    document.addEventListener("touchend", handleSelectionChange);
+    // clean up function when this component gets destroyed
+    return () => {
+      document.removeEventListener("mouseup", handleSelectionChange);
+      document.removeEventListener("touchend", handleSelectionChange);
+    };
+  }, []);
 
   return (
     <>
@@ -258,14 +251,7 @@ export default function ChatLog() {
                 </Typography>
               </AccordionSummary>
               <AccordionDetails
-                sx={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                  justifyContent: "flex-start",
-                  flexDirection: "column",
-                  gap: "16px",
-                  width: "100%",
-                }}
+                className="accordion-details-container"
               >
                 <Box className="chat-log-accordion-input">
                   <Stack
@@ -331,12 +317,7 @@ export default function ChatLog() {
           </>
         ) : (
           // state for no current conversation
-          <Box
-            sx={{
-              backgroundColor: theme.palette.background.paper,
-            }}
-            className="flex-items-center chat-log-empty-conversations"
-          >
+          <Box className="flex-items-center chat-log-empty-conversations">
             <Typography
               variant={mobile ? "h6" : "h4"}
               sx={{ color: "#929292" }}

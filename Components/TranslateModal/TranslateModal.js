@@ -68,7 +68,7 @@ export default function TranslateModal({ modalOpen, handleModalClose, text }) {
         text,
         getLanguageCoding(sourceLang),
         getLanguageCoding(targetLang),
-        false,
+        false
       ).then((translation) => {
         setTranslation(translation);
       });
@@ -99,7 +99,7 @@ export default function TranslateModal({ modalOpen, handleModalClose, text }) {
 
   return (
     <Modal open={modalOpen} onClose={handleModalClose}>
-      <Box sx={modalStyle}>
+      <Box sx={{ ...modalStyle, ...(mobile ? { width: "80%" } : {}) }}>
         <Box
           sx={{
             display: "flex",
@@ -118,7 +118,10 @@ export default function TranslateModal({ modalOpen, handleModalClose, text }) {
             }}
           >
             <CloseRoundedIcon
-              className={`${convertClassname(mobile, "icon-button")} close-button`}
+              className={`${convertClassname(
+                mobile,
+                "icon-button"
+              )} close-button`}
             />
           </IconButton>
         </Box>
@@ -126,7 +129,7 @@ export default function TranslateModal({ modalOpen, handleModalClose, text }) {
           direction="row"
           justifyContent="flex-start"
           alignItems="center"
-          spacing={3}
+          spacing={mobile ? 1 : 3}
           sx={{ margin: "1rem 0 1rem 0" }}
         >
           <Box>
@@ -148,14 +151,16 @@ export default function TranslateModal({ modalOpen, handleModalClose, text }) {
                   })}
             </Select>
           </Box>
-          <IconButton
-            onClick={() => {
-              switchLanguages();
-            }}
-            sx={{ marginTop: "16px" }}
-          >
-            <SwapHorizRoundedIcon />
-          </IconButton>
+          <Box sx={{ width: "100%" }}>
+            <IconButton
+              onClick={() => {
+                switchLanguages();
+              }}
+              sx={{ marginTop: "16px" }}
+            >
+              <SwapHorizRoundedIcon />
+            </IconButton>
+          </Box>
           <Box>
             <InputLabel>To</InputLabel>
             <Select

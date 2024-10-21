@@ -277,12 +277,5 @@ export const modalStyle = {
   boxShadow: 24,
   p: 4,
   borderRadius: 1,
-  width :700,
-  // ...(mobile
-  //   ? {
-  //       width: "80%",
-  //     }
-  //   : {
-  //       width: 700,
-  //     }),
+  width: 700,
 };

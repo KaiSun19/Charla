@@ -1,7 +1,6 @@
 import { useMediaQuery, useTheme } from "@mui/material";
 import React, { useContext, useState, useEffect, useCallback } from "react";
 import { getAllSaved, getCharlaReply, getTranslations } from "../Utils";
-import { mockUserDetails, mockConversations } from "../Constants";
 
 import { auth, db } from "../firebase";
 
@@ -56,76 +55,6 @@ export const CharlaProvider = ({ children }) => {
   const [userDetails, setUserDetails] = useState("");
 
   const [userIsLoading, setUserisLoading] = useState(true);
-
-  useEffect(() => {
-    //this gets fired whenever a user signs in or refreshes
-    const unsubscribe = auth.onAuthStateChanged(
-      async (currentUser) => {
-        console.log(currentUser);
-        let docSnap;
-        setUser(currentUser);
-        if (!testing && currentUser) {
-          const userRef = doc(db, "userDetails", currentUser.email);
-          docSnap = await getDoc(userRef);
-          if (docSnap.exists()) {
-            setUserDetails(docSnap.data());
-            console.log(docSnap.data());
-            const conversationsRef = doc(
-              db,
-              "conversations",
-              docSnap.data().id
-            );
-
-            const conversationsSnap = await getDoc(conversationsRef);
-            if (conversationsSnap.exists()) {
-              setConversations(conversationsSnap.data().conversations);
-              if (conversationsSnap.data().conversations.length > 0) {
-                setCurrentConversation(
-                  conversationsSnap.data().conversations[1]
-                );
-              }
-            }
-
-            const savedPhrasesRef = doc(db, "savedPhrases", docSnap.data().id);
-            docSnap = await getDoc(savedPhrasesRef);
-            if (docSnap.exists()) {
-              setSavedPhrases(docSnap.data().saved_phrases);
-            }
-          }
-        }
-        setUserisLoading(false);
-        setInitialLoad(false);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-
-    return unsubscribe; // Cleanup function to prevent memory leaks
-  }, []);
-
-  useEffect(() => {
-    async function fetchData() {
-      if (testing) {
-        const text =
-          "Normalmente, como es muy tarde en la noche, patino solo. Pero si tengo planes, patinaré con mis amigos";
-        const response = await fetch("/api/textToVoice", {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          method: "POST",
-          body: JSON.stringify({
-            text: text,
-          }),
-        });
-        const { audioContent } = await response.json();
-        const mp3Data = `data:audio/mp3;base64,${audioContent}`;
-        setTestAudio(mp3Data);
-      }
-    }
-
-    fetchData();
-  }, []);
 
   const handleNav = () => {
     setNavOpen(!navOpen);
@@ -206,6 +135,137 @@ export const CharlaProvider = ({ children }) => {
     return;
   };
 
+  const fetchAudio = async (message) => {
+    const text = message.message;
+    const response = await fetch("/api/textToVoice", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({
+        text: text,
+        testing: testing,
+        speakingRate: chatSettings.playbackSpeed,
+      }),
+    });
+    const { audioContent } = await response.json();
+    const mp3Data = `data:audio/mp3;base64,${audioContent}`;
+    const responseMessage = { ...message, audio: mp3Data };
+
+    // settings prev chat settings to match current settings
+    setPrevChatSettings(chatSettings);
+    return responseMessage;
+  };
+
+  const createNewConversation = (userInput) => {
+    setConversations((prevConversations) => [
+      {
+        title: userInput,
+        chat: [{ type: "User", message: userInput, saved: [], errors: [] }],
+        chat_details: {
+          last_attempted: new Date(),
+          average_chat_time: 0,
+          average_word_count: 0,
+        },
+      },
+      ...prevConversations,
+    ]);
+  };
+
+  const updateUserDetails = (field, data) => {
+    switch (field) {
+      case "bio":
+        setUserDetails((prev) => {
+          return { ...prev, bio: data };
+        });
+        break;
+      case "interests":
+        setUserDetails((prev) => {
+          return { ...prev, interests: [...prev.interests, data] };
+        });
+        break;
+    }
+  };
+
+  const uploadUserDetailsFirebase = useCallback(async () => {
+    try {
+      await setDoc(doc(db, "userDetails", userDetails.email), {
+        ...userDetails,
+      });
+      console.log("User details uploaded to Firebase!");
+    } catch (error) {
+      console.error("Error uploading user details to Firebase:", error);
+    }
+  }, [userDetails]);
+
+  useEffect(() => {
+    //this gets fired whenever a user signs in or refreshes
+    const unsubscribe = auth.onAuthStateChanged(
+      async (currentUser) => {
+        let docSnap;
+        setUser(currentUser);
+        if (!testing && currentUser) {
+          const userRef = doc(db, "userDetails", currentUser.email);
+          docSnap = await getDoc(userRef);
+          if (docSnap.exists()) {
+            setUserDetails(docSnap.data());
+            const conversationsRef = doc(
+              db,
+              "conversations",
+              docSnap.data().id
+            );
+
+            const conversationsSnap = await getDoc(conversationsRef);
+            if (conversationsSnap.exists()) {
+              setConversations(conversationsSnap.data().conversations);
+              if (conversationsSnap.data().conversations.length > 0) {
+                setCurrentConversation(
+                  conversationsSnap.data().conversations[1]
+                );
+              }
+            }
+
+            const savedPhrasesRef = doc(db, "savedPhrases", docSnap.data().id);
+            docSnap = await getDoc(savedPhrasesRef);
+            if (docSnap.exists()) {
+              setSavedPhrases(docSnap.data().saved_phrases);
+            }
+          }
+        }
+        setUserisLoading(false);
+        setInitialLoad(false);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+
+    return unsubscribe; // Cleanup function to prevent memory leaks
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      if (testing) {
+        const text =
+          "Normalmente, como es muy tarde en la noche, patino solo. Pero si tengo planes, patinaré con mis amigos";
+        const response = await fetch("/api/textToVoice", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify({
+            text: text,
+          }),
+        });
+        const { audioContent } = await response.json();
+        const mp3Data = `data:audio/mp3;base64,${audioContent}`;
+        setTestAudio(mp3Data);
+      }
+    }
+
+    fetchData();
+  }, []);
+
   useEffect(() => {
     if (conversations.length > 0) {
       const currentChat = conversations[0].chat;
@@ -247,43 +307,6 @@ export const CharlaProvider = ({ children }) => {
     }
   }, [conversations]);
 
-  const fetchAudio = async (message) => {
-    const text = message.message;
-    const response = await fetch("/api/textToVoice", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify({
-        text: text,
-        testing: testing,
-        speakingRate: chatSettings.playbackSpeed,
-      }),
-    });
-    const { audioContent } = await response.json();
-    const mp3Data = `data:audio/mp3;base64,${audioContent}`;
-    const responseMessage = { ...message, audio: mp3Data };
-
-    // settings prev chat settings to match current settings
-    setPrevChatSettings(chatSettings);
-    return responseMessage;
-  };
-
-  const createNewConversation = (userInput) => {
-    setConversations((prevConversations) => [
-      {
-        title: userInput,
-        chat: [{ type: "User", message: userInput, saved: [], errors: [] }],
-        chat_details: {
-          last_attempted: new Date(),
-          average_chat_time: 0,
-          average_word_count: 0,
-        },
-      },
-      ...prevConversations,
-    ]);
-  };
-
   useEffect(() => {
     setCurrentConversation(conversations[0]);
   }, [conversations.length]);
@@ -298,8 +321,6 @@ export const CharlaProvider = ({ children }) => {
 
     async function updateDatabaseSavedPhrases() {
       let savedPhrasesCurrent = getAllSaved(conversations);
-      console.log(savedPhrases);
-      console.log(savedPhrasesCurrent);
       if (
         savedPhrasesCurrent.length > 0 &&
         savedPhrases.length > 0 &&
@@ -308,7 +329,6 @@ export const CharlaProvider = ({ children }) => {
             !savedPhrases.some(({ phrase }) => phrase === currentPhrase)
         )
       ) {
-        console.log("it passes");
         const translations = await getTranslations(
           savedPhrasesCurrent.flatMap(({ phrase }) => phrase),
           getLanguageCoding(userDetails["learning_languages"][0]),
@@ -328,8 +348,6 @@ export const CharlaProvider = ({ children }) => {
 
   useEffect(() => {
     async function uploadSavedPhrases() {
-      console.log(savedPhrases);
-      console.log(userDetails.id);
       await setDoc(doc(db, "savedPhrases", userDetails.id), {
         id: userDetails.id,
         saved_phrases: savedPhrases,
@@ -340,41 +358,11 @@ export const CharlaProvider = ({ children }) => {
     }
   }, [savedPhrases]);
 
-  const updateUserDetails = (field, data) => {
-    switch (field) {
-      case "bio":
-        setUserDetails((prev) => {
-          return { ...prev, bio: data };
-        });
-        break;
-      case "interests":
-        setUserDetails((prev) => {
-          return { ...prev, interests: [...prev.interests, data] };
-        });
-        break;
-    }
-  };
-
-  const uploadUserDetailsFirebase = useCallback(async () => {
-    try {
-      await setDoc(doc(db, "userDetails", userDetails.email), {
-        ...userDetails,
-      });
-      console.log("User details uploaded to Firebase!");
-    } catch (error) {
-      console.error("Error uploading user details to Firebase:", error);
-    }
-  }, [userDetails]);
-
   useEffect(() => {
     if (userDetails.email && !initialLoad) {
       uploadUserDetailsFirebase();
     }
   }, [userDetails, uploadUserDetailsFirebase]);
-
-  useEffect(() => {
-    console.log(conversations);
-  }, [conversations]);
 
   return (
     <CharlaContext.Provider

@@ -1,6 +1,5 @@
-import { useCharlaContext } from "@/Contexts/UserContext";
 import { Box, Stack } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -8,7 +7,6 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { CssBaseline } from "@mui/material";
 
 export default function LoadingScreen() {
-  const { mobile } = useCharlaContext();
 
   return (
     <>

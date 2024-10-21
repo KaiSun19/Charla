@@ -62,18 +62,15 @@ const Message = forwardRef(({ Message, Index, Hide, Autoplay }, ref) => {
 
   const audioRef = useRef(null); // Create audio ref
 
+  //audio duration count to pass to voice only ui
+  const audioDurationRef = useRef(Message.audioDuration || null);
+
   //idle = audio is not playing or loading
   //loading = audio is loading
   //paused = audio is paused
   //playing = audio is playing
   //error = audio error
   const [audioStatus, setAudioStatus] = useState("idle");
-
-  //text that is highlighted for translation
-  const [highlightedText, setHighlightedText] = useState(null);
-
-  //audio duration count to pass to voice only ui
-  const audioDurationRef = useRef(Message.audioDuration || null);
 
   const playAudio = async () => {
     let messageWithAudio;

@@ -118,7 +118,7 @@ export default function Dictionary() {
 
     return (
       <Modal open={modalOpen} onClose={handleModalClose}>
-        <Box sx={modalStyle}>
+        <Box sx={{ ...modalStyle, ...(mobile ? { width: "80%" } : {}) }}>
           <Stack
             direction="column"
             justifyContent="center"

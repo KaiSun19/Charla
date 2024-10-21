@@ -9,7 +9,6 @@ import { ListItemIcon, ListItemText } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import { useCharlaContext } from "@/Contexts/UserContext";
 import Avatar from "@mui/material/Avatar";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";

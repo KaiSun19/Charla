@@ -233,7 +233,7 @@ export const getCharlaReply = async (testing, chat, conversations) => {
         });
         const data = await response.json();
         const { Errors, Response } = parseCharlaResponse(
-          data.result.choices[0].message.content,
+          data.result.choices[0].message.content
         );
         retry = false;
         if (Errors.length > 0) {
@@ -297,8 +297,8 @@ export const getAllSaved = (conversations) => {
             conversation_index,
             message_index,
           }))
-        : [],
-    ),
+        : []
+    )
   );
   if (savedPhrases.length) {
     return savedPhrases;
@@ -324,3 +324,17 @@ export const getTranslations = async (phrases, sourceLang, targetLang) => {
   const { translatedText } = await response.json();
   return translatedText.split(";");
 };
+
+export function extractConversationStarters(input) {
+  // Match patterns for the questions
+  const regex = /\d+\.\s(.*?)(?=\s\d+\.\s|$)/g;
+  let match;
+  const questions = [];
+
+  // Iterate over all matches and push the questions into the array
+  while ((match = regex.exec(input)) !== null) {
+    questions.push(match[1].trim());
+  }
+
+  return questions;
+}
