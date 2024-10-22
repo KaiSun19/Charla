@@ -15,7 +15,6 @@ import ArrowUpwardRounded from "@mui/icons-material/ArrowUpwardRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { convertClassname, extractConversationStarters } from "@/Utils";
 import { modalStyle } from "@/Constants";
-import { useTheme } from "@emotion/react";
 
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -29,8 +28,6 @@ export default function CreateChatModal({ modalOpen, handleModalClose }) {
     conversations,
     testing,
   } = useCharlaContext();
-
-  const theme = useTheme();
 
   const [userInput, setUserInput] = useState("");
   const [conversationStarters, setConversationStarters] = useState([]);
@@ -93,10 +90,6 @@ export default function CreateChatModal({ modalOpen, handleModalClose }) {
       getConversationStarters(user_info);
     }
   }, [modalOpen, userDetails]);
-
-  useEffect(() => {
-    console.log(conversationStarters);
-  }, [conversationStarters]);
 
   const sendButton = (
     <IconButton
@@ -178,7 +171,7 @@ export default function CreateChatModal({ modalOpen, handleModalClose }) {
                   <Button
                     key={`starter-question-${i}`}
                     className="starter-question-button"
-                    sx={{ border: `1px solid ${theme.palette.divider} ` }}
+                    sx={{ border: `1px solid #0000001f` }}
                     variant="text"
                     color="inherit"
                     onClick={() => {

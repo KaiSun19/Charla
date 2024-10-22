@@ -8,7 +8,6 @@ import PendingOutlinedIcon from "@mui/icons-material/PendingOutlined";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 import { convertClassname } from "@/Utils";
-import { useTheme } from "@mui/material/styles";
 
 const Record = () => {
   const {
@@ -20,8 +19,6 @@ const Record = () => {
     userInput,
     setUserInput,
   } = useCharlaContext();
-
-  const theme = useTheme();
 
   const rec = useRef(null);
 
@@ -202,7 +199,6 @@ const Record = () => {
             </>
           }
           sx={{
-            backgroundColor: theme.palette.background.paper,
             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
               border: "1px solid #292929",
             },

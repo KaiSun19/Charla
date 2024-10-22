@@ -25,11 +25,11 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import UnfoldMoreRoundedIcon from "@mui/icons-material/UnfoldMoreRounded";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import ChatNavigation from "../ChatNavigation/ChatNavigation";
-import { useTheme } from "@emotion/react";
 import CreateChatModal from "../CreateChatModal/CreateChatModal";
 import TranslateModal from "../TranslateModal/TranslateModal";
 import Record from "../Record/Record";
 import { findConversations, findStartEndIndex } from "@/Utils";
+import CssBaseline from '@mui/material/CssBaseline';
 
 const sliderMarks = [
   {
@@ -68,8 +68,6 @@ export default function ChatLog() {
     setChatSettings,
     setPrevChatSettings,
   } = useCharlaContext();
-
-  const theme = useTheme();
 
   const lastUpdatedMessageRef = useRef(null);
 
@@ -204,6 +202,7 @@ export default function ChatLog() {
 
   return (
     <>
+      <CssBaseline />
       <Snackbar
         open={successAlertOpen}
         onClose={handleSuccessAlertClose}
@@ -227,7 +226,6 @@ export default function ChatLog() {
         {conversations.length > 0 ? (
           <>
             <Box
-              sx={{ backgroundColor: theme.palette.background.paper }}
               className="chat-log-title"
             >
               {mobile && (
@@ -341,9 +339,6 @@ export default function ChatLog() {
         )}
         <Stack
           className="chat-log-action"
-          sx={{
-            backgroundImage: `linear-gradient(to top, ${theme.palette.background.default}, transparent)`,
-          }}
         >
           <Box className="chat-log-action-buttons">
             <Fab

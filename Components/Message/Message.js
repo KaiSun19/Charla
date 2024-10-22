@@ -1,6 +1,5 @@
 import { useCharlaContext } from "@/Contexts/UserContext";
-import { Box, Typography, Avatar, IconButton, Button } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { Box, Avatar, IconButton } from "@mui/material";
 import React, { forwardRef, useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { convertClassname } from "@/Utils";
@@ -57,8 +56,6 @@ const Message = forwardRef(({ Message, Index, Hide, Autoplay }, ref) => {
   const isSettingsSpeedChanged = prevChatSettings
     ? prevChatSettings.playbackSpeed !== chatSettings.playbackSpeed
     : false;
-
-  const theme = useTheme();
 
   const audioRef = useRef(null); // Create audio ref
 
@@ -200,9 +197,6 @@ const Message = forwardRef(({ Message, Index, Hide, Autoplay }, ref) => {
           )}
         </Box>
         <Box
-          sx={{
-            backgroundColor: theme.palette.background.default,
-          }}
           className={
             Message.type === "User"
               ? "message-text message-text-user"

@@ -3,13 +3,9 @@ import React, { useState, useEffect } from "react";
 
 import "react-loading-skeleton/dist/skeleton.css";
 
-import { useTheme } from "@emotion/react";
-
 const heights = [25, 12, 36, 18, 9, 36, 6, 30, 17, 36];
 
 export default function VoiceOnlyUI({ count, duration, isPlaying }) {
-
-  const theme = useTheme();
 
   // State to track the current block index
   const [currentBlock, setCurrentBlock] = useState(0);
@@ -48,8 +44,8 @@ export default function VoiceOnlyUI({ count, duration, isPlaying }) {
                   height: `${heights[i % heights.length]}px`,
                   backgroundColor:
                     i < currentBlock // if index of block is below or the same as the currentBlock then block has main color
-                      ? theme.palette.primary.main
-                      : theme.palette.primary.light,
+                      ? "#1976d2"
+                      : "#42a5f5",
                   borderRadius: "5px",
                 }}
               ></Box>

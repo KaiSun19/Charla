@@ -18,7 +18,6 @@ import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { convertClassname } from "@/Utils";
 import CreateChatModal from "../CreateChatModal/CreateChatModal";
-import { useTheme } from "@emotion/react";
 
 import { CssBaseline } from "@mui/material";
 
@@ -31,8 +30,6 @@ export default function ChatNavigation() {
     setCurrentConversation,
     deleteConversation,
   } = useCharlaContext();
-
-  const theme = useTheme();
 
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -91,7 +88,6 @@ export default function ChatNavigation() {
       <CssBaseline />
       <Box
         className={`${convertClassname(mobile, "chat-nav-container", true)}`}
-        sx={{ backgroundColor: theme.palette.background.paper }}
       >
         <CreateChatModal
           modalOpen={modalOpen}
@@ -136,7 +132,7 @@ export default function ChatNavigation() {
           variant="outlined"
           color="inherit"
           className="chat-navigation-button"
-          sx={{ border: `1px solid ${theme.palette.divider} ` }}
+          sx={{ border: `1px solid #0000001f` }}
           onClick={() => {
             setModalOpen(true);
           }}

@@ -10,8 +10,7 @@ import {
 import CreateRoundedIcon from "@mui/icons-material/CreateRounded";
 import DoneRoundedIcon from "@mui/icons-material/DoneRounded";
 
-import React, { useEffect, useState, useRef } from "react";
-import { useTheme } from "@emotion/react";
+import React, { useState, useRef } from "react";
 
 export default function Profile() {
   const { userDetails, updateUserDetails, mobile } = useCharlaContext();
@@ -32,8 +31,6 @@ export default function Profile() {
     });
   };
 
-  const theme = useTheme();
-
   if (userDetails) {
     return (
       <Stack
@@ -47,7 +44,7 @@ export default function Profile() {
           <Typography
             variant={!mobile ? "h1" : "h3"}
             sx={{
-              color: theme.palette.primary.main,
+              color: "#1976d2",
               ...(mobile && { marginTop: "1rem" }),
             }}
           >
@@ -56,7 +53,7 @@ export default function Profile() {
           <Typography
             variant={!mobile ? "h2" : "h4"}
             sx={{
-              color: theme.palette.primary.main,
+              color: "#1976d2",
               marginTop: mobile ? "3rem" : "1rem",
             }}
           >

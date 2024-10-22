@@ -2,10 +2,9 @@ import Head from "next/head";
 import Image from "next/image";
 
 import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
 
 import { Box, Typography, Button, Stack } from "@mui/material";
-import { CssBaseline } from "@mui/material";
+import CssBaseline from '@mui/material/CssBaseline';
 import { useCharlaContext } from "@/Contexts/UserContext";
 
 const inter = Inter({ subsets: ["latin"] });

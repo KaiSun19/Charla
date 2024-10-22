@@ -13,20 +13,16 @@ import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import Person2RoundedIcon from "@mui/icons-material/Person2Rounded";
-import { useTheme } from "@mui/material/styles";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase";
 import { useRouter } from "next/router";
 
-import { ThemePaletteModeContext } from "@/pages/_app";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
 export default function Navbar() {
   const { mobile, userDetails, setUserDetails, user, userIsLoading } =
     useCharlaContext();
-  const themePaletteModeContext = React.useContext(ThemePaletteModeContext);
-  const theme = useTheme();
 
   const router = useRouter();
 
@@ -84,7 +80,6 @@ export default function Navbar() {
               <IconButton onClick={handleSettingsClick}>
                 <Avatar
                   sx={{
-                    backgroundColor: theme.palette.primary.main,
                     fontSize: "16px",
                   }}
                   className="mobile-navbar-icon"
@@ -119,7 +114,6 @@ export default function Navbar() {
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  themePaletteModeContext.toggleThemePaletteMode();
                   handleClose();
                 }}
               >
@@ -185,7 +179,6 @@ export default function Navbar() {
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  themePaletteModeContext.toggleThemePaletteMode();
                   handleClose();
                 }}
               >

@@ -23,7 +23,6 @@ import {
 } from "@mui/material";
 
 import React, { useEffect, useState, useRef } from "react";
-import { useTheme } from "@emotion/react";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import MoreVertRoundedIcon from "@mui/icons-material/MoreVertRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
@@ -39,8 +38,6 @@ export default function Dictionary() {
     handleConversationsUpdate,
     conversations,
   } = useCharlaContext();
-
-  const theme = useTheme();
 
   const [menuAnchor, setMenuAnchor] = useState(false);
   const selectedIndex = useRef(null);
@@ -137,7 +134,7 @@ export default function Dictionary() {
                   sx={{
                     width: "100%",
                     padding: "1rem",
-                    border: `1px solid ${theme.palette.primary.main}`,
+                    border: `1px solid #1976d2`,
                     borderRadius: "10px",
                   }}
                 >
@@ -244,7 +241,7 @@ export default function Dictionary() {
             <Typography
               variant={!mobile ? "h1" : "h3"}
               sx={{
-                color: theme.palette.primary.main,
+                color: "#1976d2",
                 ...(mobile && { marginTop: "1rem" }),
               }}
             >
