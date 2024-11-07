@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Stack, Typography, useTheme } from "@mui/material";
 import React, { useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import Image from "next/image";
@@ -9,7 +9,6 @@ import { ListItemIcon, ListItemText } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import { useCharlaContext } from "@/Contexts/UserContext";
 import Avatar from "@mui/material/Avatar";
-import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import Person2RoundedIcon from "@mui/icons-material/Person2Rounded";
@@ -23,6 +22,9 @@ import "react-loading-skeleton/dist/skeleton.css";
 export default function Navbar() {
   const { mobile, userDetails, setUserDetails, user, userIsLoading } =
     useCharlaContext();
+
+
+  const theme = useTheme();
 
   const router = useRouter();
 
@@ -57,7 +59,7 @@ export default function Navbar() {
   };
 
   return (
-    <Box className="navbar-container">
+    <Box className="navbar-container" sx = {{backgroundColor : theme.palette.background.paper}}>
       <Box className="navbar-home">
         <Link href="/">
           <IconButton aria-label="delete">
@@ -95,9 +97,11 @@ export default function Navbar() {
                 width={24}
               />
             ) : (
-              <IconButton href="/sign-in">
-                <LoginRoundedIcon />
-              </IconButton>
+              <Stack direction = 'row' gap = '1rem'>
+                <Button variant="contained" href="/sign-in" sx = {{borderRadius: '2rem'}}>
+                  Sign In
+                </Button>
+              </Stack>
             )}
             <Menu
               id="settings-menu"
@@ -123,23 +127,26 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <IconButton onClick={() => router.push("/chat")} disableRipple>
-              <Typography variant="h6">Chat</Typography>
-            </IconButton>
-            <IconButton
-              onClick={() => router.push("/dictionary")}
-              disableRipple
-            >
-              <Typography variant="h6">Dictionary</Typography>
-            </IconButton>
-            <IconButton onClick={() => router.push("/dashboard")} disableRipple>
-              <Typography variant="h6">Dashboard</Typography>
-            </IconButton>
+            {user && (
+              <>
+              <IconButton onClick={() => router.push("/chat")} disableRipple>
+                <Typography variant="h6">Chat</Typography>
+              </IconButton>
+              <IconButton
+                onClick={() => router.push("/dictionary")}
+                disableRipple
+              >
+                <Typography variant="h6">Dictionary</Typography>
+              </IconButton>
+              <IconButton onClick={() => router.push("/dashboard")} disableRipple>
+                <Typography variant="h6">Dashboard</Typography>
+              </IconButton>
+            </>
+            )}
             {user ? (
               <IconButton onClick={handleSettingsClick}>
                 <Avatar
                   sx={{
-                    backgroundColor: "#6573C3",
                     width: "45px",
                     height: "45px",
                   }}
@@ -155,7 +162,7 @@ export default function Navbar() {
                 width={24}
               />
             ) : (
-              <Button variant="contained" href="/sign-in">
+              <Button variant="contained" href="/sign-in" sx = {{borderRadius: '2rem'}}>
                 Sign In
               </Button>
             )}

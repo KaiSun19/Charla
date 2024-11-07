@@ -22,11 +22,26 @@ import { CharlaProvider } from "@/Contexts/UserContext";
 
 export default function App({ Component, pageProps }) {
 
-  const theme = createTheme({
-    colorSchemes: {
-      dark: true,
+  const themeOptions  = {
+    palette: {
+      mode: 'light',
+      primary: {
+        main: '#5B6D92',
+        light: '#d5e3e6',
+        dark: '#42506C',
+      },
+      secondary: {
+        main: '#D18266',
+        light: '#efeee5',
+        dark: '#cfc3b5',
+      },
+      background: {
+        paper: '#FFF6EC',
+      },
     },
-  });
+  };
+
+  const theme = createTheme(themeOptions);
 
   return (
     <CharlaProvider>

@@ -101,6 +101,66 @@ body {
   background-color: rgba(217, 217, 217, 0.1);
 }
 
+.logo-colors { 
+  background: -webkit-linear-gradient(#5B6D92,#D5E3E6,#D18266);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-bold { 
+  font-weight: 400;
+}
+
+/* stylings for home page */
+
+.lang-pagination-container{
+  width : 100%;
+  justify-content: space-between;
+  padding : 1%;
+  font-weight: bold;
+}
+
+.fade-up {
+  opacity: 0; /* Start fully transparent */
+  transform: translateY(20px); /* Start 20 pixels down */
+  transition: opacity 0.5s ease, transform 0.5s ease; /* Transition for opacity and transform */
+}
+
+.fade-up.visible {
+  opacity: 1; /* Fully visible */
+  transform: translateY(0); /* Move to original position */
+}
+
+.get-started-button{
+  color: #fff;
+  border-radius: 2rem;
+  margin: 1rem 0 1rem 0;
+  padding-top : 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.get-started-button:hover{
+  background-color: #3c4860;
+}
+
+.description-error-text{
+  background-color: rgba(229, 115, 115, 0.3);
+  padding: 0.25rem;
+  border-radius: 0.3rem;
+}
+
+.description-saved-text{
+  background-color: rgba(129, 199, 132, 0.3);
+  padding: 0.25rem;
+  border-radius: 0.3rem;
+}
+
+@media only screen and (max-width: 400px) {
+  .get-started-button{
+    width : 100%;
+  }
+}
+
 /* stylings for sign up page */
 
 .sign-up-container,
