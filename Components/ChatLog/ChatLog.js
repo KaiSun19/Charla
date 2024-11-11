@@ -24,6 +24,7 @@ import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import UnfoldMoreRoundedIcon from "@mui/icons-material/UnfoldMoreRounded";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
+import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import ChatNavigation from "../ChatNavigation/ChatNavigation";
 import CreateChatModal from "../CreateChatModal/CreateChatModal";
 import TranslateModal from "../TranslateModal/TranslateModal";
@@ -83,6 +84,7 @@ export default function ChatLog() {
   const [hideText, setHideText] = useState(false);
   const [autoplay, setAutoplay] = useState(false);
   const [successAlertOpen, setSuccessAlertOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const popoverOpen = Boolean(popoverAnchorEl);
 
@@ -116,6 +118,10 @@ export default function ChatLog() {
 
   const handleAutoplay = (e) => {
     setAutoplay(!hideText);
+  };
+
+  const handleSettingsOpen = (e) => {
+    setSettingsOpen(!settingsOpen);
   };
 
   const handleSavePhrase = () => {
@@ -238,16 +244,13 @@ export default function ChatLog() {
               <Typography variant={mobile ? "h6" : "h4"}>
                 {currentConversation && currentConversation.title}
               </Typography>
-            </Box>
-            <Accordion className="chat-log-accordion" disableGutters={true}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                sx={{ height: "6%" }}
+              <IconButton className={`chat-log-settings-icon ${settingsOpen ? 'rotate-anticlockwise' : 'rotate-clockwise'}`} 
+                sx = {{marginRight : '1rem', color : 'white'}} onClick = {handleSettingsOpen}
               >
-                <Typography variant={mobile ? "body1" : "h6"}>
-                  Chat settings
-                </Typography>
-              </AccordionSummary>
+                <SettingsRoundedIcon className = {mobile ? 'icon-m' :'icon-l'}/>
+              </IconButton>
+            </Box>
+            <Accordion className="chat-log-accordion" disableGutters={true} sx = {{display : settingsOpen ? '' : 'none'}}>
               <AccordionDetails
                 className="accordion-details-container"
               >

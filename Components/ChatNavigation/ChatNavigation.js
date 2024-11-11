@@ -2,18 +2,21 @@ import { useCharlaContext } from "@/Contexts/UserContext";
 import {
   Box,
   Typography,
-  Button,
   IconButton,
   Menu,
   MenuItem,
   ListItemIcon,
   ListItemText,
+  Divider,
+  Stack,
+  Drawer,
 } from "@mui/material";
 import React, { useState } from "react";
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputAdornment from "@mui/material/InputAdornment";
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import MoreVertRoundedIcon from "@mui/icons-material/MoreVertRounded";
+import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
+import BookmarkBorderRoundedIcon from '@mui/icons-material/BookmarkBorderRounded';
+import PriorityHighRoundedIcon from '@mui/icons-material/PriorityHighRounded';
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { convertClassname } from "@/Utils";
@@ -32,10 +35,15 @@ export default function ChatNavigation() {
   } = useCharlaContext();
 
   const [modalOpen, setModalOpen] = useState(false);
+  const [conversationsDrawerOpen, setConversationsDrawerOpen] = useState(false);
 
   const handleModalClose = () => {
     setModalOpen(false);
   };
+
+  const handleConversationsDrawerOpen = (e) => {
+    setConversationsDrawerOpen(!conversationsDrawerOpen);
+  }
 
   const limitLastMessage = (message) => {
     const words = message.split(" ");
@@ -111,85 +119,73 @@ export default function ChatNavigation() {
             </IconButton>
           </Box>
         )}
-        <OutlinedInput
-          placeholder=""
-          className="outlined-input record-input"
-          color="primary"
-          // value={userInput}
-          // onChange={handleUserInput}
-          endAdornment={
-            <InputAdornment position="end" sx={{ paddingRight: "2%" }}>
-              <SearchRoundedIcon />
-            </InputAdornment>
-          }
-          sx={{
-            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              border: "1px solid #292929",
-            },
-          }}
-        />
-        <Button
-          variant="outlined"
-          color="inherit"
-          className="chat-navigation-button"
-          sx={{ border: `1px solid #0000001f` }}
-          onClick={() => {
-            setModalOpen(true);
-          }}
-        >
-          Start a chat here
-        </Button>
-        {conversations.map((conversation, index) => {
-          return (
-            <Box
-              className="chat-nav-item"
-              id={conversation === currentConversation && "chat-nav-item-first"}
-              onClick={() => {
-                setCurrentConversation(conversation);
-              }}
-              key={`chat-nav-item-${index}`}
-            >
+        <Stack direction = 'column' divider={<Divider orientation="horizontal" flexItem />} spacing={mobile ? 2 : 3}>
+          <IconButton>
+            <AddRoundedIcon className={mobile ? 'icon-m' : 'icon-l'} sx = {{color : 'primary.main'}}/>
+          </IconButton>
+          <IconButton onClick={handleConversationsDrawerOpen}>
+            <AccessTimeRoundedIcon className={mobile ? 'icon-m' : 'icon-l'} sx = {{color : 'primary.main'}}/>
+          </IconButton>
+          <IconButton>
+            <BookmarkBorderRoundedIcon className={mobile ? 'icon-m' : 'icon-l'} sx = {{color : 'primary.main'}}/>
+          </IconButton>
+          <IconButton>
+            <PriorityHighRoundedIcon className={mobile ? 'icon-m' : 'icon-l'} sx = {{color : 'primary.main'}}/>
+          </IconButton>
+        </Stack>
+        <Drawer open={conversationsDrawerOpen} onClose={handleConversationsDrawerOpen}>
+          {conversations.map((conversation, index) => {
+            return (
               <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                className="chat-nav-item"
+                id={conversation === currentConversation && "chat-nav-item-first"}
+                onClick={() => {
+                  setCurrentConversation(conversation);
                 }}
+                key={`chat-nav-item-${index}`}
               >
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    sx={{ marginBottom: "5px" }}
+                    onClick={() => {
+                      setCurrentConversation(conversation);
+                      handleNav();
+                    }}
+                  >
+                    {conversation.title}
+                  </Typography>
+                  <IconButton
+                    className="nav-item-action-button"
+                    onClick={(e) => {
+                      handleNavItemMenuClick(e);
+                    }}
+                  >
+                    <MoreVertRoundedIcon />
+                  </IconButton>
+                  <NavItemMenu conversation={conversation} />
+                </Box>
                 <Typography
-                  variant="h6"
-                  sx={{ marginBottom: "5px" }}
+                  variant="body1"
                   onClick={() => {
                     setCurrentConversation(conversation);
                     handleNav();
                   }}
                 >
-                  {conversation.title}
+                  {limitLastMessage(
+                    conversation.chat[conversation.chat.length - 1].message,
+                  )}
                 </Typography>
-                <IconButton
-                  className="nav-item-action-button"
-                  onClick={(e) => {
-                    handleNavItemMenuClick(e);
-                  }}
-                >
-                  <MoreVertRoundedIcon />
-                </IconButton>
-                <NavItemMenu conversation={conversation} />
               </Box>
-              <Typography
-                variant="body1"
-                onClick={() => {
-                  setCurrentConversation(conversation);
-                  handleNav();
-                }}
-              >
-                {limitLastMessage(
-                  conversation.chat[conversation.chat.length - 1].message,
-                )}
-              </Typography>
-            </Box>
-          );
-        })}
+            );
+          })}
+        </Drawer>
       </Box>
     </>
   );

@@ -97,8 +97,7 @@ body {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  min-width: 75%;
-  background-color: rgba(217, 217, 217, 0.1);
+  width: 100%;
 }
 
 .logo-colors { 
@@ -109,6 +108,28 @@ body {
 
 .text-bold { 
   font-weight: 400;
+}
+
+/* icon sizes */
+
+.icon-xs { 
+  width : 0.75rem;
+  height : 0.75rem;
+}
+
+.icon-s { 
+  width : 1rem;
+  height :1rem;
+}
+
+.icon-m{ 
+  width : 1.75rem;
+  height :1.75rem;
+}
+
+.icon-l{ 
+  width : 2rem;
+  height :2rem;
 }
 
 /* stylings for home page */
