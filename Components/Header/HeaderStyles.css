@@ -3,10 +3,11 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 1%;
+  padding: 0% 1%;
   min-width: 100%;
   gap: 20px;
   height: 10%;
+  border-bottom: 1px solid #C8C8C8;
 }
 
 .navbar-title {
@@ -17,7 +18,7 @@
 .navbar-home {
   width: 50%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 20px;
   align-items: center;
 }
@@ -32,4 +33,28 @@
 .mobile-navbar-icon {
   width: 32px;
   height: 32px;
+}
+
+.navbar-chat-button::before {
+  content: ''; 
+  background-color: #5B6D92;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%; 
+  display: inline-block; 
+  margin-right: 8px;
+}
+
+.navbar-dictionary-button::before {
+  content: ''; 
+  background-color: #D18266;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%; 
+  display: inline-block; 
+  margin-right: 8px;
+}
+
+.css-1emqy61-MuiPaper-root-MuiPopover-paper-MuiMenu-paper{
+  background-color: #ffff;
 }

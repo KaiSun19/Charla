@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, useTheme } from "@mui/material";
+import { Box, Divider, Stack, Typography, useTheme } from "@mui/material";
 import React, { useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import Image from "next/image";
@@ -12,6 +12,8 @@ import Avatar from "@mui/material/Avatar";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import Person2RoundedIcon from "@mui/icons-material/Person2Rounded";
+import ChatBubbleRoundedIcon from '@mui/icons-material/ChatBubbleRounded';
+import BookmarkRoundedIcon from '@mui/icons-material/BookmarkRounded';
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase";
 import { useRouter } from "next/router";
@@ -22,9 +24,6 @@ import "react-loading-skeleton/dist/skeleton.css";
 export default function Navbar() {
   const { mobile, userDetails, setUserDetails, user, userIsLoading } =
     useCharlaContext();
-
-
-  const theme = useTheme();
 
   const router = useRouter();
 
@@ -51,6 +50,12 @@ export default function Navbar() {
     router.push("/dictionary");
   };
 
+  const goToProfile = () =>{
+    handleClose();
+    router.push(`/profile/${userDetails.username}`);
+
+  }
+
   const handleSignOut = () => {
     handleClose();
     router.push("/");
@@ -59,7 +64,7 @@ export default function Navbar() {
   };
 
   return (
-    <Box className="navbar-container" sx = {{backgroundColor : theme.palette.background.paper}}>
+    <Box className="navbar-container">
       <Box className="navbar-home">
         <Link href="/">
           <IconButton aria-label="delete">
@@ -83,8 +88,8 @@ export default function Navbar() {
                 <Avatar
                   sx={{
                     fontSize: "16px",
+                    backgroundColor : "primary.main"
                   }}
-                  className="mobile-navbar-icon"
                 >
                   {userDetails.initials}
                 </Avatar>
@@ -99,47 +104,62 @@ export default function Navbar() {
             ) : (
               <Stack direction = 'row' gap = '1rem'>
                 <Button variant="contained" href="/sign-in" sx = {{borderRadius: '2rem'}}>
-                  Sign In
+                    Sign In
                 </Button>
               </Stack>
             )}
             <Menu
-              id="settings-menu"
+              id="navbar-profile-menu"
               anchorEl={menuAnchor}
               open={openMenu}
               onClose={handleClose}
               MenuListProps={{ "aria-labelledby": "basic-button" }}
             >
-              <MenuItem onClick={goToChat}>Chat</MenuItem>
-              <MenuItem onClick={goToDictionary}>Dictionary</MenuItem>
-              <MenuItem onClick={handleClose}>Dashboard</MenuItem>
+            <MenuItem onClick={goToProfile}>
+              <ListItemIcon>
+                <Person2RoundedIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Profile</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={goToChat}>
+              <ListItemIcon>
+                <ChatBubbleRoundedIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Chat</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={goToDictionary}>
+              <ListItemIcon>
+                <BookmarkRoundedIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Dictionary</ListItemText>
+            </MenuItem> 
+            <Divider />               
               <MenuItem onClick={handleSignOut} sx={{ color: "error.main" }}>
                 Sign out
               </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  handleClose();
-                }}
-              >
-                Toggle display mode
-              </MenuItem>
+            <Divider />
+            <MenuItem
+              onClick={() => {
+                handleClose();
+              }}
+            >
+              Toggle display mode
+            </MenuItem>
             </Menu>
           </>
         ) : (
           <>
             {user && (
               <>
-              <IconButton onClick={() => router.push("/chat")} disableRipple>
+              <IconButton onClick={() => router.push("/chat")} disableRipple className = 'navbar-chat-button'>
                 <Typography variant="h6">Chat</Typography>
               </IconButton>
               <IconButton
                 onClick={() => router.push("/dictionary")}
                 disableRipple
+                className = 'navbar-dictionary-button'
               >
                 <Typography variant="h6">Dictionary</Typography>
-              </IconButton>
-              <IconButton onClick={() => router.push("/dashboard")} disableRipple>
-                <Typography variant="h6">Dashboard</Typography>
               </IconButton>
             </>
             )}
@@ -149,6 +169,7 @@ export default function Navbar() {
                   sx={{
                     width: "45px",
                     height: "45px",
+                    backgroundColor : "primary.main"
                   }}
                 >
                   {userDetails.initials}
@@ -174,10 +195,7 @@ export default function Navbar() {
               MenuListProps={{ "aria-labelledby": "basic-button" }}
             >
               <MenuItem
-                onClick={() => {
-                  handleClose();
-                  router.push(`/profile/${userDetails.username}`);
-                }}
+                onClick={goToProfile}
               >
                 <ListItemIcon>
                   <Person2RoundedIcon fontSize="small" />

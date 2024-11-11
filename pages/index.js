@@ -129,7 +129,7 @@ export default function Home() {
           )}
         </LayoutStack>
         <Box sx = {{minHeight: "20vh", padding : '0 1rem 0 1rem' }}>
-          <SubheadingText variant="h4" sx = {{margin: "0 1rem 0 1rem"}} mobile = {mobile}>
+          <SubheadingText variant="h4" sx = {{margin: "0 2rem 1rem 2rem"}} mobile = {mobile}>
             Take your first steps to practicing in a language of your choice. Get automatic <span className="description-error-text">correccions</span>  and suggestions for how to improve your sentences. <span className="description-saved-text">Save</span>  phrases for later in a personalized dictionary.
           </SubheadingText>
         </Box>
