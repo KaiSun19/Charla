@@ -14,6 +14,7 @@ import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import Person2RoundedIcon from "@mui/icons-material/Person2Rounded";
 import ChatBubbleRoundedIcon from '@mui/icons-material/ChatBubbleRounded';
 import BookmarkRoundedIcon from '@mui/icons-material/BookmarkRounded';
+import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase";
 import { useRouter } from "next/router";
@@ -53,7 +54,11 @@ export default function Navbar() {
   const goToProfile = () =>{
     handleClose();
     router.push(`/profile/${userDetails.username}`);
+  }
 
+  const goToAddPhrase = () => {
+    handleClose();
+    router.push(`/dictionary?quick_add=true`);
   }
 
   const handleSignOut = () => {
@@ -120,6 +125,12 @@ export default function Navbar() {
                 <Person2RoundedIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText>Profile</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={goToAddPhrase}>
+              <ListItemIcon>
+                <AutoAwesomeRoundedIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Quick add</ListItemText>
             </MenuItem>
             <MenuItem onClick={goToChat}>
               <ListItemIcon>
@@ -202,6 +213,12 @@ export default function Navbar() {
                 </ListItemIcon>
                 <ListItemText>Profile</ListItemText>
               </MenuItem>
+              <MenuItem onClick={goToAddPhrase}>
+                <ListItemIcon>
+                  <AutoAwesomeRoundedIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Quick add</ListItemText>
+            </MenuItem>
               <MenuItem
                 onClick={() => {
                   handleClose();

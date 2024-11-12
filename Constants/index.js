@@ -272,7 +272,7 @@ export const modalStyle = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  bgcolor: "background.paper",
+  bgcolor: "background.default",
   border: "1px solid #c8c8c8",
   boxShadow: 24,
   p: 4,

@@ -27,6 +27,7 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import MoreVertRoundedIcon from "@mui/icons-material/MoreVertRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import { modalStyle } from "@/Constants";
+import { useRouter } from "next/router";
 
 export default function Dictionary() {
   const {
@@ -38,6 +39,9 @@ export default function Dictionary() {
     handleConversationsUpdate,
     conversations,
   } = useCharlaContext();
+
+  const router = useRouter();
+  const { query } = router;
 
   const [menuAnchor, setMenuAnchor] = useState(false);
   const selectedIndex = useRef(null);
@@ -222,6 +226,12 @@ export default function Dictionary() {
       </Modal>
     );
   }
+
+  useEffect(()=> {
+    if(query.quick_add){
+      setModalOpen(true)
+    }
+  }, [query.quick_add])
 
   if (userDetails) {
     return (
