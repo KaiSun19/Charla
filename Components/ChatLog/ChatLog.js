@@ -63,8 +63,6 @@ export default function ChatLog() {
     handleConversationsUpdate,
     createUpdatedConversations,
     mobile,
-    navOpen,
-    handleNav,
     charlaIsLoading,
     setChatSettings,
     setPrevChatSettings,

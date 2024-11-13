@@ -56,10 +56,6 @@ export const CharlaProvider = ({ children }) => {
 
   const [userIsLoading, setUserisLoading] = useState(true);
 
-  const handleNav = () => {
-    setNavOpen(!navOpen);
-  };
-
   const handleConversationsUpdate = (updatedConversations) => {
     setConversations(updatedConversations);
     setCurrentConversation(updatedConversations[0]);
@@ -385,9 +381,6 @@ export const CharlaProvider = ({ children }) => {
         setSavedPhrases,
         createUpdatedConversations,
         handleConversationsUpdate,
-        navOpen,
-        setNavOpen,
-        handleNav,
         currentConversation,
         setCurrentConversation,
         deleteConversation,

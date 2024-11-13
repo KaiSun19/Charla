@@ -279,3 +279,12 @@ export const modalStyle = {
   borderRadius: 1,
   width: 700,
 };
+
+export const SidebarDrawerStyles = {
+  padding : '1rem',
+  top: '10%',
+  left : '6%',
+  bgcolor: "background.default",
+  width : '25%',
+  border: "1px solid #c8c8c8"
+}

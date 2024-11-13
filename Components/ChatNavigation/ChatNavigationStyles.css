@@ -28,23 +28,31 @@
 .chat-nav-item {
   width: 100%;
   padding: 3%;
-  gap: 1%;
+  margin : 1rem 0;
   transition-duration: 0.2s;
   background: none;
   border: none;
   text-align: left;
-  border-radius: 1rem;
+  border-radius: 1.5rem;
 }
 
 .chat-nav-item:hover {
-  background-color: #6573c32b;
+  background-color: #5B6D924D;
   cursor: pointer;
 }
 
 #chat-nav-item-first {
-  background-color: #6573c32b;
+  background-color: #5B6D924D;
 }
 
 .nav-item-action-button {
   transition-duration: 0.2s;
+}
+
+.nav-sidebar-header{
+  justify-content: space-between;
+  align-items: center;
+  padding : 1rem;
+  margin-bottom : 1rem;
+  border-bottom: 1px solid #c8c8c8;
 }
