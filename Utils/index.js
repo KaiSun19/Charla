@@ -338,3 +338,30 @@ export function extractConversationStarters(input) {
 
   return questions;
 }
+//explanation: gets any data from conversation.chat if it exists and then migrates it to the messages collection within the
+// conversation document
+  // useEffect(() => {
+  //   async function migrateChatsToMessages() {
+  //     const userRef = doc(db, "userDetails", "yksun15@gmail.com");
+  //     const userSnap = await getDoc(userRef);
+  //     const userId = userSnap.data().id;
+  //     const conversationRef = doc(db, "conversations", `1_${userId}`);
+
+  //     const conversationSnap = await getDoc(conversationRef);
+  //     const chatData = conversationSnap.data().chat;
+
+  //     const chatCollectionRef = collection(db, `${conversationRef.path}/chat`);
+  //     const batch = [];
+
+  //     chatData.forEach((chat, index) => {
+  //         const messageRef = doc(chatCollectionRef, `${index}_message`);
+  //         batch.push(setDoc(messageRef, chat));
+  //     })
+  //     await Promise.all(batch);
+  //     console.log('Migration completed successfully!');
+  //   }
+  //   if (userDetails) {
+  //     console.log("staredt");
+  //     migrateChatsToMessages();
+  //   }
+  // }, []);

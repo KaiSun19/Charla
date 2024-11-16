@@ -33,8 +33,6 @@ export const CharlaProvider = ({ children }) => {
 
   const [hasUpdatedErrorsIndex, setHasUpdatedErrorsIndex] = useState(false);
 
-  const [navOpen, setNavOpen] = useState(false);
-
   const [currentConversation, setCurrentConversation] = useState(null);
 
   const [charlaIsLoading, setCharlaIsLoading] = useState(false);
@@ -131,8 +129,7 @@ export const CharlaProvider = ({ children }) => {
     return;
   };
 
-  const fetchAudio = async (message) => {
-    const text = message.message;
+  const fetchAudio = async (text) => {
     const response = await fetch("/api/textToVoice", {
       headers: {
         "Content-Type": "application/json",
@@ -146,7 +143,7 @@ export const CharlaProvider = ({ children }) => {
     });
     const { audioContent } = await response.json();
     const mp3Data = `data:audio/mp3;base64,${audioContent}`;
-    const responseMessage = { ...message, audio: mp3Data };
+    const responseMessage = { audio: mp3Data };
 
     // settings prev chat settings to match current settings
     setPrevChatSettings(chatSettings);

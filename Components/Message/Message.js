@@ -11,6 +11,8 @@ import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 import ErrorHighlightedMessage from "./ErrorHighlightedMessage";
 import VoiceOnlyUI from "../VoiceOnlyUI/VoiceOnlyUI";
 import SavedHighlightedMessage from "./SavedHighlightedMessage";
+import { db } from "@/firebase";
+import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 
 const messageStyles = {
   display: "flex",
@@ -47,7 +49,6 @@ const Message = forwardRef(({ Message, Index, Hide, Autoplay }, ref) => {
     conversations,
     currentConversation,
     fetchAudio,
-    createUpdatedConversations,
     handleConversationsUpdate,
     chatSettings,
     prevChatSettings,
@@ -60,7 +61,7 @@ const Message = forwardRef(({ Message, Index, Hide, Autoplay }, ref) => {
   const audioRef = useRef(null); // Create audio ref
 
   //audio duration count to pass to voice only ui
-  const audioDurationRef = useRef(Message.audioDuration || null);
+  const audioDurationRef = useRef(null);
 
   //idle = audio is not playing or loading
   //loading = audio is loading
@@ -70,20 +71,29 @@ const Message = forwardRef(({ Message, Index, Hide, Autoplay }, ref) => {
   const [audioStatus, setAudioStatus] = useState("idle");
 
   const playAudio = async () => {
-    let messageWithAudio;
-    if ((!Message.audio && !audioRef.current.src) || isSettingsSpeedChanged) {
+    if (!audioRef.current.src || isSettingsSpeedChanged) {
       setAudioStatus("loading");
       // If message does not have audio, fetch audio
-      messageWithAudio = await fetchAudio(Message, Index);
-      audioRef.current.src = messageWithAudio.audio;
+      const { audio } = await fetchAudio(Message.message);
+      audioRef.current.src = audio
 
-      messageWithAudio.audioDuration = await calculateAudioDuration(
-        decodeBase64Audio(messageWithAudio.audio),
+      const audioDuration = await calculateAudioDuration(
+        decodeBase64Audio(audio),
       );
 
-      audioDurationRef.current = messageWithAudio.audioDuration;
-    } else if (Message.audio) {
-      audioDurationRef.current = Message.audioDuration;
+      audioDurationRef.current = audioDuration;
+
+      //TODO: for audio to be uploaded to firebase the audio cannot be stopped before it ends
+      audioRef.current.onended = async () => {
+        // after playback endupdate message state if message state does not have audio
+        const audioDocPath = `audios/${Index}_${userDetails.id}/${conversations.indexOf(currentConversation)}/${Index}`
+        await setDoc(doc(db, 'audios', `${Index}_${userDetails.id}`), {
+          audio : audio,
+          audioDuration,
+          path : audioDocPath
+        })
+
+      };
     }
     try {
       await audioRef.current.play(); // Wait for playback to start
@@ -93,18 +103,6 @@ const Message = forwardRef(({ Message, Index, Hide, Autoplay }, ref) => {
       // Handle other potential errors
       setAudioStatus("error"); // Reset state on error
     }
-    //TODO: for audio to be uploaded to firebase the audio cannot be stopped before it ends
-    audioRef.current.onended = () => {
-      // after playback endupdate message state if message state does not have audio
-      if (!Message.audio) {
-        const updatedConversations = createUpdatedConversations({
-          index: conversations.indexOf(currentConversation),
-          message: messageWithAudio,
-          messageIndex: Index,
-        });
-        handleConversationsUpdate(updatedConversations);
-      }
-    };
   };
 
   const pauseAudio = () => {
@@ -148,13 +146,31 @@ const Message = forwardRef(({ Message, Index, Hide, Autoplay }, ref) => {
   };
 
   useEffect(() => {
+    //fetch audio if it exists and updates audioData and audioDuration state
+    const retrieveAudio = async () =>{
+      const audioDocPath = `audios/${Index}_${userDetails.id}/${conversations.indexOf(currentConversation)}/${Index}`
+      const audioCollectionRef = collection(db, `audios`);
+      const q = query(audioCollectionRef, where('path', '==', audioDocPath));
+      const querySnapshot = await getDocs(q);
+      if(!querySnapshot.isEmpty){
+        querySnapshot.forEach((doc)=>{
+          if(audioRef.current){
+            audioRef.current.src = doc.data().audio
+          }
+          audioDurationRef.current = doc.data().audioDuration;
+        })
+      }
+    }
     if (
       Autoplay &&
       Index === currentConversation.lastUpdatedMessage &&
       !audioRef.current.src &&
       Message.type === "Charla"
     ) {
-      playAudio();
+      playAudio()
+    }
+    else{
+      retrieveAudio()
     }
   }, []);
 
@@ -208,7 +224,6 @@ const Message = forwardRef(({ Message, Index, Hide, Autoplay }, ref) => {
               <>
                 <audio
                   ref={audioRef}
-                  src={Message.audio}
                   onEnded={() => setAudioStatus("idle")}
                 />
                 <IconButton
@@ -251,7 +266,6 @@ const Message = forwardRef(({ Message, Index, Hide, Autoplay }, ref) => {
               <>
                 <audio
                   ref={audioRef}
-                  src={Message.audio}
                   onEnded={() => setAudioStatus("idle")}
                 />
                 <IconButton
@@ -275,7 +289,7 @@ const Message = forwardRef(({ Message, Index, Hide, Autoplay }, ref) => {
               {Hide ? (
                 <VoiceOnlyUI
                   count={Math.ceil(calcSpeechOnlyWidth(Message.message.length))}
-                  duration={audioDurationRef.current}
+                  duration={audioDuration}
                   isPlaying={audioStatus === "playing"}
                 />
               ) : (
