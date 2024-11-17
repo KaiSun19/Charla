@@ -38,6 +38,9 @@ export default function App({ Component, pageProps }) {
       background: {
         paper: '#FFF6EC',
       },
+      saved : {
+        main : '#81c7844d'
+      }
     },
   };
 

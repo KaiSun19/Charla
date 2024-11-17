@@ -283,8 +283,9 @@ export const modalStyle = {
 export const SidebarDrawerStyles = {
   padding : '1rem',
   top: '10%',
-  left : '6%',
+  left : '9.4%',
   bgcolor: "background.default",
   width : '25%',
-  border: "1px solid #c8c8c8"
+  border: "1px solid #c8c8c8",
+  overflowY: 'scroll'
 }

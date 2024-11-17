@@ -191,6 +191,13 @@ export const CharlaProvider = ({ children }) => {
     }
   }, [userDetails]);
 
+  const deleteSavedPhrase = (conversation_index, message_index, phrase) => {
+    const currentMessage = conversations[conversation_index].chat[message_index]
+    const messageWithoutSavedPhrase = {...currentMessage, saved : currentMessage.saved.filter(saved => saved.text !== phrase) }
+    const updatedConversations = createUpdatedConversations({index : conversation_index, message : messageWithoutSavedPhrase, messageIndex : message_index})
+    handleConversationsUpdate(updatedConversations);
+  }
+
   useEffect(() => {
     //this gets fired whenever a user signs in or refreshes
     const unsubscribe = auth.onAuthStateChanged(
@@ -395,6 +402,7 @@ export const CharlaProvider = ({ children }) => {
         userIsLoading,
         userInput,
         setUserInput,
+        deleteSavedPhrase
       }}
     >
       {children}

@@ -6,8 +6,9 @@ import {
   Divider,
   Stack,
   Drawer,
+  Badge,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
@@ -20,21 +21,30 @@ import CreateChatModal from "../CreateChatModal/CreateChatModal";
 import { CssBaseline } from "@mui/material";
 import { SidebarDrawerStyles } from "@/Constants";
 import ConversationsDrawer from "./ConversationsDrawer";
+import SavedDrawer from "./SavedDrawer";
 
 export default function ChatNavigation() {
   const {
     mobile,
+    savedPhrases,
+    conversations,
+    currentConversation
   } = useCharlaContext();
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerInfo , setDrawerInfo] = useState('newConversation')
   const [drawerTitle, setDrawerTitle] = useState('New chat')
+  const [conversationSaved, setConversationSaved] = useState(0);
 
   const handleDrawerOpen = (e, drawerType, drawerTitle) => {
     setDrawerTitle(drawerTitle)
     setDrawerInfo(drawerType);
     setDrawerOpen(!drawerOpen);
   };
+
+  useEffect(()=>{
+    setConversationSaved(savedPhrases.filter(({conversation_index}) => conversation_index === conversations.indexOf(currentConversation)))
+  }, [savedPhrases])
 
   return (
     <>
@@ -60,37 +70,57 @@ export default function ChatNavigation() {
         )}
         <Stack
           direction="column"
+          alignItems='flex-start'
           divider={<Divider orientation="horizontal" flexItem />}
-          spacing={mobile ? 2 : 3}
+          spacing={3}
+          sx = {{padding : '2% 1%'}}
         >
-          <IconButton onClick={(e) => {handleDrawerOpen(e, 'newConversation','New chat')}}>
-            <AddRoundedIcon
-              className={mobile ? "icon-m" : "icon-l"}
-              sx={{ color: "primary.main" }}
-            />
+          <IconButton onClick={(e) => {handleDrawerOpen(e, 'newConversation','New chat')}} sx = {{borderRadius : '10%'}}>
+            <Stack  direction="row" spacing={1} sx={{justifyContent: "center",alignItems: "center"}}>
+              <AddRoundedIcon
+                className="icon-m"
+                sx={{ color: "primary.main" }}
+              />
+              <Typography variant='body1' sx = {{color: "primary.main", whiteSpace : 'no-wrap'}}>
+                New
+              </Typography>
+            </Stack>
           </IconButton>
           <IconButton onClick={(e) => {
-            handleDrawerOpen(e, 'conversations', 'Chat navigation')}}>
-            <AccessTimeRoundedIcon
-              className={mobile ? "icon-m" : "icon-l"}
-              sx={{ color: "primary.main" }}
-            />
+            handleDrawerOpen(e, 'conversations', 'Chat navigation')}} sx = {{borderRadius : '10%'}}>
+            <Stack  direction="row" spacing={1} sx={{justifyContent: "center",alignItems: "center"}}>
+              <AccessTimeRoundedIcon
+                className="icon-m"
+                sx={{ color: "primary.main" }}
+              />
+              <Typography variant='body1' sx = {{color: "primary.main", whiteSpace : 'no-wrap'}}>
+                History
+              </Typography>
+            </Stack>
           </IconButton>
-          <IconButton>
-            <BookmarkBorderRoundedIcon
-              className={mobile ? "icon-m" : "icon-l"}
-              sx={{ color: "primary.main" }}
-            />
-          </IconButton>
-          <IconButton>
-            <PriorityHighRoundedIcon
-              className={mobile ? "icon-m" : "icon-l"}
-              sx={{ color: "primary.main" }}
-            />
-          </IconButton>
+          <Badge badgeContent={conversationSaved.length} color='saved' invisible={conversationSaved.length === 0}>
+            <IconButton onClick={(e) => {
+              handleDrawerOpen(e, 'saved', 'Saved')}} sx = {{borderRadius : '10%'}}>
+              <Stack  direction="row" spacing={1} sx={{justifyContent: "center",alignItems: "center"}}>
+                <BookmarkBorderRoundedIcon
+                  className="icon-m"
+                  sx={{ color: "primary.main" }}
+                />
+                <Typography variant='body1' sx = {{color: "primary.main", whiteSpace : 'no-wrap'}}>
+                  Saved
+                </Typography>
+              </Stack>
+            </IconButton>
+          </Badge>
+            <IconButton>
+              <PriorityHighRoundedIcon
+                className={mobile ? "icon-m" : "icon-l"}
+                sx={{ color: "primary.main" }}
+              />
+            </IconButton>
         </Stack>
       </Box>
-      <Drawer open={drawerOpen} onClose={handleDrawerOpen} hideBackdrop={true} elevation={0} ModalProps={{sx: {width : '30%', left : '6%', top:'10%'}}} PaperProps={{sx : SidebarDrawerStyles}}>
+      <Drawer open={drawerOpen} onClose={handleDrawerOpen} hideBackdrop={true} elevation={0} ModalProps={{sx: {width : '30%', left : '9.4%', top:'10%', overflowY : 'scroll'}}} PaperProps={{sx : {...SidebarDrawerStyles}}}>
         <Stack direction='row' className="nav-sidebar-header">
           <Typography variant = 'h6' sx = {{fontWeight : 'bold'}}>
             {drawerTitle}
@@ -103,7 +133,9 @@ export default function ChatNavigation() {
           drawerInfo === 'conversations' ?
           (<ConversationsDrawer handleDrawerOpen={handleDrawerOpen} />) : 
           drawerInfo === 'newConversation' ? 
-          (<CreateChatModal />) : 
+          (<CreateChatModal handleDrawerOpen={handleDrawerOpen}/>) : 
+          drawerInfo === 'saved' ?
+          (<SavedDrawer handleDrawerOpen={handleDrawerOpen} conversationSaved={conversationSaved} />) : 
           ""
         }
       </Drawer>
