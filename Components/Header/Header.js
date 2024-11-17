@@ -12,9 +12,9 @@ import Avatar from "@mui/material/Avatar";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import Person2RoundedIcon from "@mui/icons-material/Person2Rounded";
-import ChatBubbleRoundedIcon from '@mui/icons-material/ChatBubbleRounded';
-import BookmarkRoundedIcon from '@mui/icons-material/BookmarkRounded';
-import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
+import ChatBubbleRoundedIcon from "@mui/icons-material/ChatBubbleRounded";
+import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
+import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase";
 import { useRouter } from "next/router";
@@ -51,15 +51,15 @@ export default function Navbar() {
     router.push("/dictionary");
   };
 
-  const goToProfile = () =>{
+  const goToProfile = () => {
     handleClose();
     router.push(`/profile/${userDetails.username}`);
-  }
+  };
 
   const goToAddPhrase = () => {
     handleClose();
     router.push(`/dictionary?quick_add=true`);
-  }
+  };
 
   const handleSignOut = () => {
     handleClose();
@@ -85,7 +85,7 @@ export default function Navbar() {
           <Typography variant={mobile ? "h5" : "h4"}>Charla</Typography>
         </Box>
       </Box>
-      <Box className="navbar-buttons">
+      <Box className={`navbar-buttons ${user ?? "sign-in-only"}`}>
         {mobile ? (
           <>
             {user ? (
@@ -93,7 +93,7 @@ export default function Navbar() {
                 <Avatar
                   sx={{
                     fontSize: "16px",
-                    backgroundColor : "primary.main"
+                    backgroundColor: "primary.main",
                   }}
                 >
                   {userDetails.initials}
@@ -107,9 +107,13 @@ export default function Navbar() {
                 width={24}
               />
             ) : (
-              <Stack direction = 'row' gap = '1rem'>
-                <Button variant="contained" href="/sign-in" sx = {{borderRadius: '2rem'}}>
-                    Sign In
+              <Stack direction="row" gap="1rem">
+                <Button
+                  variant="contained"
+                  href="/sign-in"
+                  sx={{ borderRadius: "2rem" }}
+                >
+                  Sign In
                 </Button>
               </Stack>
             )}
@@ -120,59 +124,63 @@ export default function Navbar() {
               onClose={handleClose}
               MenuListProps={{ "aria-labelledby": "basic-button" }}
             >
-            <MenuItem onClick={goToProfile}>
-              <ListItemIcon>
-                <Person2RoundedIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Profile</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={goToAddPhrase}>
-              <ListItemIcon>
-                <AutoAwesomeRoundedIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Quick add</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={goToChat}>
-              <ListItemIcon>
-                <ChatBubbleRoundedIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Chat</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={goToDictionary}>
-              <ListItemIcon>
-                <BookmarkRoundedIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Dictionary</ListItemText>
-            </MenuItem> 
-            <Divider />               
+              <MenuItem onClick={goToProfile}>
+                <ListItemIcon>
+                  <Person2RoundedIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Profile</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={goToAddPhrase}>
+                <ListItemIcon>
+                  <AutoAwesomeRoundedIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Quick add</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={goToChat}>
+                <ListItemIcon>
+                  <ChatBubbleRoundedIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Chat</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={goToDictionary}>
+                <ListItemIcon>
+                  <BookmarkRoundedIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Dictionary</ListItemText>
+              </MenuItem>
+              <Divider />
               <MenuItem onClick={handleSignOut} sx={{ color: "error.main" }}>
                 Sign out
               </MenuItem>
-            <Divider />
-            <MenuItem
-              onClick={() => {
-                handleClose();
-              }}
-            >
-              Toggle display mode
-            </MenuItem>
+              <Divider />
+              <MenuItem
+                onClick={() => {
+                  handleClose();
+                }}
+              >
+                Toggle display mode
+              </MenuItem>
             </Menu>
           </>
         ) : (
           <>
             {user && (
               <>
-              <IconButton onClick={() => router.push("/chat")} disableRipple className = 'navbar-chat-button'>
-                <Typography variant="h6">Chat</Typography>
-              </IconButton>
-              <IconButton
-                onClick={() => router.push("/dictionary")}
-                disableRipple
-                className = 'navbar-dictionary-button'
-              >
-                <Typography variant="h6">Dictionary</Typography>
-              </IconButton>
-            </>
+                <IconButton
+                  onClick={() => router.push("/chat")}
+                  disableRipple
+                  className="navbar-chat-button"
+                >
+                  <Typography variant="h6">Chat</Typography>
+                </IconButton>
+                <IconButton
+                  onClick={() => router.push("/dictionary")}
+                  disableRipple
+                  className="navbar-dictionary-button"
+                >
+                  <Typography variant="h6">Dictionary</Typography>
+                </IconButton>
+              </>
             )}
             {user ? (
               <IconButton onClick={handleSettingsClick}>
@@ -180,7 +188,7 @@ export default function Navbar() {
                   sx={{
                     width: "45px",
                     height: "45px",
-                    backgroundColor : "primary.main"
+                    backgroundColor: "primary.main",
                   }}
                 >
                   {userDetails.initials}
@@ -194,7 +202,11 @@ export default function Navbar() {
                 width={24}
               />
             ) : (
-              <Button variant="contained" href="/sign-in" sx = {{borderRadius: '2rem'}}>
+              <Button
+                variant="contained"
+                href="/sign-in"
+                sx={{ borderRadius: "2rem" }}
+              >
                 Sign In
               </Button>
             )}
@@ -205,9 +217,7 @@ export default function Navbar() {
               onClose={handleClose}
               MenuListProps={{ "aria-labelledby": "basic-button" }}
             >
-              <MenuItem
-                onClick={goToProfile}
-              >
+              <MenuItem onClick={goToProfile}>
                 <ListItemIcon>
                   <Person2RoundedIcon fontSize="small" />
                 </ListItemIcon>
@@ -218,7 +228,7 @@ export default function Navbar() {
                   <AutoAwesomeRoundedIcon fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>Quick add</ListItemText>
-            </MenuItem>
+              </MenuItem>
               <MenuItem
                 onClick={() => {
                   handleClose();

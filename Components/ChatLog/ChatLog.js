@@ -216,29 +216,12 @@ export default function ChatLog() {
           Saved.
         </Alert>
       </Snackbar>
-      {mobile ? (
-        <Drawer
-          open={navOpen}
-          onClose={() => {
-            handleNav();
-          }}
-        >
-          <ChatNavigation />
-        </Drawer>
-      ) : null}
       <Box className="chat-log-container">
         {conversations.length > 0 ? (
           <>
             <Box
               className="chat-log-title"
             >
-              {mobile && (
-                <IconButton onClick={handleNav}>
-                  <MenuRoundedIcon
-                    sx={{ color: "#929292", width: "30px", height: "30px" }}
-                  />
-                </IconButton>
-              )}
               <Typography variant={mobile ? "h6" : "h4"}>
                 {currentConversation && currentConversation.title}
               </Typography>

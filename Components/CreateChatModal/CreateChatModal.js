@@ -10,16 +10,14 @@ import {
   Stack,
   Grid,
 } from "@mui/material";
-import React, { useState, useEffect, useRef } from "react";
-import ArrowUpwardRounded from "@mui/icons-material/ArrowUpwardRounded";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import React, { useState, useEffect } from "react";
+import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 import { convertClassname, extractConversationStarters } from "@/Utils";
-import { modalStyle } from "@/Constants";
 
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-export default function CreateChatModal({ modalOpen, handleModalClose }) {
+export default function CreateChatModal() {
   const {
     mobile,
     createNewConversation,
@@ -41,7 +39,6 @@ export default function CreateChatModal({ modalOpen, handleModalClose }) {
     if (userInput) {
       createNewConversation(userInput);
       setUserInput("");
-      handleModalClose();
     }
   };
 
@@ -67,7 +64,7 @@ export default function CreateChatModal({ modalOpen, handleModalClose }) {
   };
 
   useEffect(() => {
-    if (modalOpen && userDetails) {
+    if (userDetails) {
       let user_info = getUserInfo();
       async function getConversationStarters(info) {
         setIsLoading(true);
@@ -89,7 +86,7 @@ export default function CreateChatModal({ modalOpen, handleModalClose }) {
       }
       getConversationStarters(user_info);
     }
-  }, [modalOpen, userDetails]);
+  }, []);
 
   const sendButton = (
     <IconButton
@@ -97,96 +94,77 @@ export default function CreateChatModal({ modalOpen, handleModalClose }) {
         handleUserSend();
       }}
     >
-      <ArrowUpwardRounded
-        className={`${convertClassname(mobile, "icon-button")}`}
+      <ArrowForwardIosRoundedIcon
+        className={mobile ? "icon-s" : "icon-m"}
         color="primary"
       />
     </IconButton>
   );
 
   return (
-    <Modal open={modalOpen} onClose={handleModalClose}>
-      <Box sx={{ ...modalStyle, ...(mobile ? { width: "80%" } : {}) }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography variant="h5">Start a chat</Typography>
-          <IconButton
-            onClick={() => {
-              handleModalClose();
-            }}
-          >
-            <CloseRoundedIcon
-              className={`${convertClassname(
-                mobile,
-                "icon-button"
-              )} close-button`}
-            />
-          </IconButton>
-        </Box>
-        <OutlinedInput
-          className="outlined-input record-input"
-          placeholder="Write what you want to talk about here"
-          color="primary"
-          value={userInput}
-          onChange={handleUserInput}
-          endAdornment={
-            <InputAdornment position="end">{sendButton}</InputAdornment>
-          }
+    <Box>
+      <OutlinedInput
+        className="outlined-input record-input"
+        placeholder="Write what you want to talk about here"
+        color="primary"
+        value={userInput}
+        onChange={handleUserInput}
+        endAdornment={
+          <InputAdornment position="end">{sendButton}</InputAdornment>
+        }
+        sx={{
+          marginTop: 4,
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            border: "1px solid #292929",
+          },
+        }}
+      />
+      {isLoading ? (
+        <Stack
+          direction="column"
+          spacing={3}
           sx={{
-            marginTop: 4,
-            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              border: "1px solid #292929",
-            },
+            justifyContent: "flex-start",
+            alignItems: "center",
+            marginTop : '1rem'
           }}
-        />
-        {isLoading ? (
-          <Stack
-            direction="column"
-            justifyContent="center"
-            alignItems="flex-start"
-            spacing={1}
-            sx={{ paddingTop: "32px", width: mobile ? "100%" : "70%" }}
-          >
-            <Box
-              sx={
-                mobile
-                  ? { width: "100px", height: "22px" }
-                  : { width: "250px", height: "33px" }
-              }
-            >
-              <Skeleton height={mobile ? "22px" : "33px"} />
-            </Box>
-          </Stack>
-        ) : (
-          <Grid
-            container
-            spacing={1}
-            direction="row"
-            justifyContent="flex-start"
-            alignItems="center"
-            sx={{ paddingTop: "32px", width: mobile ? "100%" : "70%" }}
-          >
-            {conversationStarters.map((question, i) => {
-              return (
-                <Grid item xs={6}>
-                  <Button
-                    key={`starter-question-${i}`}
-                    className="starter-question-button"
-                    sx={{ border: `1px solid #0000001f` }}
-                    variant="text"
-                    color="inherit"
-                    onClick={() => {
-                      handleStarterButtonClick(question);
-                    }}
-                    isDisabled={userInput === question ? true : false}
-                  >
-                    {question}
-                  </Button>
-                </Grid>
-              );
-            })}
-          </Grid>
-        )}
+        >
+          {
+            [0,0,0,0].map((i) =>{
+              return(<Skeleton height={mobile ? "22px" : "33px"} width="250px" />
+            )})
+          }
+        </Stack>
+      ) : (
+        <Grid
+          container
+          spacing={1}
+          direction="row"
+          justifyContent="flex-start"
+          alignItems="center"
+          sx={{ paddingTop: "32px", width: '100%', justifyContent: "flex-start", alignItems: "flex-start"}}
+        >
+          {conversationStarters.map((question, i) => {
+            return (
+              <Grid item xs={12} md={6}>
+                <Button
+                  key={`starter-question-${i}`}
+                  className="starter-question-button"
+                  sx={{ border: `1px solid #0000001f` }}
+                  variant="text"
+                  color="inherit"
+                  onClick={() => {
+                    handleStarterButtonClick(question);
+                  }}
+                  isDisabled={userInput === question ? true : false}
+                >
+                  {question}
+                </Button>
+              </Grid>
+            );
+          })}
+        </Grid>
+      )}
       </Box>
-    </Modal>
   );
 }

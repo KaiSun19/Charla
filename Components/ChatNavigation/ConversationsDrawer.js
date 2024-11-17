@@ -17,19 +17,20 @@ const sortConversationsByDate = (conversations) => {
     let month = new Date()
     last_week =  last_week.setDate(last_week.getDate() - 7);
     month = month.setMonth(month.getMonth() - 1);
-    conversations.map((convo) => {
-        let last_attempted = convo.chat_details.last_attempted.toDate();
-        if(last_attempted > today){
+    conversations.map((convo, i) => {
+        let lastAttempted = convo.chat_details.last_attempted instanceof Date ? 
+          convo.chat_details.last_attempted : convo.chat_details.last_attempted.toDate() ;
+        if(lastAttempted > today){
             sorted['Today'].push(convo)
         }
-        else if(last_attempted > last_week){
+        else if(lastAttempted > last_week){
             sorted['Last week'].push(convo)
         }
-        else if(last_attempted > month){
+        else if(lastAttempted > month){
             sorted['Last month'].push(convo)
         }
         else{
-          sorted[last_attempted.toDateString()]  = [convo]
+          sorted[lastAttempted.toDateString()]  = [convo]
         }
     })
     return sorted;
@@ -46,7 +47,10 @@ export default function ConversationsDrawer({
       
     const theme = useTheme()
     
-    let sortedConversations = sortConversationsByDate(conversations.map((convo) => {
+    let sortedConversations = sortConversationsByDate(conversations.map((convo, i ) => {
+      if(i == 0){
+        return convo
+      }
         return({ 
             ...convo , 
             last_attempted : new Date(convo.chat_details.last_attempted.toDate())})
@@ -62,8 +66,8 @@ export default function ConversationsDrawer({
               <Typography variant='body1' color = {theme.palette.grey['700']} sx = {{padding : '3%', width: '100%', textAlign : 'left'}}>
                 {date}
               </Typography>
-              {
-                convos.map((conversation, index) => {
+              
+                {conversations.map((conversation, index) => {
                   return(
                     <Box
                       className="chat-nav-item"
@@ -112,9 +116,8 @@ export default function ConversationsDrawer({
                       </Typography>
                   </Box>
                   )
-                })
-              }
-              </Stack>
+                })}
+               </Stack>
           );
         }
       })

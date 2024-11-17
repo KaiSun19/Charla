@@ -26,15 +26,12 @@ export default function ChatNavigation() {
     mobile,
   } = useCharlaContext();
 
-  const [modalOpen, setModalOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [drawerInfo , setDrawerInfo] = useState('conversations')
+  const [drawerInfo , setDrawerInfo] = useState('newConversation')
+  const [drawerTitle, setDrawerTitle] = useState('New chat')
 
-  const handleModalClose = () => {
-    setModalOpen(false);
-  };
-
-  const handleDrawerOpen = (e, drawerType) => {
+  const handleDrawerOpen = (e, drawerType, drawerTitle) => {
+    setDrawerTitle(drawerTitle)
     setDrawerInfo(drawerType);
     setDrawerOpen(!drawerOpen);
   };
@@ -45,10 +42,6 @@ export default function ChatNavigation() {
       <Box
         className={`${convertClassname(mobile, "chat-nav-container", true)}`}
       >
-        <CreateChatModal
-          modalOpen={modalOpen}
-          handleModalClose={handleModalClose}
-        />
         {mobile && (
           <Box
             sx={{
@@ -70,14 +63,14 @@ export default function ChatNavigation() {
           divider={<Divider orientation="horizontal" flexItem />}
           spacing={mobile ? 2 : 3}
         >
-          <IconButton>
+          <IconButton onClick={(e) => {handleDrawerOpen(e, 'newConversation','New chat')}}>
             <AddRoundedIcon
               className={mobile ? "icon-m" : "icon-l"}
               sx={{ color: "primary.main" }}
             />
           </IconButton>
           <IconButton onClick={(e) => {
-            handleDrawerOpen(e, 'conversations')}}>
+            handleDrawerOpen(e, 'conversations', 'Chat navigation')}}>
             <AccessTimeRoundedIcon
               className={mobile ? "icon-m" : "icon-l"}
               sx={{ color: "primary.main" }}
@@ -100,7 +93,7 @@ export default function ChatNavigation() {
       <Drawer open={drawerOpen} onClose={handleDrawerOpen} hideBackdrop={true} elevation={0} ModalProps={{sx: {width : '30%', left : '6%', top:'10%'}}} PaperProps={{sx : SidebarDrawerStyles}}>
         <Stack direction='row' className="nav-sidebar-header">
           <Typography variant = 'h6' sx = {{fontWeight : 'bold'}}>
-            Chat navigation
+            {drawerTitle}
           </Typography>
           <IconButton onClick={handleDrawerOpen}>
             <KeyboardDoubleArrowLeftRoundedIcon className="icon-m"/>
@@ -109,7 +102,9 @@ export default function ChatNavigation() {
         {
           drawerInfo === 'conversations' ?
           (<ConversationsDrawer handleDrawerOpen={handleDrawerOpen} />) : 
-          ''
+          drawerInfo === 'newConversation' ? 
+          (<CreateChatModal />) : 
+          ""
         }
       </Drawer>
     </>
