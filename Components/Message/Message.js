@@ -111,27 +111,6 @@ const Message = forwardRef(({ Message, Index, Hide, Autoplay }, ref) => {
     setAudioStatus("paused");
   };
 
-  const handleErrorCorrection = (errorIndex, phrase, correction) => {
-    let updatedChat = currentConversation.chat;
-    updatedChat = [
-      ...updatedChat.slice(0, Index),
-      {
-        ...updatedChat[Index],
-        message: Message.message.replace(phrase, correction),
-        errors: Message.errors.filter(({ Phrase }) => Phrase !== phrase),
-      },
-      ...updatedChat.slice(Index + 1),
-    ];
-    let updatedConversations = [
-      {
-        ...currentConversation,
-        chat: updatedChat,
-      },
-      ...conversations.slice(1),
-    ];
-    handleConversationsUpdate(updatedConversations);
-  };
-
   const calcSpeechOnlyWidth = (count) => {
     if (mobile) {
       if (count / 5 > 20) {
@@ -248,7 +227,6 @@ const Message = forwardRef(({ Message, Index, Hide, Autoplay }, ref) => {
                 message={Message.message}
                 errors={Message.errors}
                 saved={Message.saved}
-                handleErrorCorrection={handleErrorCorrection}
               />
             </>
           ) : Message.type === "Loading" ? (

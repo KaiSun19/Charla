@@ -40,6 +40,9 @@ export default function App({ Component, pageProps }) {
       },
       saved : {
         main : '#81c7844d'
+      },
+      errors : {
+        main : '#e573734d'
       }
     },
   };

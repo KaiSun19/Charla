@@ -49,10 +49,21 @@ export const CharlaProvider = ({ children }) => {
   // for checking to see if chat settings has been changed
   const [prevChatSettings, setPrevChatSettings] = useState(null);
 
+  //for opening chat nav drawer in desktop mode
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerInfo , setDrawerInfo] = useState('newConversation')
+  const [drawerTitle, setDrawerTitle] = useState('New chat')
+
   const [user, setUser] = useState(null);
   const [userDetails, setUserDetails] = useState("");
 
   const [userIsLoading, setUserisLoading] = useState(true);
+
+  const handleDrawerOpen = (e, drawerType, drawerTitle) => {
+    setDrawerTitle(drawerTitle)
+    setDrawerInfo(drawerType);
+    setDrawerOpen(!drawerOpen);
+  };
 
   const handleConversationsUpdate = (updatedConversations) => {
     setConversations(updatedConversations);
@@ -402,7 +413,11 @@ export const CharlaProvider = ({ children }) => {
         userIsLoading,
         userInput,
         setUserInput,
-        deleteSavedPhrase
+        deleteSavedPhrase,
+        drawerOpen,
+        drawerInfo,
+        drawerTitle,
+        handleDrawerOpen
       }}
     >
       {children}

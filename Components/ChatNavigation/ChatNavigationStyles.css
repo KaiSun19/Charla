@@ -9,9 +9,6 @@
   overflow-y: scroll;
 }
 
-.chat-nav-container-mobile > :not(:first-child) {
-}
-
 .chat-nav-container-mobile {
   max-width: 100%;
   width: 100%;

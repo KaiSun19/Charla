@@ -22,29 +22,32 @@ import { CssBaseline } from "@mui/material";
 import { SidebarDrawerStyles } from "@/Constants";
 import ConversationsDrawer from "./ConversationsDrawer";
 import SavedDrawer from "./SavedDrawer";
+import ErrorsDrawer from "./ErrorsDrawer";
 
 export default function ChatNavigation() {
   const {
     mobile,
     savedPhrases,
     conversations,
-    currentConversation
+    currentConversation,
+    drawerInfo,
+    drawerOpen,
+    drawerTitle,
+    handleDrawerOpen
   } = useCharlaContext();
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [drawerInfo , setDrawerInfo] = useState('newConversation')
-  const [drawerTitle, setDrawerTitle] = useState('New chat')
-  const [conversationSaved, setConversationSaved] = useState(0);
-
-  const handleDrawerOpen = (e, drawerType, drawerTitle) => {
-    setDrawerTitle(drawerTitle)
-    setDrawerInfo(drawerType);
-    setDrawerOpen(!drawerOpen);
-  };
+  const [conversationSaved, setConversationSaved] = useState([]);
+  const [conversationErrors, setConversationErrors] = useState([])
 
   useEffect(()=>{
     setConversationSaved(savedPhrases.filter(({conversation_index}) => conversation_index === conversations.indexOf(currentConversation)))
   }, [savedPhrases])
+
+  useEffect(()=>{
+    if(currentConversation){
+      setConversationErrors(currentConversation.chat.filter(({errors}) => errors.length  > 0 ).map(({errors}) => errors).flat())
+    }
+  }, [currentConversation])
 
   return (
     <>
@@ -111,13 +114,19 @@ export default function ChatNavigation() {
                 </Typography>
               </Stack>
             </IconButton>
-          </Badge>
-            <IconButton>
+          </Badge >
+          <Badge badgeContent={conversationErrors.length} color='errors' invisible={conversationErrors.length === 0}>
+            <IconButton onClick={(e) => {
+              handleDrawerOpen(e, 'errors', 'Errors')}} sx = {{borderRadius : '10%'}}>
               <PriorityHighRoundedIcon
-                className={mobile ? "icon-m" : "icon-l"}
+                className="icon-m"
                 sx={{ color: "primary.main" }}
               />
+              <Typography variant='body1' sx = {{color: "primary.main", whiteSpace : 'no-wrap'}}>
+                Errors
+              </Typography>
             </IconButton>
+          </Badge>
         </Stack>
       </Box>
       <Drawer open={drawerOpen} onClose={handleDrawerOpen} hideBackdrop={true} elevation={0} ModalProps={{sx: {width : '30%', left : '9.4%', top:'10%', overflowY : 'scroll'}}} PaperProps={{sx : {...SidebarDrawerStyles}}}>
@@ -136,6 +145,8 @@ export default function ChatNavigation() {
           (<CreateChatModal handleDrawerOpen={handleDrawerOpen}/>) : 
           drawerInfo === 'saved' ?
           (<SavedDrawer handleDrawerOpen={handleDrawerOpen} conversationSaved={conversationSaved} />) : 
+          drawerInfo === 'errors' ? 
+          (<ErrorsDrawer handleDrawerOpen={handleDrawerOpen} errors={conversationErrors} />) : 
           ""
         }
       </Drawer>

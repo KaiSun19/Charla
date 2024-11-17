@@ -72,6 +72,10 @@ body {
   }
 }
 
+.css-3tmtyr-MuiGrid-root>.MuiGrid-item{
+  padding: 0;
+}
+
 /* commonly used set of styles */
 
 .flex-items-center {
