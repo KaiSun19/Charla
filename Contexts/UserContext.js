@@ -54,6 +54,8 @@ export const CharlaProvider = ({ children }) => {
   const [drawerInfo , setDrawerInfo] = useState('newConversation')
   const [drawerTitle, setDrawerTitle] = useState('New chat')
 
+  const [chatNavDrawerMobileOpen , setChatNavDrawerMobileOpen] = useState(false);
+
   const [user, setUser] = useState(null);
   const [userDetails, setUserDetails] = useState("");
 
@@ -64,6 +66,11 @@ export const CharlaProvider = ({ children }) => {
     setDrawerInfo(drawerType);
     setDrawerOpen(!drawerOpen);
   };
+
+  const handleMobileNavigationOpen = (e) =>{
+    e.preventDefault();
+    setChatNavDrawerMobileOpen(!chatNavDrawerMobileOpen);
+  }
 
   const handleConversationsUpdate = (updatedConversations) => {
     setConversations(updatedConversations);
@@ -417,7 +424,10 @@ export const CharlaProvider = ({ children }) => {
         drawerOpen,
         drawerInfo,
         drawerTitle,
-        handleDrawerOpen
+        handleDrawerOpen,
+        chatNavDrawerMobileOpen,
+        setChatNavDrawerMobileOpen,
+        handleMobileNavigationOpen
       }}
     >
       {children}

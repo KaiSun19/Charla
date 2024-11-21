@@ -8,7 +8,7 @@ import ErrorPage from "@/Components/ErrorPage/ErrorPage";
 import LoadingScreen from "@/Components/LoadingScreen/LoadingScreen";
 
 export default function Chat() {
-  const { mobile, user, userIsLoading  } =
+  const { user, userIsLoading  } =
     useCharlaContext();
 
   if (userIsLoading) {
@@ -19,7 +19,7 @@ export default function Chat() {
       <CharlaProvider>
         <CssBaseline />
         <Box className="chat-container">
-          {!mobile && <ChatNavigation />}
+          <ChatNavigation />
           <Box className="conversation-container">
             <ChatLog />
           </Box>

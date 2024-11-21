@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 :root {
   --max-width: 1100px;
   --border-radius: 12px;
@@ -53,6 +55,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  font-family: 'Inter', sans-serif;
 }
 
 /* stylings for mui components */
@@ -112,6 +115,10 @@ body {
 
 .text-bold { 
   font-weight: 400;
+}
+
+.primary-color-text{
+  color : #5B6D92
 }
 
 /* icon sizes */

@@ -25,7 +25,8 @@
   text-align: center;
   height: 10%;
   justify-content: space-between;
-  background-color: #5B6D92;
+  background-color: #5B6D9214;
+  border-bottom: 1px solid #5b6d9253;
 }
 
 .chat-log-conversation {

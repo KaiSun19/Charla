@@ -2,7 +2,7 @@ import "@/styles/globals.css";
 import * as React from "react";
 
 import { Box } from "@mui/material";
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeOptions, ThemeProvider, createTheme } from '@mui/material/styles';
 import "../Components/Header/HeaderStyles.css";
 import "../Components/Record/RecordStyles.css";
 import "../Components/ChatLog/ChatLogStyles.css";
@@ -19,10 +19,10 @@ import "../styles/dictionary.css";
 
 import Header from "../Components/Header/Header";
 import { CharlaProvider } from "@/Contexts/UserContext";
+import type { AppProps } from "next/app";
 
-export default function App({ Component, pageProps }) {
-
-  const themeOptions  = {
+export default function App({ Component, pageProps }: AppProps) {
+  const themeOptions : ThemeOptions = {
     palette: {
       mode: 'light',
       primary: {
@@ -36,17 +36,20 @@ export default function App({ Component, pageProps }) {
         dark: '#cfc3b5',
       },
       background: {
-        paper: '#FFF6EC',
+        default: 'hsl(0, 0%, 99%)',
+        paper: 'hsl(220, 35%, 97%)',
       },
-      saved : {
-        main : '#81c7844d'
+      saved: {
+        main: '#81c7844d',
       },
-      errors : {
-        main : '#e573734d'
-      }
+      errors: {
+        main: '#e573734d',
+      },
     },
+    shape : {
+      borderRadius: 8,
+    }
   };
-
   const theme = createTheme(themeOptions);
 
   return (
@@ -59,4 +62,4 @@ export default function App({ Component, pageProps }) {
       </ThemeProvider>
     </CharlaProvider>
   );
-}
+};

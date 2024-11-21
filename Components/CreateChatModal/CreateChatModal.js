@@ -117,6 +117,9 @@ export default function CreateChatModal() {
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
             border: "1px solid #292929",
           },
+          "& .MuiOutlinedInput-input": {
+            fontSize : mobile ? '1rem' : 'inherit'
+          }
         }}
       />
       {isLoading ? (
@@ -140,9 +143,9 @@ export default function CreateChatModal() {
           container
           spacing={1}
           direction="row"
-          justifyContent="flex-start"
+          justifyContent={ mobile ? "center" : "flex-start"}
           alignItems="center"
-          sx={{ paddingTop: "32px", width: '100%', justifyContent: "flex-start", alignItems: "flex-start"}}
+          sx={{ paddingTop: "32px", width: '100%'}}
         >
           {conversationStarters.map((question, i) => {
             return (

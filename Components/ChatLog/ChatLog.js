@@ -21,11 +21,9 @@ import {
 import React, { useState, useEffect, useRef } from "react";
 import Message from "../Message/Message";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import UnfoldMoreRoundedIcon from "@mui/icons-material/UnfoldMoreRounded";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
-import ChatNavigation from "../ChatNavigation/ChatNavigation";
 import CreateChatModal from "../CreateChatModal/CreateChatModal";
 import TranslateModal from "../TranslateModal/TranslateModal";
 import Record from "../Record/Record";
@@ -66,6 +64,7 @@ export default function ChatLog() {
     charlaIsLoading,
     setChatSettings,
     setPrevChatSettings,
+    handleMobileNavigationOpen
   } = useCharlaContext();
 
   const lastUpdatedMessageRef = useRef(null);
@@ -222,11 +221,14 @@ export default function ChatLog() {
             <Box
               className="chat-log-title"
             >
+              <IconButton className="primary-text-color" onClick={(e) => {handleMobileNavigationOpen(e)}}>
+                <MenuRoundedIcon className = {mobile ? 'icon-m' :'icon-l'}/>
+              </IconButton>
               <Typography variant={mobile ? "h6" : "h4"}>
                 {currentConversation && currentConversation.title}
               </Typography>
               <IconButton className={`chat-log-settings-icon ${settingsOpen ? 'rotate-anticlockwise' : 'rotate-clockwise'}`} 
-                sx = {{marginRight : '1rem', color : 'white'}} onClick = {handleSettingsOpen}
+                sx = {{marginRight : '1rem', color : '#5b6d92'}} onClick = {handleSettingsOpen}
               >
                 <SettingsRoundedIcon className = {mobile ? 'icon-m' :'icon-l'}/>
               </IconButton>

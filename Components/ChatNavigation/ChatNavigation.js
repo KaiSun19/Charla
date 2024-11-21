@@ -13,7 +13,6 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import PriorityHighRoundedIcon from "@mui/icons-material/PriorityHighRounded";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import KeyboardDoubleArrowLeftRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowLeftRounded';
 import { convertClassname } from "@/Utils";
 import CreateChatModal from "../CreateChatModal/CreateChatModal";
@@ -23,6 +22,7 @@ import { SidebarDrawerStyles } from "@/Constants";
 import ConversationsDrawer from "./ConversationsDrawer";
 import SavedDrawer from "./SavedDrawer";
 import ErrorsDrawer from "./ErrorsDrawer";
+import ChatNavigationMobile from "./ChatNavigationMobile";
 
 export default function ChatNavigation() {
   const {
@@ -49,28 +49,15 @@ export default function ChatNavigation() {
     }
   }, [currentConversation])
 
+  if(mobile){
+    return <ChatNavigationMobile conversationSaved={conversationSaved} conversationErrors={conversationErrors}/>
+  }
   return (
     <>
       <CssBaseline />
       <Box
         className={`${convertClassname(mobile, "chat-nav-container", true)}`}
       >
-        {mobile && (
-          <Box
-            sx={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "flex-end",
-              marginBottom: "-5%",
-            }}
-          >
-            <IconButton
-              onClick={handleDrawerOpen}
-            >
-              <CloseRoundedIcon />
-            </IconButton>
-          </Box>
-        )}
         <Stack
           direction="column"
           alignItems='flex-start'

@@ -30,9 +30,12 @@
     "styled-components": "^6.1.13"
   },
   "devDependencies": {
+    "@types/node": "^22.9.0",
+    "@types/react": "^18.3.12",
     "bcryptjs": "^2.4.3",
     "eslint": "^8",
-    "eslint-config-next": "14.0.2"
+    "eslint-config-next": "14.0.2",
+    "typescript": "^5.6.3"
   },
   "browser": {
     "fs": false,
