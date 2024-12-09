@@ -143,6 +143,11 @@ body {
   height :2rem;
 }
 
+.icon-xl{
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
 /* stylings for home page */
 
 .lang-pagination-container{

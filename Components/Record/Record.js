@@ -134,7 +134,7 @@ const Record = () => {
 
   const recordButton = (
     <IconButton
-      sx={{ paddingRight: "0" }}
+      sx = {{backgroundColor : "rgba(91, 109, 146, 0.3)", padding : '0.5rem', borderRadius : '50%'}}
       onClick={() => {
         handleRecording();
       }}
@@ -179,31 +179,25 @@ const Record = () => {
               </InputAdornment>
             )
           }
-          endAdornment={
-            <>
-              <InputAdornment position="end">{recordButton}</InputAdornment>
-              <InputAdornment position="end">
-                <IconButton
-                  sx={{ paddingLeft: "0" }}
-                  onClick={() => {
-                    handleUserSend();
-                  }}
-                  disabled={recording}
-                >
-                  <ArrowUpwardRoundedIcon
-                    className={`${convertClassname(mobile, "icon-button")}`}
-                    color={recording ? "primary.light" : "primary"}
-                  />
-                </IconButton>
-              </InputAdornment>
-            </>
-          }
+          endAdornment={<InputAdornment position="end">{recordButton}</InputAdornment>}
           sx={{
             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
               border: "1px solid #292929",
             },
           }}
         />
+        <IconButton
+          onClick={() => {
+            handleUserSend();
+          }}
+          disabled={recording || userInput.length == 0}
+          sx = {{backgroundColor : "rgba(91, 109, 146, 0.3)", padding : '0.5rem', borderRadius : '50%'}}
+        >
+          <ArrowUpwardRoundedIcon
+            className={`${convertClassname(mobile, "icon-button")}`}
+            color={recording || userInput.length == 0 ? "primary.light" : "primary"}
+          />
+        </IconButton>
       </Box>
     </Box>
   );

@@ -21,9 +21,9 @@
 .chat-log-title {
   display: flex;
   align-items: center;
-  padding: 2% 0 2% 2%;
+  padding: 1% 0 1% 1%;
   text-align: center;
-  height: 10%;
+  flex : 0 0 auto;
   justify-content: space-between;
   background-color: #5B6D9214;
   border-bottom: 1px solid #5b6d9253;
@@ -31,7 +31,8 @@
 
 .chat-log-conversation {
   overflow-y: auto;
-  height: 70%;
+  min-height: 70%;
+  flex: 1;
   padding-top: 3%;
 }
 
@@ -51,13 +52,11 @@
 }
 
 .chat-log-action {
-  position: sticky;
-  bottom: 0;
-  padding: 1rem 0;
+  flex : 0 0 auto;
+  padding-top: 1rem;
   display: flex;
   justify-content: center;
   background-repeat: no-repeat;
-  height: 14%;
 }
 
 @media only screen and (max-width: 390px) {
