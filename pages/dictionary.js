@@ -1,4 +1,4 @@
-import { useCharlaContext } from "@/Contexts/UserContext";
+import { CharlaProvider, useCharlaContext } from "@/Contexts/UserContext";
 import {
   Box,
   Typography,
@@ -15,11 +15,9 @@ import {
   ListItemIcon,
   ListItemText,
   Modal,
-  InputLabel,
-  Select,
   Input,
-  ButtonGroup,
   Button,
+  CssBaseline,
 } from "@mui/material";
 
 import React, { useEffect, useState, useRef } from "react";
@@ -131,29 +129,29 @@ export default function Dictionary() {
               return (
                 <Stack
                   direction="column"
-                  justifyContent=""
                   alignItems="flex-start"
                   spacing={1}
                   key={`add-phrases-component-${i}`}
                   sx={{
                     width: "100%",
                     padding: "1rem",
-                    border: `1px solid #1976d2`,
+                    border: `1px solid #5B6D92`,
                     borderRadius: "10px",
+                    paddingBottom : mobile ? '1.5rem' : '1rem'
                   }}
                 >
                   <Typography variant="h6" color="text.secondary">
                     {i}
                   </Typography>
                   <Stack
-                    direction="row"
+                    direction={mobile ? "column" : 'row'}
                     justifyContent="space-between"
                     alignItems="center"
-                    spacing={1}
+                    spacing={mobile ? 3 : 1}
                     sx={{ width: "100%" }}
                   >
                     <Input
-                      sx={{ width: "45%" }}
+                      sx={{ width: mobile ? "100%" : "45%" }}
                       placeholder="Phrase"
                       value={phrases[i].phrase}
                       onChange={(e) => {
@@ -171,7 +169,7 @@ export default function Dictionary() {
                       required
                     />
                     <Input
-                      sx={{ width: "45%" }}
+                      sx={{ width: mobile ? "100%" : "45%" }}
                       placeholder="Translation"
                       value={phrases[i].translation}
                       onChange={(e) => {
@@ -216,7 +214,7 @@ export default function Dictionary() {
                   width: "100%",
                 }}
               >
-                <Button variant="contained" onClick={handleUpdatePhrases}>
+                <Button variant="outlined" onClick={handleUpdatePhrases} sx = {{width : mobile ? '100%' : ''}}>
                   <Typography variant="body1">Submit</Typography>
                 </Button>
               </Box>
@@ -236,6 +234,8 @@ export default function Dictionary() {
   if (userDetails) {
     return (
       <>
+      <CharlaProvider>
+        <CssBaseline />
         <AddPhrasesModal
           modalOpen={modalOpen}
           handleModalClose={handleModalClose}
@@ -251,7 +251,7 @@ export default function Dictionary() {
             <Typography
               variant={!mobile ? "h1" : "h3"}
               sx={{
-                color: "#1976d2",
+                color: "#5B6D92",
                 ...(mobile && { marginTop: "1rem" }),
               }}
             >
@@ -354,6 +354,7 @@ export default function Dictionary() {
             </Menu>
           </TableContainer>
         </Stack>
+        </CharlaProvider>
       </>
     );
   }

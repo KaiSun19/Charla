@@ -221,10 +221,14 @@ export default function ChatLog() {
             <Box
               className="chat-log-title"
             >
-              <IconButton className="primary-text-color" onClick={(e) => {handleMobileNavigationOpen(e)}}>
-                <MenuRoundedIcon className = {mobile ? 'icon-m' :'icon-l'}/>
-              </IconButton>
-              <Typography variant={mobile ? "h6" : "h4"}>
+              {
+                mobile && (
+                  <IconButton className="primary-text-color" onClick={(e) => {handleMobileNavigationOpen(e)}}>
+                    <MenuRoundedIcon className = {mobile ? 'icon-m' :'icon-l'}/>
+                  </IconButton>
+                )
+              }
+              <Typography variant={mobile ? "h6" : "h4"} sx = {!mobile && {paddingLeft : '2%'}}>
                 {currentConversation && currentConversation.title}
               </Typography>
               <IconButton className={`chat-log-settings-icon ${settingsOpen ? 'rotate-anticlockwise' : 'rotate-clockwise'}`} 
@@ -296,7 +300,7 @@ export default function ChatLog() {
                     />
                   );
                 })}
-              {charlaIsLoading && <Message Message={{ type: "Loading" }} />}
+              {charlaIsLoading && <Box className = 'message-loader' />}
             </Box>
           </>
         ) : (
