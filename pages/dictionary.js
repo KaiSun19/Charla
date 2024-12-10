@@ -18,9 +18,10 @@ import {
   Input,
   Button,
   CssBaseline,
+  TablePagination,
 } from "@mui/material";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef} from "react";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import MoreVertRoundedIcon from "@mui/icons-material/MoreVertRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
@@ -42,6 +43,11 @@ export default function Dictionary() {
   const { query } = router;
 
   const [menuAnchor, setMenuAnchor] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
   const selectedIndex = useRef(null);
 
   const menuOpen = Boolean(menuAnchor);
@@ -56,10 +62,17 @@ export default function Dictionary() {
     setMenuAnchor(false);
   };
 
-  const [modalOpen, setModalOpen] = useState(false);
-
   const handleModalClose = () => {
     setModalOpen(false);
+  };
+  
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const deleteSavedPhrase = () => {
@@ -282,7 +295,7 @@ export default function Dictionary() {
               <AddRoundedIcon sx={{ width: "2rem", height: "2rem" }} />
             </IconButton>
           </Stack>
-          <TableContainer>
+          <TableContainer sx = {{border: `1px solid #5B6D92` , padding : '1rem', borderRadius : '8px'}}>
             <Table sx={{ minWidth: 650 }}>
               <TableHead>
                 <TableRow>
@@ -313,30 +326,35 @@ export default function Dictionary() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {savedPhrases.map((item, i) => (
-                  <TableRow
-                    key={`phrase-${i}`}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell scope="row">
-                      <Typography variant="body1">{item.phrase}</Typography>
-                    </TableCell>
-                    <TableCell scope="row">
-                      <Typography variant="body1">
-                        {item.translation}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="center" scope="row">
-                      <IconButton
-                        onClick={(e) => {
-                          openPivotMenu(e, i);
-                        }}
-                      >
-                        <MoreVertRoundedIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {savedPhrases.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, i) => {
+                  if(i < rowsPerPage){
+                    return (
+                    <TableRow
+                      key={`phrase-${i}`}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell scope="row">
+                        <Typography variant="body1">{item.phrase}</Typography>
+                      </TableCell>
+                      <TableCell scope="row">
+                        <Typography variant="body1">
+                          {item.translation}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="center" scope="row">
+                        <IconButton
+                          onClick={(e) => {
+                            openPivotMenu(e, i);
+                          }}
+                        >
+                          <MoreVertRoundedIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                    )
+                  }
+                }
+                )}
               </TableBody>
             </Table>
             <Menu
@@ -353,6 +371,15 @@ export default function Dictionary() {
               <MenuItem>Dictionary</MenuItem>
             </Menu>
           </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={savedPhrases.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+        />
         </Stack>
         </CharlaProvider>
       </>
