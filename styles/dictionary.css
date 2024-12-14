@@ -12,6 +12,11 @@
   border-radius: 16px;
 }
 
+.flashcard-container{
+  background-color: #5B6D92;
+  color: white;
+}
+
 @media only screen and (max-width: 400px) {
   .add-saved-container {
     margin-top: 0;

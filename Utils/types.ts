@@ -3,6 +3,7 @@ export interface SavedPhrase {
     message_index : number;
     phrase : string; 
     translation : string;
+    remembered?: boolean;
 }
 
 export interface Error { 

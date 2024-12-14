@@ -14,19 +14,21 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
-  Modal,
-  Input,
-  Button,
   CssBaseline,
   TablePagination,
 } from "@mui/material";
 
+import AddPhrasesModal from "../Components/AddPhrasesModal/AddPhrasesModal";
+import FlashcardsModal from "../Components/FlashcardsModal"
+
 import React, { useEffect, useState, useRef} from "react";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import MoreVertRoundedIcon from "@mui/icons-material/MoreVertRounded";
-import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
-import { modalStyle } from "@/Constants";
+import { StyleRounded, DeleteOutlineRounded} from "@mui/icons-material";
 import { useRouter } from "next/router";
+
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function Dictionary() {
   const {
@@ -44,6 +46,7 @@ export default function Dictionary() {
 
   const [menuAnchor, setMenuAnchor] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [flashcardsOpen, setFlashcardsOpen] = useState(false);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -65,6 +68,10 @@ export default function Dictionary() {
   const handleModalClose = () => {
     setModalOpen(false);
   };
+
+  const handleFlashcardsClose = () => {
+    setFlashcardsOpen(false)
+  }
   
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -102,142 +109,6 @@ export default function Dictionary() {
     handleMenuClose();
   };
 
-  function AddPhrasesModal({ modalOpen, handleModalClose }) {
-    let singlePhrase = {
-      phrase: "",
-      translation: "",
-    };
-    const [phrases, setPhrases] = useState([singlePhrase]);
-
-    const addPhraseBox = () => {
-      setPhrases((currentPhrases) => {
-        return [...currentPhrases, singlePhrase];
-      });
-    };
-
-    const handleUpdatePhrases = () => {
-      let newPhrases = phrases.filter(
-        (phrase) => phrase.phrase !== "" && phrase.translation !== ""
-      );
-      newPhrases = newPhrases.map((phrase) => {
-        return { conversation_index: null, message_index: null, ...phrase };
-      });
-      setSavedPhrases((savedPhrases) => {
-        return [...savedPhrases, ...newPhrases];
-      });
-      handleModalClose();
-    };
-
-    return (
-      <Modal open={modalOpen} onClose={handleModalClose}>
-        <Box sx={{ ...modalStyle, ...(mobile ? { width: "80%" } : {}) }}>
-          <Stack
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-            spacing={1}
-            sx={{ minWidth: "100%" }}
-          >
-            {phrases.map((item, i) => {
-              return (
-                <Stack
-                  direction="column"
-                  alignItems="flex-start"
-                  spacing={1}
-                  key={`add-phrases-component-${i}`}
-                  sx={{
-                    width: "100%",
-                    padding: "1rem",
-                    border: `1px solid #5B6D92`,
-                    borderRadius: "10px",
-                    paddingBottom : mobile ? '1.5rem' : '1rem'
-                  }}
-                >
-                  <Typography variant="h6" color="text.secondary">
-                    {i}
-                  </Typography>
-                  <Stack
-                    direction={mobile ? "column" : 'row'}
-                    justifyContent="space-between"
-                    alignItems="center"
-                    spacing={mobile ? 3 : 1}
-                    sx={{ width: "100%" }}
-                  >
-                    <Input
-                      sx={{ width: mobile ? "100%" : "45%" }}
-                      placeholder="Phrase"
-                      value={phrases[i].phrase}
-                      onChange={(e) => {
-                        setPhrases((phrases) => {
-                          return [
-                            ...phrases.slice(0, i),
-                            {
-                              phrase: e.target.value,
-                              translation: phrases[i].translation,
-                            },
-                            ...phrases.slice(i + 1),
-                          ];
-                        });
-                      }}
-                      required
-                    />
-                    <Input
-                      sx={{ width: mobile ? "100%" : "45%" }}
-                      placeholder="Translation"
-                      value={phrases[i].translation}
-                      onChange={(e) => {
-                        setPhrases((phrases) => {
-                          return [
-                            ...phrases.slice(0, i),
-                            {
-                              phrase: phrases[i].phrase,
-                              translation: e.target.value,
-                            },
-                            ...phrases.slice(i + 1),
-                          ];
-                        });
-                      }}
-                      required
-                    />
-                  </Stack>
-                </Stack>
-              );
-            })}
-            <Stack
-              direction="column"
-              justifyContent="center"
-              alignItems="center"
-              spacing={1}
-              sx={{ marginTop: "2rem", width: "100%" }}
-            >
-              <Box>
-                <Button
-                  variant="text"
-                  startIcon={<AddRoundedIcon />}
-                  onClick={addPhraseBox}
-                  disabled={phrases.length >= 5 ? true : false}
-                >
-                  <Typography variant="body1">Add more</Typography>
-                </Button>
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row-reverse",
-                  width: "100%",
-                }}
-              >
-                <Button variant="outlined" onClick={handleUpdatePhrases} sx = {{width : mobile ? '100%' : ''}}>
-                  <Typography variant="body1">Submit</Typography>
-                </Button>
-              </Box>
-            </Stack>
-          </Stack>
-        </Box>
-      </Modal>
-    );
-  }
-
   useEffect(()=> {
     if(query.quick_add){
       setModalOpen(true)
@@ -252,6 +123,11 @@ export default function Dictionary() {
         <AddPhrasesModal
           modalOpen={modalOpen}
           handleModalClose={handleModalClose}
+        />
+        <FlashcardsModal 
+          modalOpen={flashcardsOpen}
+          handleModalClose={handleFlashcardsClose}
+          savedPhrases={savedPhrases}
         />
         <Stack
           className="dictionary-container"
@@ -271,29 +147,63 @@ export default function Dictionary() {
               Dictionary
             </Typography>
           </Box>
-          <Stack
-            direction="row"
-            justifyContent="flex-start"
-            alignItems="center"
-            spacing={2}
-            className="add-saved-container"
-          >
-            <Typography
-              variant={!mobile ? "h6" : "body1"}
-              sx={{
-                ...(mobile && { marginTop: "1rem" }),
-              }}
+          <Stack direction="row" spacing={2} sx={{justifyContent: "center",alignItems: "center"}}>
+            <Stack
+              direction="row"
+              justifyContent="flex-start"
+              alignItems="center"
+              spacing={2}
+              className="add-saved-container"
             >
-              Add Saved
-            </Typography>
-            <IconButton
-              color="primary"
-              onClick={() => {
-                setModalOpen(true);
-              }}
-            >
-              <AddRoundedIcon sx={{ width: "2rem", height: "2rem" }} />
-            </IconButton>
+              <Typography
+                variant={!mobile ? "h6" : "body1"}
+                sx={{
+                  ...(mobile && { marginTop: "1rem" }),
+                }}
+              >
+                Add Saved
+              </Typography>
+              <IconButton
+                color="primary"
+                onClick={() => {
+                  setModalOpen(true);
+                }}
+              >
+                <AddRoundedIcon sx={{ width: "2rem", height: "2rem" }} />
+              </IconButton>
+            </Stack>
+            {
+              savedPhrases.length > 0 ? 
+              (
+                <Stack
+                  direction="row"
+                  justifyContent="flex-start"
+                  alignItems="center"
+                  spacing={2}
+                  className="add-saved-container flashcard-container"
+                >
+                  <Typography
+                    variant={!mobile ? "h6" : "body1"}
+                    sx={{
+                      ...(mobile && { marginTop: "1rem" }),
+                    }}
+                  >
+                    Flashcards
+                  </Typography>
+                  <IconButton
+                    color="primary"
+                    onClick={() => {
+                      setFlashcardsOpen(true);
+                    }}
+                  >
+                    <StyleRounded sx={{ width: "2rem", height: "2rem",color : 'white' }} />
+                  </IconButton>
+                </Stack>
+              ): 
+              (
+                <Skeleton height={60} width={200} />
+              ) 
+            }
           </Stack>
           <TableContainer sx = {{border: `1px solid #5B6D92` , padding : '1rem', borderRadius : '8px'}}>
             <Table sx={{ minWidth: 650 }}>
@@ -364,22 +274,24 @@ export default function Dictionary() {
             >
               <MenuItem onClick={deleteSavedPhrase}>
                 <ListItemIcon>
-                  <DeleteOutlineRoundedIcon fontSize="small" color="error" />
+                  <DeleteOutlineRounded fontSize="small" color="error" />
                 </ListItemIcon>
                 <ListItemText>Delete</ListItemText>
               </MenuItem>
               <MenuItem>Dictionary</MenuItem>
             </Menu>
           </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={savedPhrases.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+          <Box sx = {{width : '100%', display : 'flex', justifyContent : 'flex-end'}}>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={savedPhrases.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+          </Box>
         </Stack>
         </CharlaProvider>
       </>
