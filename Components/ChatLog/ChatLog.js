@@ -29,6 +29,8 @@ import TranslateModal from "../TranslateModal/TranslateModal";
 import Record from "../Record/Record";
 import { findConversations, findStartEndIndex } from "@/Utils";
 import CssBaseline from '@mui/material/CssBaseline';
+import Image from "next/image";
+import { convertClassname } from "@/Utils";
 
 const sliderMarks = [
   {
@@ -300,7 +302,19 @@ export default function ChatLog() {
                     />
                   );
                 })}
-              {charlaIsLoading && <Box className = 'message-loader' />}
+
+              {charlaIsLoading && 
+                <Box sx  = {{marginLeft : '2%', marginTop : '2%'}}>
+                  <Box className = 'message-loader' />
+                  <Image
+                    src="/charla-icon-light.svg"
+                    alt="Charla Icon"
+                    width={30}
+                    height={30}
+                    className={`${convertClassname(mobile, "message-icon")}`}
+                  />
+                </Box>
+              }
             </Box>
           </>
         ) : (

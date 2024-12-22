@@ -113,6 +113,7 @@
     border-radius: 50%;
     background: #5B6D92;
     animation: loading 2s infinite; 
+    margin-left: 3%;
 }
 
 @keyframes loading {
