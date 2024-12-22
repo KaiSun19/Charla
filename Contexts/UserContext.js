@@ -192,7 +192,14 @@ export const CharlaProvider = ({ children }) => {
         break;
       case "interests":
         setUserDetails((prev) => {
+          console.log([...prev.interests, data]);
           return { ...prev, interests: [...prev.interests, data] };
+        });
+        break;
+      case "interests-delete":
+        setUserDetails((prev) => {
+          const newInterests = prev.interests.filter(interest => interest !== data);
+          return { ...prev, interests: newInterests };
         });
         break;
     }

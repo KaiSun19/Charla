@@ -2,11 +2,11 @@
   padding: 1rem;
 }
 .profile-hero {
-  width: 50%;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  flex-direction: column;
+  flex-direction: row;
   padding: 2rem;
 }
 

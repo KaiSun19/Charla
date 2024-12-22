@@ -48,6 +48,9 @@ export default function App({ Component, pageProps }: AppProps) {
     },
     shape : {
       borderRadius: 8,
+    },
+    typography : {
+      fontFamily : ['Inter'].join(',')
     }
   };
   const theme = createTheme(themeOptions);

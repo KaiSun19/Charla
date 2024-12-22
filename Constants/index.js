@@ -172,7 +172,7 @@ export const mockUserDetails = {
   learning_languages: ["spanish"],
 };
 
-export const interests = [
+export const Interests = [
   "traveling",
   "cooking",
   "reading",
