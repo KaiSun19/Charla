@@ -11,7 +11,7 @@ export default async function POST(request, res) {
     // Convert the audio data to text
     const chatCompletion = await openai.chat.completions.create({
       messages: req.body.messages,
-      model: "gpt-4",
+      model: "gpt-4o-mini",
     });
     res.status(200).json({ result: chatCompletion });
   } catch (error) {

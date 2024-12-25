@@ -378,7 +378,7 @@ export const CharlaProvider = ({ children }) => {
         saved_phrases: savedPhrases,
       });
     }
-    if (savedPhrases.length > 0) {
+    if (savedPhrases.length > 0 && userDetails.id) {
       uploadSavedPhrases();
     }
   }, [savedPhrases]);
