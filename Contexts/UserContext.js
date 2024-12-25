@@ -372,13 +372,15 @@ export const CharlaProvider = ({ children }) => {
   }, [conversations]);
 
   useEffect(() => {
-    async function uploadSavedPhrases() {
+    const uploadSavedPhrases = useCallback(async () => {
       await setDoc(doc(db, "savedPhrases", userDetails.id), {
         id: userDetails.id,
         saved_phrases: savedPhrases,
       });
-    }
+    }, [savedPhrases]);
+
     if (savedPhrases.length > 0 && userDetails.id) {
+      console.log(savedPhrases);
       uploadSavedPhrases();
     }
   }, [savedPhrases]);
