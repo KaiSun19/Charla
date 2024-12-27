@@ -51,10 +51,10 @@ export const CharlaProvider = ({ children }) => {
 
   //for opening chat nav drawer in desktop mode
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [drawerInfo , setDrawerInfo] = useState('newConversation')
-  const [drawerTitle, setDrawerTitle] = useState('New chat')
+  const [drawerInfo, setDrawerInfo] = useState("newConversation");
+  const [drawerTitle, setDrawerTitle] = useState("New chat");
 
-  const [chatNavDrawerMobileOpen , setChatNavDrawerMobileOpen] = useState(false);
+  const [chatNavDrawerMobileOpen, setChatNavDrawerMobileOpen] = useState(false);
 
   const [user, setUser] = useState(null);
   const [userDetails, setUserDetails] = useState("");
@@ -62,15 +62,15 @@ export const CharlaProvider = ({ children }) => {
   const [userIsLoading, setUserisLoading] = useState(true);
 
   const handleDrawerOpen = (e, drawerType, drawerTitle) => {
-    setDrawerTitle(drawerTitle)
+    setDrawerTitle(drawerTitle);
     setDrawerInfo(drawerType);
     setDrawerOpen(!drawerOpen);
   };
 
-  const handleMobileNavigationOpen = (e) =>{
+  const handleMobileNavigationOpen = (e) => {
     e.preventDefault();
     setChatNavDrawerMobileOpen(!chatNavDrawerMobileOpen);
-  }
+  };
 
   const handleConversationsUpdate = (updatedConversations) => {
     setConversations(updatedConversations);
@@ -198,7 +198,9 @@ export const CharlaProvider = ({ children }) => {
         break;
       case "interests-delete":
         setUserDetails((prev) => {
-          const newInterests = prev.interests.filter(interest => interest !== data);
+          const newInterests = prev.interests.filter(
+            (interest) => interest !== data
+          );
           return { ...prev, interests: newInterests };
         });
         break;
@@ -217,11 +219,19 @@ export const CharlaProvider = ({ children }) => {
   }, [userDetails]);
 
   const deleteSavedPhrase = (conversation_index, message_index, phrase) => {
-    const currentMessage = conversations[conversation_index].chat[message_index]
-    const messageWithoutSavedPhrase = {...currentMessage, saved : currentMessage.saved.filter(saved => saved.text !== phrase) }
-    const updatedConversations = createUpdatedConversations({index : conversation_index, message : messageWithoutSavedPhrase, messageIndex : message_index})
+    const currentMessage =
+      conversations[conversation_index].chat[message_index];
+    const messageWithoutSavedPhrase = {
+      ...currentMessage,
+      saved: currentMessage.saved.filter((saved) => saved.text !== phrase),
+    };
+    const updatedConversations = createUpdatedConversations({
+      index: conversation_index,
+      message: messageWithoutSavedPhrase,
+      messageIndex: message_index,
+    });
     handleConversationsUpdate(updatedConversations);
-  }
+  };
 
   useEffect(() => {
     //this gets fired whenever a user signs in or refreshes
@@ -371,14 +381,14 @@ export const CharlaProvider = ({ children }) => {
     }
   }, [conversations]);
 
-  useEffect(() => {
-    const uploadSavedPhrases = useCallback(async () => {
-      await setDoc(doc(db, "savedPhrases", userDetails.id), {
-        id: userDetails.id,
-        saved_phrases: savedPhrases,
-      });
-    }, [savedPhrases]);
+  const uploadSavedPhrases = useCallback(async () => {
+    await setDoc(doc(db, "savedPhrases", userDetails.id), {
+      id: userDetails.id,
+      saved_phrases: savedPhrases,
+    });
+  }, [savedPhrases]);
 
+  useEffect(() => {
     if (savedPhrases.length > 0 && userDetails.id) {
       console.log(savedPhrases);
       uploadSavedPhrases();
@@ -436,7 +446,7 @@ export const CharlaProvider = ({ children }) => {
         handleDrawerOpen,
         chatNavDrawerMobileOpen,
         setChatNavDrawerMobileOpen,
-        handleMobileNavigationOpen
+        handleMobileNavigationOpen,
       }}
     >
       {children}
